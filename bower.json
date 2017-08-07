@@ -1,0 +1,11 @@
+{
+  "name": "demowebcalendar",
+  "description": "This is demo web app calendar",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "vendor/bower_dl",
+    "test",
+    "tests"
+  ]
+}
