@@ -22,6 +22,8 @@ Route::get('sms/{id}', function ($id) {
 Route::post('send-sms', function (\Illuminate\Http\Request $request) {
     $userId = $request->get('userId');
     if($userId){
+        $phoneNumber = env('DEFAULT_PHONENUMBER');
+
         if($userId == 1){
             $phoneNumber = '+6594244449';
         }elseif($userId == 2){
@@ -33,7 +35,8 @@ Route::post('send-sms', function (\Illuminate\Http\Request $request) {
         if(empty($phoneNumber)){
             $phoneNumber = '+6594244449';
         }
-        $from = '+84986981718';
+        $phoneNumber = env('DEFAULT_PHONENUMBER');
+        $from = env('DEFAULT_PHONENUMBER');
 
         Nexmo::message()->send([
             'to' => $phoneNumber,
