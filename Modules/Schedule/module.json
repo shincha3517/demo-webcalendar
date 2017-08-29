@@ -1,0 +1,18 @@
+{
+    "name": "Schedule",
+    "alias": "schedule",
+    "description": "",
+    "keywords": [],
+    "version": "0.0.1",
+    "active": 1,
+    "order": 1,
+    "providers": [
+        "Modules\\Schedule\\Providers\\ScheduleServiceProvider",
+        "Modules\\Schedule\\Providers\\RouteServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        
+    ],
+    "requires": []
+}

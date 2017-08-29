@@ -1,0 +1,31 @@
+url: https://github.com/AsgardCms/Platform
+versions:
+    "2.5.1":
+        changed:
+            - Renamed hook <code>ContentIsRendering</code> to <code>PageContentIsRendering</code> making it more specific
+    "2.5.0":
+        added:
+            - Trigger event before a page is created (<code>PageIsCreating</code>) allow data to be changed
+            - Trigger event before a page is updated (<code>PageIsUpdating</code>) allow data to be changed
+        changed:
+            - Requiring the editor assets via hook
+            - Making editor textarea dynamic
+            - Using the new <code>@editor</code> blade directive for the body textarea field
+            - Remove the ckeditor inclusion on create/edit view stubs
+            - Using the @push js stacks over the scripts section
+            - Using the @push css stacks over the styles section
+            - Sidebar is now loaded via the <code>BuildingSidebar</code> hook
+    "2.2.0":
+        added:
+            - Testing event trigger on page deletion
+            - Testing that the page events are triggered
+        removed:
+            - Removing the page counter as it doesn't serve any purpose besides costing a query
+    "2.0.0":
+        added:
+            - Laravel 5.4 compatibility
+            - Tags, pages can now own tags.
+        changed:
+            - Using new more flexible way of handle permissions via middleware
+        removed:
+            - Removing laracasts/flash dependency

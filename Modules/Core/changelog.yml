@@ -1,0 +1,55 @@
+url: https://github.com/AsgardCms/Platform
+versions:
+    "2.5.2":
+        changed:
+            - Fixing CLI issue not having the translation repository bound
+    "2.5.1":
+        changed:
+            - Add missing <code>id</code> attribute to editor's textarea
+    "2.5.0":
+        added:
+            - Adding a <code>EntityIsChanging</code> interface to use on events which are triggered before a create / update action
+            - Create an <code>AbstractEntityHook</code> containing base logic for entity hooks
+            - Trigger the <code>EditorIsRendering</code> event on assets view composer and send editor variable to view
+            - New configuration value <code>wysiwyg-handler</code> in <code>config/asgard/core/core.php</code> to change the editor in backend
+            - New handler <code>RenderMarkdown</code> if you want to render markdown on a <code>ContentIsRendering</code> event
+            - New <code>@editor('fieldname', 'fieldlabel, 'content', 'locale')</code> blade directive to include a textarea. The last <code>locale</code> parameter is optional and can be omitted for non translatable textarea.
+            - New <code>BuildingSidebar</code> hook used to add sidebar elements (backend) this will replace the <code>SidebarExtender</code> classes
+            - Creating helper trait <code>CanGetSidebarClassForModule</code>, to get the sidebar class for a module
+            - Adding Docker support. Run `./dcp up` to get started.
+        changed:
+            - Adding more core modules (tag, translation and page). Preventing them to be disabled.
+            - Splitting up the <code>EditorIsRendering</code> hook to its own view composer, avoiding binding the (expensive) <code>AssetsViewComposer</code> on every view & partial
+            - Stop making DB queries on console mode
+    "2.3.0":
+        added:
+            - New command <code>php artisan asgard:download:module asgardcms/contact --migrations --seeds --assets</code>
+            - New command <code>php artisan asgard:delete:module ModuleName --migrations</code>
+    "2.2.0":
+        added:
+            - Binding as a singleton in an asgard key if we're on the backend or not. Available as <code>app('asgard.onBackend')</code>
+    "2.0.0":
+        added:
+            - Laravel 5.4 compatibility
+            - <code>CanPublishConfiguration</code> helper trait
+            - <code>CanRequireAssets</code> helper trait
+            - added new <code>auth->user()</code> method to get the current user.
+            - run the user module migrations on installation
+            - user installer creates a first api token
+            - Adding minimised sitename setting viewed via minimised sidebar
+            - Added ability for modules to define a custom sidebar class for every module
+            - Adding configuration to set a custom ckeditor config file
+        changed:
+            - Using new more flexible way of handle permissions via middleware
+            - Public configuration files in a subfolder of config/ folder
+            - <code>auth->check</code> now returns a boolean.
+            - Don't load the application version on frontend theme (+ performance)
+            - Rename <code>MasterViewComposer</code> to <code>SiteNameViewComposer</code> to match its intent
+            - Loading the currently logged in user on every view
+            - Form Macros - Use HtmlString to allow users to use normal Blade "echo" braces
+        removed:
+            - Removing laracasts/flash dependency
+            - Removed depenency of unmaintained pingpong/modules in favor of nwidart/laravel-modules
+            - <code>Authentication</code> contract has been moved to the User module
+            - <code>Setting</code> contract has been moved to the Setting module
+            - Removed sisyphus usage

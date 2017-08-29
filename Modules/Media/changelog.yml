@@ -1,0 +1,31 @@
+url: https://github.com/AsgardCms/Platform
+versions:
+    "2.5.0":
+        added:
+            - <code>FileWasCreated</code> event
+            - <code>FileWasUpdated</code> event
+            - <code>FileIsCreating</code> hookable event
+            - <code>FileIsUpdating</code> hookable event
+            - New Sidebar event handler class replacing the old <code>SidebarExtender</code> class
+        changed:
+            - Using the @push js stacks over the scripts section
+            - Using the @push css stacks over the styles section
+    "2.4.0":
+        added:
+            - new blade directive for thumbnails <code>@thumbnail('path', 'thumbnailName')</code>
+        changed:
+            - Ability to set the field name for media directives (single & multiple), as forth argument
+            - Fixing URL generation in case of S3, remove first <code>/</code>
+    "2.0.0":
+        added:
+            - Laravel 5.4 compatibility
+            - New way to define thumbnails, no more via a config file but via a class.
+            - Adding a new resize canvas image manipulation
+        changed:
+            - Using new more flexible way of handle permissions via middleware
+            - Protecting api routes with api admin middleware
+            - Allow usage of multiple media partials on create views
+            - Cleaned up file partials, both create and edit views use the event system
+            - Allow <code>Imagy->getThumbnail()</code> to get the File entity directly
+        deleted:
+            - Removing laracasts/flash dependency
