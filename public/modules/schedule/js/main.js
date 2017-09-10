@@ -6,28 +6,36 @@ var Home = {
     timeline: '',
     availableUserTimeline: '',
 
+    onSelectCalendar: function(){
+        $('#datepicker').datepicker();
+        $('#datepicker').on('changeDate', function() {
+
+            $('#my_hidden_input').val(
+                $('#datepicker').datepicker('getFormattedDate')
+            );
+
+            $('#step2').hide();
+            $('#step3').hide();
+            $('#step4').hide();
+
+            $('html, body').animate({
+                scrollTop: ($('#step1').offset().top)
+            },500);
+        });
+    },
+
     onSelectUser: function () {
         $('#ddUser').on('change',function(e){
 
             if($(this).val() > 0){
-
-                $('#datepicker').datepicker();
-                $('#datepicker').on('changeDate', function() {
-
-                    $('#my_hidden_input').val(
-                        $('#datepicker').datepicker('getFormattedDate')
-                    );
-
-                    if(Home.timeline !=''){
-                        Home.timeline.destroy();
-                    }
-
-                    //show timeline
-                    Home.onShowTimeLine();
-                });
+                if(Home.timeline !=''){
+                    console.log('disable timeline');
+                    Home.timeline.destroy();
+                }
+                //show timeline
+                Home.onShowTimeLine();
             }
             else{
-                $('#datepicker').datepicker('remove');
                 Home.timeline.destroy();
             }
 
@@ -58,7 +66,9 @@ var Home = {
 
         this.onSelectTimeline();
 
-        $('#step2').removeClass('hide').fadeIn('slow');
+        $('#step2').show();
+
+        console.log('select user');
 
         $('html, body').animate({
             scrollTop: ($('#step2').offset().top)
@@ -130,8 +140,10 @@ var Home = {
         $('#step3').hide();
         $('#step4').hide();
         $('select').select2();
+        $('#datepicker').datepicker();
 
         this.onSelectUser();
+        this.onSelectCalendar();
         // this.onShowTimeLine();
         // this.onSelectTimeline();
     }

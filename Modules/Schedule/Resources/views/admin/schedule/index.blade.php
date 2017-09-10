@@ -29,28 +29,30 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-xs-12" id="step1">
                         <div class="panel panel-default">
                             <div class="panel-heading">Step 1</div>
                             <div class="panel-body">
                                 <div class="well">
                                     <div class="row">
                                         <div class="col-xs-6">
-                                            <select class="form-control" id="ddUser">
-                                                <option>--Please select date first</option>
-                                                <option value="1">Weijie</option>
-                                                <option value="2">Allan Chua</option>
-                                                <option value="3">Zheying Zhang</option>
-                                                <option value="4">Vu Dao</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-xs-6">
                                             <div class="row">
-                                                <div class="col-xs-12 col-md-offset-5">
-                                                    <div id="datepicker" data-date="12/03/2012"></div>
+                                                <div class="col-xs-12">
+                                                    <div id="datepicker" data-date="{{\Carbon\Carbon::now()->format('d/m/Y')}}"></div>
                                                     <input type="hidden" id="my_hidden_input" />
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <select class="form-control" id="ddUser">
+                                                <option>--Please select date first</option>
+                                                @if(count($teachers)>0)
+                                                    @foreach($teachers as $teacher)
+                                                        <option value="{{$teacher->id}}">{{$teacher->name}}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+
                                         </div>
                                     </div>
                                 </div>
@@ -95,10 +97,11 @@
                                                 <label for="name" class="col-md-4 control-label">Select Teacher</label>
                                                 <div class="col-md-6">
                                                     <select class="form-control">
-                                                        <option value="1">User 1</option>
-                                                        <option value="2">User 2</option>
-                                                        <option value="3">User 3</option>
-                                                        <option value="4">User 4</option>
+                                                        @if(count($teachers)>0)
+                                                            @foreach($teachers as $teacher)
+                                                                <option value="{{$teacher->id}}">{{$teacher->name}}</option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </div>
                                             </div>
@@ -151,5 +154,5 @@ Regards,
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
-<script src="{{ Module::asset('schedule:js/main.js') }}" type="text/javascript"></script>
+<script src="{{ Module::asset('schedule:js/main.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
 @endpush

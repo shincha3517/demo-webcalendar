@@ -9,9 +9,13 @@
     <li class="active">upload</li>
 </ol>
 @stop
+@push('css-stack')
+<link rel="stylesheet" type="text/css" href="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.css" />
+<link rel="stylesheet" type="text/css" href="http://jonthornton.github.io/jquery-timepicker/lib/bootstrap-datepicker.css" />
+@endpush
 
 @section('content')
-    {!! Form::open(['route' => ['admin.schedule.upload.store'], 'method' => 'post']) !!}
+    {!! Form::open(['route' => ['admin.schedule.upload.store'], 'method' => 'post','enctype'=>'multipart/form-data']) !!}
     <div class="row">
         <div class="col-md-12">
             <div class="nav-tabs-custom">
@@ -45,4 +49,8 @@
 
 @push('js-stack')
 <?php $locale = App::getLocale(); ?>
+<script type="text/javascript" src="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
+<script type="text/javascript" src="http://jonthornton.github.io/jquery-timepicker/lib/bootstrap-datepicker.js"></script>
+
+<script src="{{ Module::asset('schedule:js/uploadExcel.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
 @endpush

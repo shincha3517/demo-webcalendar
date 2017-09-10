@@ -68,7 +68,7 @@ return [
         'backend-theme' => false,
         // Read module views from /Themes/<frontend-theme-name>/views/modules/<module-name>
         'frontend-theme' => false,
-        // Read module views from /resources/views/asgard/<module-name>
+        // Read module viewsetting from /resources/views/asgard/<module-name>
         'resources' => false,
     ],
 ];

@@ -28,7 +28,9 @@
         "idavoll/tag-module": "~2.0",
         "idavoll/flatly-theme": "~2.0",
         "idavoll/adminlte-theme": "~2.0",
-        "laravel/tinker": "~1.0"
+        "laravel/tinker": "~1.0",
+        "maatwebsite/excel": "^2.1",
+        "phpoffice/phpexcel": "^1.8"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

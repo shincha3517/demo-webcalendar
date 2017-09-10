@@ -1,9 +1,19 @@
 <div class="box-body">
     <div class="box-body">
-        <div class='form-group{{ $errors->has("{$lang}.title") ? ' has-error' : '' }}'>
-            {!! Form::label("{$lang}[title]", trans('schedule::form.upload')) !!}
-            {!! Form::file('file', null,['id' => 'exampleInputFile']) !!}
-            {!! $errors->first("{$lang}.title", '<span class="help-block">:message</span>') !!}
+        <div class='form-group{{ $errors->has("importedFile") ? ' has-error' : '' }}'>
+            {!! Form::label("importedFile", trans('schedule::form.upload')) !!}
+            {!! Form::file("importedFile", null) !!}
+            {!! $errors->first("importedFile", '<span class="help-block">:message</span>') !!}
+        </div>
+        <div class='form-group{{ $errors->has("interval") ? ' has-error' : '' }}'>
+            {!! Form::label("interval", 'Intervals') !!}
+            {!! Form::select("interval", [''=>'Please select your intervals','30'=>'30 mins'],'15',['class' => 'form-control','id'=>'interval']) !!}
+            {!! $errors->first("interval", '<span class="help-block">:message</span>') !!}
+        </div>
+        <div class='form-group{{ $errors->has("startTime") ? ' has-error' : '' }}'>
+            {!! Form::label("startTime", 'Start Time') !!}
+            {!! Form::text("startTime", old("startTime"), ['class' => 'form-control','id'=>'startTime']) !!}
+            {!! $errors->first("startTime", '<span class="help-block">:message</span>') !!}
         </div>
 
         <?php if (config('asgard.page.config.partials.translatable.create') !== []): ?>
