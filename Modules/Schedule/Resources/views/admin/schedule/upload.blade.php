@@ -44,7 +44,6 @@
                         </div>
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary btn-flat">Upload</button>
-                        <button type="button" id="sync-button" class="btn btn-primary btn-flat">Sync Data</button>
                     </div>
                 </div>
             </div> {{-- end nav-tabs-custom --}}
