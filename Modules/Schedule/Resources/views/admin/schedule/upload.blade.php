@@ -59,7 +59,6 @@
 <?php $locale = App::getLocale(); ?>
 <script type="text/javascript" src="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
 <script type="text/javascript" src="http://jonthornton.github.io/jquery-timepicker/lib/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="http://www.dhtmlgoodies.com/scripts/jquery-progress-bar/js/jquery-progress-bar.js"></script>
 
 <script src="{{ Module::asset('schedule:js/uploadExcel.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
 <script type="text/javascript">
