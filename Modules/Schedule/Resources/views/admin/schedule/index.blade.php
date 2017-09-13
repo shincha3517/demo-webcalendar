@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-xs-12" id="step1">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Step 1</div>
+                            <div class="panel-heading">Step 1: Choose absent teacher with date</div>
                             <div class="panel-body">
                                 <div class="well">
                                     <div class="row">
@@ -57,7 +57,7 @@
 
                     <div class="col-xs-12" id="step2">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Step 2</div>
+                            <div class="panel-heading">Step 2: Select subject name</div>
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -70,7 +70,7 @@
 
                     <div class="col-xs-12" id="step3">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Step 3</div>
+                            <div class="panel-heading">Step 3: Show Available teacher on selected day </div>
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -83,7 +83,7 @@
 
                     <div class="col-xs-12" id="step4">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Step 4</div>
+                            <div class="panel-heading">Step 4: Send Push notification to selected teacher</div>
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">
