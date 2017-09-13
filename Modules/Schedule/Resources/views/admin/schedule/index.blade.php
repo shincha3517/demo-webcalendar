@@ -38,7 +38,7 @@
                                         <div class="col-xs-6">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <div id="datepicker" data-date="{{\Carbon\Carbon::now()->format('d/m/Y')}}"></div>
+                                                    <div id="datepicker"></div>
                                                     <input type="hidden" id="my_hidden_input" />
                                                 </div>
                                             </div>
@@ -46,11 +46,6 @@
                                         <div class="col-xs-6">
                                             <select class="form-control" id="ddUser">
                                                 <option>--Please select date first</option>
-                                                @if(count($teachers)>0)
-                                                    @foreach($teachers as $teacher)
-                                                        <option value="{{$teacher->id}}">{{$teacher->name}}</option>
-                                                    @endforeach
-                                                @endif
                                             </select>
 
                                         </div>
@@ -92,16 +87,13 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <form class="form-horizontal" method="post" action="success.php">
+                                        <form class="form-horizontal" method="post" action="{{route('admin.schedule.sendSMS')}}">
+                                            {{csrf_field()}}
                                             <div class="form-group">
                                                 <label for="name" class="col-md-4 control-label">Select Teacher</label>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        @if(count($teachers)>0)
-                                                            @foreach($teachers as $teacher)
-                                                                <option value="{{$teacher->id}}">{{$teacher->name}}</option>
-                                                            @endforeach
-                                                        @endif
+                                                    <select class="form-control" id="selectedUserAvailabel">
+
                                                     </select>
                                                 </div>
                                             </div>

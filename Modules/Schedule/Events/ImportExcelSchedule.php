@@ -17,6 +17,8 @@ class ImportExcelSchedule
     public $path;
     public $perRow;
     public $limitRunRow;
+    public $interval;
+    public $startTime;
 
     /**
      * Create a new event instance.
@@ -24,10 +26,12 @@ class ImportExcelSchedule
      * @param  Excel Path  $path
      * @return void
      */
-    public function __construct($path , $perRow = 10 , $limitRunRow)
+    public function __construct($path , $perRow = 10 , $limitRunRow, $interval, $startTime)
     {
         $this->path = $path;
         $this->perRow = $perRow;
         $this->limitRunRow = $limitRunRow;
+        $this->interval = $interval;
+        $this->startTime=$startTime;
     }
 }

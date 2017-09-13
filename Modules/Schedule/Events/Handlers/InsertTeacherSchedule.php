@@ -7,6 +7,7 @@
  */
 namespace Modules\Schedule\Events\Handlers;
 
+use Carbon\Carbon;
 use DebugBar\DebugBar;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -51,6 +52,8 @@ class InsertTeacherSchedule implements ShouldQueue
         $path = $event->path;
         $limitRow = $event->perRow;
         $limitRunRow = $event->limitRunRow;
+        $interval = $event->interval;
+        $startTime = $event->startTime;
 
         $objPHPExcel = \PHPExcel_IOFactory::load($path);
         $objWorksheet = $objPHPExcel->getActiveSheet();
@@ -69,6 +72,7 @@ class InsertTeacherSchedule implements ShouldQueue
             $scheduleRow = [];
                 if(!empty($teacherName)){
                     $n=0;
+                    $m=1;
 
                     //check exist teacher name
                     $teacherObject = $this->teacherRepository->findByAttributes(['name'=>$teacherName]);
@@ -92,9 +96,17 @@ class InsertTeacherSchedule implements ShouldQueue
 //                            }
 
                         }
+
+                        $dateSchedules[$j] = $this->getDateSchedule($j,$m,$interval,$startTime);
+
                         if($j%$hoursInDays==0){
                             $n++;
+                            $m=1;
                         }
+                        else{
+                            $m++;
+                        }
+
                     }
                     foreach($scheduleRow as $day => $srow){
 
@@ -104,12 +116,17 @@ class InsertTeacherSchedule implements ShouldQueue
                             }
                             else{
                                 $values = explode('\n',$value);
+                                $startDate = $dateSchedules[$key];
+                                $endDate = Carbon::parse($startDate,'Asia/Bangkok')->addMinutes(30);
+
                                 if(count($values) > 0){
                                     for($v = 0; $v < count($values); $v++){
                                         $scheduleData = [
                                             'teacher_id'=>$teacherObject->id,
                                             'subject_code'=>$values[$v],
-                                            'date_id'=> $key
+                                            'date_id'=> $key,
+                                            'start_date'=> $startDate,
+                                            'end_date'=> $endDate
                                         ];
                                         $this->scheduleRepository->create($scheduleData);
                                     }
@@ -118,7 +135,9 @@ class InsertTeacherSchedule implements ShouldQueue
                                     $scheduleData = [
                                         'teacher_id'=>$teacherObject->id,
                                         'subject_code'=>$value,
-                                        'date_id'=> $key
+                                        'date_id'=> $key,
+                                        'start_date'=> $startDate,
+                                        'end_date'=> $endDate
                                     ];
                                     $this->scheduleRepository->create($scheduleData);
                                 }
@@ -134,5 +153,54 @@ class InsertTeacherSchedule implements ShouldQueue
             Log::info('***end processing row ' . $row.'***');
         }
         sleep(2);
+    }
+
+    private function getDateSchedule($rowNo, $resetRowNo, $interval , $startTime){
+
+        $firstDayOfWeek = Carbon::now('Asia/Bangkok')->startOfWeek();
+        $format = 'Y-m-d';
+        $full_format = 'Y-m-d h:m:s';
+
+        $monday = $firstDayOfWeek->format($format);
+        $tuesday = Carbon::createFromFormat($format,$monday)->addDay(1);
+        $wednesday = Carbon::createFromFormat($format,$monday)->addDays(2);
+        $thursday = Carbon::createFromFormat($format,$monday)->addDays(3);
+        $friday = Carbon::createFromFormat($format,$monday)->addDays(4);
+
+//        Log::info('Monday :' . $monday);
+//        Log::info('Wednesday :' . $wednesday);
+
+        $result = '';
+        if($rowNo >=1 && $rowNo <=17){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$monday.' '.$startTime);
+            if($resetRowNo !=3){
+                $result = $result->addMinutes($interval*$resetRowNo);
+            }
+        }
+        if($rowNo >17 && $rowNo <=34){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$tuesday->format($format).' '.$startTime);
+            if($resetRowNo !=3){
+                $result = $result->addMinutes($interval*$resetRowNo);
+            }
+        }
+        if($rowNo > 34 && $rowNo <=51){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$wednesday->format($format).' '.$startTime);
+            if($resetRowNo !=3){
+                $result = $result->addMinutes($interval*$resetRowNo);
+            }
+        }
+        if($rowNo >51  && $rowNo <=68){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$thursday->format($format).' '.$startTime);
+            if($resetRowNo !=3){
+                $result = $result->addMinutes($interval*$resetRowNo);
+            }
+        }
+        if($rowNo >68 && $rowNo <=85){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$friday->format($format).' '.$startTime);
+            if($resetRowNo !=1){
+                $result = $result->addMinutes($interval*$resetRowNo);
+            }
+        }
+        return $result;
     }
 }

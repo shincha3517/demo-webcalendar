@@ -13,8 +13,21 @@ var UploadExcel = {
         });
     },
 
+
     init: function(){
         this.onIntervalSelect();
+        $('#sync-button').on('click',function(e){
+
+            loadProgressBar($('#progressBar'));
+
+            // SET INTERVAL IN MILLISECONDS TO REPEAT THE FUNCTION
+            var intval   = 1000;
+            var pBLoader = setInterval(function(){ loadProgressBar($("#progressBar")); }, intval);
+
+            // A VARIABLE TO HOLD THE RESPONSE FROM THE BACKGROUND SCRIPT
+            var percent = 0;
+
+        });
     }
 }
 UploadExcel.init();
