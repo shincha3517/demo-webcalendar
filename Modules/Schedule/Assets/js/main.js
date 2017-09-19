@@ -68,7 +68,7 @@ var Home = {
                     // Configuration for the Timeline
                     var options = {
                         moment: function(date) {
-                            return vis.moment(date).utcOffset('+08:00');
+                            return vis.moment(date).utcOffset('+07:00');
                         },
                         height: '200px',
                         min: data.min,                // lower limit of visible range
@@ -159,7 +159,7 @@ var Home = {
         var options = {
             // height: '200px',
             moment: function(date) {
-                return vis.moment(date).utcOffset('+08:00');
+                return vis.moment(date).utcOffset('+07:00');
             },
             min: min,                // lower limit of visible range
             max: max,                // upper limit of visible range
