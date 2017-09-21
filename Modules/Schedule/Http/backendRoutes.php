@@ -49,7 +49,7 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
     $router->post('send-sms', [
         'as' => 'admin.schedule.sendSMS',
         'uses' => 'ScheduleController@sendNotification',
-        'middleware' => 'can:schedule.schedules.upload',
+//        'middleware' => 'can:schedule.schedules.upload',
     ]);
 
     $router->get('/getUserByEvent', [

@@ -226,11 +226,12 @@ var Home = {
         // this.onShowTimeLine();
         // this.onSelectTimeline();
 
-        $('#addMoreTeacher').on('click',function(e){
-            var element = $('.teacherForm:first');
+        $(document).on('click', '#addMoreTeacher', function(e) {
+            var element = $('.teacherForm div').first();
+            console.log(element);
             $('.teacherForm').append(element.clone());
 
-            var last = $('.teacherForm').last();
+            var last = $('.teacherForm div').last();
             $(last).find('#addMoreTeacher').attr('id','removeTeacher').html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Remove teacher')
         });
 
