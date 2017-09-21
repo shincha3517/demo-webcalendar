@@ -486,4 +486,12 @@ class ScheduleController extends AdminBaseController
         ];
         return response()->json($result);
     }
+
+    public function actionWorker(){
+        $currentUser = $this->auth->user();
+        $teacher = Teacher::get()->first();
+        $teachers = $this->teacherRepository->all();
+
+        return view('schedule::admin.schedule.worker', compact('currentUser','teachers','teacher'));
+    }
 }

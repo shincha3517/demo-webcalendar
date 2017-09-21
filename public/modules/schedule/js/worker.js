@@ -14,7 +14,23 @@ var Home = {
                 $('#datepicker').datepicker('getFormattedDate')
             );
 
-            $('#step2').hide();
+
+            var teacher_id = $('#teacherId').val();
+
+            if(teacher_id > 0){
+                if(Home.timeline !=''){
+                    // console.log('disable timeline');
+                    Home.timeline.destroy();
+                }
+                var selectedDate = $('#my_hidden_input').val();
+                //show timeline
+                Home.onShowTimeLine(teacher_id,selectedDate);
+            }
+            else{
+                Home.timeline.destroy();
+            }
+
+            $('#step2').show();
             $('#step3').hide();
             $('#step4').hide();
 
@@ -27,19 +43,7 @@ var Home = {
     onSelectUser: function () {
         $('#ddUser').on('change',function(e){
 
-            var teacher_id = $(this).val();
-            if($(this).val() > 0){
-                if(Home.timeline !=''){
-                    // console.log('disable timeline');
-                    Home.timeline.destroy();
-                }
-                var selectedDate = $('#my_hidden_input').val();
-                //show timeline
-                Home.onShowTimeLine(teacher_id,selectedDate);
-            }
-            else{
-                Home.timeline.destroy();
-            }
+
 
         });
     },
@@ -96,40 +100,21 @@ var Home = {
     },
     onSelectTimeline: function(){
 
+        $(".btn-pref .btn").click(function () {
+            $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
+            // $(".tab").addClass("active"); // instead of this do the below
+            $(this).removeClass("btn-default").addClass("btn-primary");
+        });
+
         this.timeline.on('select', function (properties) {
             var eventId = parseInt(properties.items,10);
             if(eventId > 0){
+                $('#step3').fadeIn('slow');
+                $('#step4').fadeIn('slow');
 
-                $.ajax({
-                    type: "GET",
-                    url: "/backend/schedule/getAvailableUser?eventId=" + eventId,
-                    success: function (data) {
-                        console.log(data);
-
-                        if(data.status==1){
-                            $('#step3').fadeIn('slow');
-
-                            var users = data.result.users;
-                            var timelines = data.result.timelines;
-                            var min = data.min;
-                            var max = data.max;
-
-                            Home.onShowAvailableUser(users,timelines,min,max);
-
-                            $('html, body').animate({
-                                scrollTop: ($('#step3').offset().top)
-                            },500);
-                        }
-                        else{
-                            $('#step3').fadeOut('slow');
-                            $('html, body').animate({
-                                scrollTop: ($('#step2').offset().top)
-                            },500);
-                        }
-                    }
-                });
-
-
+                $('html, body').animate({
+                    scrollTop: ($('#step3').offset().top)
+                },500);
             }
         });
     },
@@ -240,6 +225,20 @@ var Home = {
         this.onSelectCalendar();
         // this.onShowTimeLine();
         // this.onSelectTimeline();
+
+        $('#addMoreTeacher').on('click',function(e){
+            var element = $('.teacherForm:first');
+            $('.teacherForm').append(element.clone());
+
+            var last = $('.teacherForm').last();
+            $(last).find('#addMoreTeacher').attr('id','removeTeacher').html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Remove teacher')
+        });
+
+        $(document).on('click', '#removeTeacher', function(e) {
+
+            $(this).parents('.form-group').remove();
+
+        });
     }
 }
 Home.init();

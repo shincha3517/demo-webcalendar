@@ -5,5 +5,6 @@ return [
     'schedule.schedules' => [
         'upload' => 'schedule::schedules.upload excel',
         'index' => 'schedule::schedules.list schedule',
+        'worker' => 'schedule::schedules.worker schedule',
     ],
 ];

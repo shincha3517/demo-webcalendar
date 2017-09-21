@@ -20,10 +20,10 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'ScheduleController@index',
         'middleware' => 'can:schedule.schedules.index',
     ]);
-    $router->post('sync-data', [
-        'as' => 'admin.schedule.sync',
-        'uses' => 'ScheduleController@getSyncData',
-        'middleware' => 'can:schedule.schedules.upload',
+    $router->get('worker', [
+        'as' => 'admin.schedule.worker',
+        'uses' => 'ScheduleController@actionWorker',
+        'middleware' => 'can:schedule.schedules.worker',
     ]);
 
 
@@ -31,13 +31,13 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
     $router->get('/getUserByDate', [
         'as' => 'admin.schedule.getUserByDate',
         'uses' => 'ScheduleController@getUserByDate',
-        'middleware' => 'can:schedule.schedules.index',
+//        'middleware' => 'can:schedule.schedules.index',
     ]);
 
     $router->get('/getUserTimeline', [
         'as' => 'admin.schedule.getUserTimeline',
         'uses' => 'ScheduleController@getUserTimeline',
-        'middleware' => 'can:schedule.schedules.index',
+//        'middleware' => 'can:schedule.schedules.index',
     ]);
 
     $router->get('/getAvailableUser', [
@@ -56,5 +56,11 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'as' => 'admin.schedule.getUserByEvent',
         'uses' => 'ScheduleController@getUserByEvent',
         'middleware' => 'can:schedule.schedules.index',
+    ]);
+
+    $router->get('upload-excel', [
+        'as' => 'admin.schedule.upload.form',
+        'uses' => 'ScheduleController@getUpload',
+        'middleware' => 'can:schedule.schedules.upload',
     ]);
 });

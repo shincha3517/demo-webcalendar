@@ -42,7 +42,7 @@ class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
                 $item->weight(10);
                 $item->icon('fa fa-calendar');
                 $item->authorize(
-                    $this->auth->hasAccess('schedule.schedules.index') or $this->auth->hasAccess('schedule.schedules.upload')
+                    $this->auth->hasAccess('schedule.schedules.index') or $this->auth->hasAccess('schedule.schedules.upload') or $this->auth->hasAccess('schedule.schedules.worker')
                 );
 
                 $item->item(trans('schedule::schedule.upload-excel'), function (Item $item) {
@@ -60,6 +60,14 @@ class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
                     $item->route('admin.schedule.index');
                     $item->authorize(
                         $this->auth->hasAccess('schedule.schedules.index')
+                    );
+                });
+                $item->item(trans('schedule::schedule.worker'), function (Item $item) {
+                    $item->weight(13);
+                    $item->icon('fa fa-clock-o');
+                    $item->route('admin.schedule.worker');
+                    $item->authorize(
+                        $this->auth->hasAccess('schedule.schedules.worker')
                     );
                 });
             });
