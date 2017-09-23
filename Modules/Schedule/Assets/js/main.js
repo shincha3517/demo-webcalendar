@@ -54,6 +54,8 @@ var Home = {
                     // DOM element where the Timeline will be attached
                     var container = document.getElementById('visualization');
 
+                    var groups = new vis.DataSet(data.group);
+
                     // Create a DataSet (allows two way data-binding)
                     // var items = new vis.DataSet([
                     //     {"id": 1,"content": "item 1","start": "2017-09-22T04:00:00","end": "2017-08-22T04:30:00"},
@@ -72,18 +74,14 @@ var Home = {
                         // },
                         height: '200px',
                         min: data.min,                // lower limit of visible range
-                        max: data.max,                // upper limit of visible range
-                        margin: {
-                            item: 10, // minimal margin between items
-                            axis: 5   // minimal margin between items and the axis
-                        },
+                        max: data.max,
                         zoomable:false,
                         horizontalScroll: true,
-                        zoomMin: 1000 * 10 * 60 * 90,
+                        zoomMin: 1000 * 10 * 60 * 30,
                     };
 
                     // Create a Timeline
-                    Home.timeline = new vis.Timeline(container, items, options);
+                    Home.timeline = new vis.Timeline(container, items,groups, options);
 
                     Home.onSelectTimeline();
 
@@ -168,14 +166,10 @@ var Home = {
             //     return vis.moment(date).utcOffset('+08:00');
             // },
             min: min,                // lower limit of visible range
-            max: max,                // upper limit of visible range
-            margin: {
-                item: 10, // minimal margin between items
-                axis: 5   // minimal margin between items and the axis
-            },
+            max: max,
             zoomable:false,
-            horizontalScroll: true,
-            zoomMin: 1000 * 10 * 60 * 90,
+            horizontalScroll: false,
+            zoomMin: 1000 * 10 * 60 * 30,
             verticalScroll: true
         };
 

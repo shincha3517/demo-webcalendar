@@ -20,6 +20,15 @@
     .vis-item .vis-item-overflow {
         overflow: visible;
     }
+    .vis-item.orange {
+        background-color: gold;
+        border-color: orange;
+    }
+    .vis-item.vis-selected.orange {
+        /* custom colors for selected orange items */
+        background-color: orange;
+        border-color: orangered;
+    }
 </style>
 
 @endpush

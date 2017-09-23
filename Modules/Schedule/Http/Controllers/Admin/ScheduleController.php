@@ -341,6 +341,7 @@ class ScheduleController extends AdminBaseController
 
     public function getUserTimeline(Request $request){
         $teacherId = $request->get('teacher_id');
+        $teacher = $this->teacherRepository->find($teacherId);
         $startDate = Carbon::createFromFormat('m/d/Y',$request->get('date'))->format('Y-m-d');
 
 
@@ -351,19 +352,25 @@ class ScheduleController extends AdminBaseController
         $rows = Schedule::where('teacher_id',$teacherId)->whereDate('start_date',$startDate)->get();
 
         $result = [];
+        $group[] = [
+            'id'=>$teacherId,
+            'content'=> $teacher->name.'&nbsp;&nbsp;&nbsp;',
+            'value'=>$teacherId
+        ];
         if($rows){
             foreach($rows as $row){
                 $data = [
                     'id'=>$row->id,
+                    'group'=>$teacherId,
                     'content'=> $row->subject_code,
                     'start'=>Carbon::parse($row->start_date)->format('Y-m-d\TH:i:s'),
                     'end'=>Carbon::parse($row->end_date)->format('Y-m-d\TH:i:s'),
                 ];
                 array_push($result,$data);
             }
-            return response()->json(['result'=>$result,'status'=>1,'min'=>$min,'max'=>$max]);
+            return response()->json(['result'=>$result,'status'=>1,'min'=>$min,'max'=>$max,'group'=>$group]);
         }else{
-            return response()->json(['result'=>$result,'status'=>0,'min'=>$min,'max'=>$max]);
+            return response()->json(['result'=>$result,'status'=>0,'min'=>$min,'max'=>$max,'group'=>$group]);
         }
 
     }
@@ -371,6 +378,7 @@ class ScheduleController extends AdminBaseController
         $event = $request->get('eventId');
 
         $eventItem = $this->scheduleRepository->find($event);
+        $timeSlotId = $eventItem->date_id;
         $startDate = $eventItem->start_date;
 
 //        $availableUser = Teacher::whereHas('schedule', function($q) use ($startDate){
@@ -381,8 +389,9 @@ class ScheduleController extends AdminBaseController
         $teachers = Teacher::where('id','!=',$eventItem->teacher_id)->get()->toArray();
         $availableTeachers = $teachers;
         $busyTeachers = Schedule::where('teacher_id','!=',$eventItem->teacher_id)
-            ->whereBetween('start_date',[$eventItem->start_date,$eventItem->end_date])
-//            ->whereDate('end_date','<=',$eventItem->end_date)
+//            ->whereBetween('start_date',[$eventItem->start_date,$eventItem->end_date])
+            ->whereDate('start_date',$eventItem->start_date)
+            ->where('date_id',$timeSlotId)
             ->groupBy('teacher_id')->get();
 
         if(count($busyTeachers) > 0){
@@ -421,37 +430,44 @@ class ScheduleController extends AdminBaseController
                 //get timelines foreach user
                 DB::enableQueryLog();
                 $userTimelines = Schedule::where('teacher_id',$user['id'])
-                    ->whereDate('start_date',$date)
-                    ->whereDate('start_date','!=',$eventItem->start_date)->get()->first();
+                        ->where('date_id','>',$timeSlotId)->get();
+//                    ->whereDate('start_date',$date)
+//                    ->whereDate('start_date','!=',$eventItem->start_date)->get()->first();
 
 
 //                dd(DB::getQueryLog());
-                $item = [
-                    'id'=>$eventItem->id,
-                    'group'=>$user['id'],
-                    'content'=> $eventItem->subject_code,
-                    'start'=> Carbon::parse($eventItem->start_date)->format('Y-m-d\TH:i:s'),
-                    'end'=> Carbon::parse($eventItem->end_date)->format('Y-m-d\TH:i:s'),
-                ];
+//                $item = [
+//                    'id'=>$eventItem->id,
+//                    'group'=>$user['id'],
+//                    'content'=> $eventItem->subject_code,
+//                    'start'=> Carbon::parse($eventItem->start_date)->format('Y-m-d\TH:i:s'),
+//                    'end'=> Carbon::parse($eventItem->end_date)->format('Y-m-d\TH:i:s'),
+//                ];
 
                 if($userTimelines){
-//                    foreach($userTimelines as $k => $uTimeline){
+                    foreach($userTimelines as $k => $uTimeline) {
+
+                        if($k==0){
+                            $item = [
+                                'id' => $eventItem->id.'_'.uniqid(),
+                                'group' => $user['id'],
+                                'content' => '',
+                                'start' => Carbon::parse($eventItem->start_date)->format('Y-m-d\TH:i:s'),
+                                'end' => Carbon::parse($eventItem->end_date)->format('Y-m-d\TH:i:s'),
+                                'className'=> 'orange',
+                            ];
+                            array_push($timelines, $item);
+                        }
                         $item = [
-                            'id'=>$userTimelines->id,
-                            'group'=>$user['id'],
-                            'content'=> urlencode($userTimelines->subject_code),
-                            'start'=> Carbon::parse($userTimelines->start_date)->format('Y-m-d\TH:i:s'),
-                            'end'=> Carbon::parse($userTimelines->end_date)->format('Y-m-d\TH:i:s'),
+                            'id' => $uTimeline->id,
+                            'group' => $user['id'],
+                            'content' => urlencode($uTimeline->subject_code),
+                            'start' => Carbon::parse($uTimeline->start_date)->format('Y-m-d\TH:i:s'),
+                            'end' => Carbon::parse($uTimeline->end_date)->format('Y-m-d\TH:i:s'),
                         ];
 
-                    array_push($timelines,$item);
-                }
-            }
-            if(count($expand) > 0){
-                foreach($expand as $item){
-                    $no = count($timelines)+1;
-                    $item['id']= $no;
-//                    array_push($timelines,$item);
+                        array_push($timelines, $item);
+                    }
                 }
             }
         }
@@ -476,6 +492,7 @@ class ScheduleController extends AdminBaseController
 
     public function getUserByEvent(Request $request){
         $event = $this->scheduleRepository->find($request->get('eventId'));
+//        dd($request->get('eventId'));
         $user = $this->teacherRepository->find($event->teacher_id);
 
         $result = [
