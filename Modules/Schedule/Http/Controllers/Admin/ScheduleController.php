@@ -430,8 +430,8 @@ class ScheduleController extends AdminBaseController
                 //get timelines foreach user
                 DB::enableQueryLog();
                 $userTimelines = Schedule::where('teacher_id',$user['id'])
-                        ->where('date_id','>',$timeSlotId)->get();
-//                    ->whereDate('start_date',$date)
+                        ->where('date_id','>',$timeSlotId)
+                    ->whereDate('start_date',$date)->get();
 //                    ->whereDate('start_date','!=',$eventItem->start_date)->get()->first();
 
 
@@ -461,7 +461,7 @@ class ScheduleController extends AdminBaseController
                         $item = [
                             'id' => $uTimeline->id,
                             'group' => $user['id'],
-                            'content' => urlencode($uTimeline->subject_code),
+                            'content' => $uTimeline->subject_code,
                             'start' => Carbon::parse($uTimeline->start_date)->format('Y-m-d\TH:i:s'),
                             'end' => Carbon::parse($uTimeline->end_date)->format('Y-m-d\TH:i:s'),
                         ];

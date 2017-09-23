@@ -104,7 +104,7 @@
                                     <div class="col-xs-12">
                                         <form class="form-horizontal" method="post" action="{{route('admin.schedule.sendSMS')}}">
                                             {{csrf_field()}}
-                                            <div class="form-group">
+                                            <div class="form-group hide">
                                                 <label for="name" class="col-md-4 control-label">Select Teacher</label>
                                                 <div class="col-md-6">
                                                     <select class="form-control" id="selectedUserAvailabel">

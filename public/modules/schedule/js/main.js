@@ -74,11 +74,7 @@ var Home = {
                         // },
                         height: '200px',
                         min: data.min,                // lower limit of visible range
-                        max: data.max,                // upper limit of visible range
-                        margin: {
-                            item: 10, // minimal margin between items
-                            axis: 5   // minimal margin between items and the axis
-                        },
+                        max: data.max,
                         zoomable:false,
                         horizontalScroll: true,
                         zoomMin: 1000 * 10 * 60 * 30,
@@ -172,7 +168,7 @@ var Home = {
             min: min,                // lower limit of visible range
             max: max,
             zoomable:false,
-            horizontalScroll: false,
+            horizontalScroll: true,
             zoomMin: 1000 * 10 * 60 * 30,
             verticalScroll: true
         };

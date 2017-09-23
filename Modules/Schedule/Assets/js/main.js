@@ -168,7 +168,7 @@ var Home = {
             min: min,                // lower limit of visible range
             max: max,
             zoomable:false,
-            horizontalScroll: false,
+            horizontalScroll: true,
             zoomMin: 1000 * 10 * 60 * 30,
             verticalScroll: true
         };

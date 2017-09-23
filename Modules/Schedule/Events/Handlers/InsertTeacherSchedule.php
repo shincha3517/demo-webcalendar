@@ -117,7 +117,7 @@ class InsertTeacherSchedule implements ShouldQueue
                             else{
                                 $values = explode('\n',$value);
                                 $startDate = $dateSchedules[$key];
-                                $endDate = Carbon::parse($startDate)->addMinutes(30);
+                                $endDate = Carbon::parse($startDate,'Asia/Singapore')->addMinutes(30);
 
                                 if(count($values) > 0){
                                     for($v = 0; $v < count($values); $v++){
@@ -157,7 +157,7 @@ class InsertTeacherSchedule implements ShouldQueue
 
     private function getDateSchedule($rowNo, $resetRowNo, $interval , $startTime){
 
-        $firstDayOfWeek = Carbon::now()->startOfWeek();
+        $firstDayOfWeek = Carbon::now('Asia/Singapore')->startOfWeek();
         $format = 'Y-m-d';
         $full_format = 'Y-m-d h:m:s';
 
