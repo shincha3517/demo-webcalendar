@@ -94,6 +94,8 @@ class ScheduleController extends AdminBaseController
 
         $limitRunRow = $highestRow / $limitRow;
 
+//        dd(Carbon::now()->toDateString());
+
         $daysInWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
         $hoursInDays = 17;
         //update schedule
@@ -108,13 +110,12 @@ class ScheduleController extends AdminBaseController
 
             Log::info('=====start processing row ' . $row . '=========');
             event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
+//            $this->import($path, $limitRow, $row,$interval,$startTime);
             Log::info('=====end processing row ' . $row . '=========');
         }
 
         $request->session()->flash('success','Upload excel file successfully');
         return redirect()->back();
-
-//        Storage::disk('local')->put($request->file('file'), 'public');
     }
     private function _importExcelSchedule($path,$limitRow,$limitRunRow){
 
@@ -207,78 +208,111 @@ class ScheduleController extends AdminBaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function import(Request $request)
+    public function import($path, $limitRow, $row,$interval,$startTime)
     {
-        if($request->file('imported-file'))
-        {
-//            $path = $request->file('imported-file')->getRealPath();
-            $path = public_path()."/uploads/Teachers_Timetable.xlsx";
+        $path = $path;
+        $limitRow = $limitRow;
+        $limitRunRow = $row;
+        $interval = $interval;
+        $startTime = $startTime;
 
-            $objPHPExcel = \PHPExcel_IOFactory::load($path);
-            $objWorksheet = $objPHPExcel->getActiveSheet();
-            $highestRow = $objWorksheet->getHighestRow();
-            $limitRow = 10;
+        $objPHPExcel = \PHPExcel_IOFactory::load($path);
+        $objWorksheet = $objPHPExcel->getActiveSheet();
 
-            $limitRunRow = $highestRow / $limitRow;
+        $startRow = ($limitRow * $limitRunRow) > $limitRow ? ($limitRow * $limitRunRow) - $limitRow +1 : 0;
+        $endRow = $limitRow * $limitRunRow;
+
+        $daysInWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+        $hoursInDays = 17;
+
+        $result = [];
+
+        for ($row = $startRow; $row <= $endRow; ++$row) {
+            Log::info('***INSERT' . $row . '***');
+            $teacherName = $objWorksheet->getCellByColumnAndRow(0, $row)->getValue();
+            $scheduleRow = [];
+            if (!empty($teacherName)) {
+                $n = 0;
+                $m = 1;
+
+                //check exist teacher name
+                $teacherObject = $this->teacherRepository->findByAttributes(['name' => $teacherName]);
+                if (!$teacherObject) {
+                    $teacherObject = $this->teacherRepository->create(['name' => $teacherName]);
+                }
+
+                for ($j = 1; $j <= $hoursInDays * count($daysInWeek); $j++) {
+//                    $column = $objWorksheet->getCellByColumnAndRow($j,$row)->getColumn();
+                    $cellNum = $objWorksheet->getCellByColumnAndRow($j, $row)->getRow();
+
+//                        $cell = $objWorksheet->getCell($column.$cellNum);
+
+                    if (!$objWorksheet->getCellByColumnAndRow($j, $row)->isInMergeRange() || $objWorksheet->getCellByColumnAndRow($j, $row)->isMergeRangeValueCell()) {
+                        $scheduleRow[$daysInWeek[$n]][$j] = $objWorksheet->getCellByColumnAndRow($j, $row)->getValue();
+                    } else {
+                        $mergeRange = $objWorksheet->getCellByColumnAndRow($j , $row)->getMergeRange();
+                        $mergeRangeArray = explode(':',$mergeRange);
+                        $scheduleRow[$daysInWeek[$n]][$j] = $objWorksheet->getCell($mergeRangeArray[0])->getValue();
+
+                    }
+
+                    $dateSchedules[$j] = $this->getDateSchedule($j, $m, $interval, $startTime);
+
+                    if ($j % $hoursInDays == 0) {
+                        $n++;
+                        $m = 1;
+                    } else {
+                        $m++;
+                    }
+
+                }
+                foreach ($scheduleRow as $day => $srow) {
+                    foreach ($srow as $key => $value) {
+                        if ($value == null) {
+//                                unset($scheduleRow[$key]);
+                        } else {
+                            $values = explode('\n', $value);
+                            $startDate = $dateSchedules[$key];
+                            $endDate = Carbon::parse($startDate)->addMinutes(30);
+
+                            $scheduleStartTime = Carbon::parse($startDate)->toTimeString();
+                            $scheduleEndTime = Carbon::parse($endDate)->toTimeString();
+
+                            if (count($values) > 0) {
+                                for ($v = 0; $v < count($values); $v++) {
+                                    $scheduleData = [
+                                        'teacher_id' => $teacherObject->id,
+                                        'subject_code' => $values[$v],
+                                        'date_id' => $key,
+                                        'start_date' => $startDate,
+                                        'end_date' => $endDate,
+                                        'start_time' => $scheduleStartTime,
+                                        'end_time' => $scheduleEndTime
+                                    ];
+                                    $this->scheduleRepository->create($scheduleData);
+                                }
+                            } else {
+                                $scheduleData = [
+                                    'teacher_id' => $teacherObject->id,
+                                    'subject_code' => $value,
+                                    'date_id' => $key,
+                                    'start_date' => $startDate,
+                                    'end_date' => $endDate,
+                                    'start_time' => $scheduleStartTime,
+                                    'end_time' => $scheduleEndTime
+                                ];
+                                $this->scheduleRepository->create($scheduleData);
+                            }
 
 
-            $daysInWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-            $hoursInDays = 17;
-
-            //update schedule
-            $week = $this->_get_current_week();
-
-
-            //
-            $mergeCells = $objWorksheet->getMergeCells();
-
-            $result = [];
-
-            for ($row = 1; $row <= $limitRunRow; $row++) {
-
-                Log::info('=====start processing row ' . $row.'=========');
-                event(new ImportExcelSchedule($path,$limitRow,$row));
-                Log::info('=====end processing row ' . $row.'=========');
-
-//                $teacher = $objWorksheet->getCellByColumnAndRow(0 , $row)->getValue();
-//                $scheduleRow = [];
-//                if(!empty($teacher)){
-//                    $n=0;
-//                    for($j=1; $j<=$hoursInDays*count($daysInWeek);$j++){
-////                        $column = $objWorksheet->getCellByColumnAndRow($j,$row)->getColumn();
-//                        $cellNum = $objWorksheet->getCellByColumnAndRow($j,$row)->getRow();
-////                        $cell = $objWorksheet->getCell($column.$cellNum);
-//
-//                        if (!$objWorksheet->getCellByColumnAndRow( $j,$row)->isInMergeRange() || $objWorksheet->getCellByColumnAndRow( $j,$row )->isMergeRangeValueCell()) {
-//                            $scheduleRow[$daysInWeek[$n]][$j] = $objWorksheet->getCellByColumnAndRow($j , $row)->getValue();
-//                        } else {
-//                            for($k=0; $k<=100 ; $k++){
-//                                if($objWorksheet->getCellByColumnAndRow($j-$k , $row)->getValue() != null){
-//                                    $scheduleRow[$daysInWeek[$n]][$j] = $objWorksheet->getCellByColumnAndRow($j-$k , $row)->getValue();
-//                                    break;
-//                                }
-//                            }
-//
-//                        }
-//                        if($j%$hoursInDays==0){
-//                            $n++;
-//                        }
-//                    }
-//                    $result[] = [
-//                        'name'=>$teacher,
-//                        'schedule' => $scheduleRow
-//                    ];
-//
-//                }
-//                else{
-//                    //teacher name blank
-//                }
-//
+                        }
+                    }
+                }
+            } else {
+                //teacher name blank
             }
-//            dd($result);
-
+            Log::info('***End insert row ' . $row . '***');
         }
-        return back();
     }
     private function _get_current_week()
     {
@@ -510,5 +544,40 @@ class ScheduleController extends AdminBaseController
         $teachers = $this->teacherRepository->all();
 
         return view('schedule::admin.schedule.worker', compact('currentUser','teachers','teacher'));
+    }
+
+    private function getDateSchedule($rowNo, $resetRowNo, $interval , $startTime){
+
+        $firstDayOfWeek = Carbon::now()->startOfWeek();
+        $format = 'Y-m-d';
+        $full_format = 'Y-m-d h:m:s';
+
+        $monday = $firstDayOfWeek->toDateString();
+        $tuesday = Carbon::parse($monday)->addDay(1)->toDateString();
+        $wednesday = Carbon::parse($monday)->addDays(2)->toDateString();
+        $thursday = Carbon::parse($monday)->addDays(3)->toDateString();
+        $friday = Carbon::parse($monday)->addDays(4)->toDateString();
+
+
+        $result = '';
+        if($rowNo >=1 && $rowNo <=17){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$monday.' '.$startTime);
+        }
+        if($rowNo >17 && $rowNo <=34){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$tuesday.' '.$startTime);
+        }
+        if($rowNo > 34 && $rowNo <=51){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$wednesday.' '.$startTime);
+        }
+        if($rowNo >51  && $rowNo <=68){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$thursday.' '.$startTime);
+        }
+        if($rowNo >68 && $rowNo <=85){
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$friday.' '.$startTime);
+        }
+        if($resetRowNo > 1 ){
+            $result = $result->addMinutes( ($interval*$resetRowNo)-$interval );
+        }
+        return $result;
     }
 }

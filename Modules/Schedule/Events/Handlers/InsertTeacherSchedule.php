@@ -45,7 +45,7 @@ class InsertTeacherSchedule implements ShouldQueue
     public function handle(ImportExcelSchedule $event)
     {
         if (true) {
-            $this->release(10);
+            $this->release(2);
         }
 
 
@@ -60,6 +60,7 @@ class InsertTeacherSchedule implements ShouldQueue
 
         $startRow = ($limitRow * $limitRunRow) > $limitRow ? ($limitRow * $limitRunRow) - $limitRow +1 : 0;
         $endRow = $limitRow * $limitRunRow;
+        Log::info('***END ROW' . $endRow.'***');
 
         $daysInWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
         $hoursInDays = 17;
@@ -67,7 +68,7 @@ class InsertTeacherSchedule implements ShouldQueue
         $result = [];
 
         for ($row = $startRow; $row <= $endRow; ++$row) {
-            Log::info('***start processing row ' . $row.'***');
+            Log::info('***INSERT' . $row.'***');
             $teacherName = $objWorksheet->getCellByColumnAndRow(0 , $row)->getValue();
             $scheduleRow = [];
                 if(!empty($teacherName)){
@@ -88,13 +89,9 @@ class InsertTeacherSchedule implements ShouldQueue
                         if (!$objWorksheet->getCellByColumnAndRow( $j,$row)->isInMergeRange() || $objWorksheet->getCellByColumnAndRow( $j,$row )->isMergeRangeValueCell()) {
                             $scheduleRow[$daysInWeek[$n]][$j] = $objWorksheet->getCellByColumnAndRow($j , $row)->getValue();
                         } else {
-//                            for($k=0; $k<=100 ; $k++){
-//                                if($objWorksheet->getCellByColumnAndRow($j-$k , $row)->getValue() != null){
-//                                    $scheduleRow[$daysInWeek[$n]][$j] = $objWorksheet->getCellByColumnAndRow($j-$k , $row)->getValue();
-//                                    break;
-//                                }
-//                            }
-
+                            $mergeRange = $objWorksheet->getCellByColumnAndRow($j , $row)->getMergeRange();
+                            $mergeRangeArray = explode(':',$mergeRange);
+                            $scheduleRow[$daysInWeek[$n]][$j] = $objWorksheet->getCell($mergeRangeArray[0])->getValue();
                         }
 
                         $dateSchedules[$j] = $this->getDateSchedule($j,$m,$interval,$startTime);
@@ -117,7 +114,10 @@ class InsertTeacherSchedule implements ShouldQueue
                             else{
                                 $values = explode('\n',$value);
                                 $startDate = $dateSchedules[$key];
-                                $endDate = Carbon::parse($startDate,'Asia/Singapore')->addMinutes(30);
+                                $endDate = Carbon::parse($startDate)->addMinutes(30);
+
+                                $scheduleStartTime = Carbon::parse($startDate)->toTimeString();
+                                $scheduleEndTime = Carbon::parse($endDate)->toTimeString();
 
                                 if(count($values) > 0){
                                     for($v = 0; $v < count($values); $v++){
@@ -126,7 +126,9 @@ class InsertTeacherSchedule implements ShouldQueue
                                             'subject_code'=>$values[$v],
                                             'date_id'=> $key,
                                             'start_date'=> $startDate,
-                                            'end_date'=> $endDate
+                                            'end_date'=> $endDate,
+                                            'start_time'=> $scheduleStartTime,
+                                            'end_time'=> $scheduleEndTime
                                         ];
                                         $this->scheduleRepository->create($scheduleData);
                                     }
@@ -137,7 +139,9 @@ class InsertTeacherSchedule implements ShouldQueue
                                         'subject_code'=>$value,
                                         'date_id'=> $key,
                                         'start_date'=> $startDate,
-                                        'end_date'=> $endDate
+                                        'end_date'=> $endDate,
+                                        'start_time'=> $scheduleStartTime,
+                                        'end_time'=> $scheduleEndTime
                                     ];
                                     $this->scheduleRepository->create($scheduleData);
                                 }
@@ -157,49 +161,35 @@ class InsertTeacherSchedule implements ShouldQueue
 
     private function getDateSchedule($rowNo, $resetRowNo, $interval , $startTime){
 
-        $firstDayOfWeek = Carbon::now('Asia/Singapore')->startOfWeek();
+        $firstDayOfWeek = Carbon::now()->startOfWeek();
         $format = 'Y-m-d';
         $full_format = 'Y-m-d h:m:s';
 
-        $monday = $firstDayOfWeek->format($format);
-        $tuesday = Carbon::createFromFormat($format,$monday)->addDay(1);
-        $wednesday = Carbon::createFromFormat($format,$monday)->addDays(2);
-        $thursday = Carbon::createFromFormat($format,$monday)->addDays(3);
-        $friday = Carbon::createFromFormat($format,$monday)->addDays(4);
+        $monday = $firstDayOfWeek->toDateString();
+        $tuesday = Carbon::parse($monday)->addDay(1)->toDateString();
+        $wednesday = Carbon::parse($monday)->addDays(2)->toDateString();
+        $thursday = Carbon::parse($monday)->addDays(3)->toDateString();
+        $friday = Carbon::parse($monday)->addDays(4)->toDateString();
 
-//        Log::info('Monday :' . $monday);
-//        Log::info('Wednesday :' . $wednesday);
 
         $result = '';
         if($rowNo >=1 && $rowNo <=17){
             $result = Carbon::createFromFormat('Y-m-d g:ia',$monday.' '.$startTime);
-            if($resetRowNo !=3){
-                $result = $result->addMinutes($interval*$resetRowNo);
-            }
         }
         if($rowNo >17 && $rowNo <=34){
-            $result = Carbon::createFromFormat('Y-m-d g:ia',$tuesday->format($format).' '.$startTime);
-            if($resetRowNo !=3){
-                $result = $result->addMinutes($interval*$resetRowNo);
-            }
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$tuesday.' '.$startTime);
         }
         if($rowNo > 34 && $rowNo <=51){
-            $result = Carbon::createFromFormat('Y-m-d g:ia',$wednesday->format($format).' '.$startTime);
-            if($resetRowNo !=3){
-                $result = $result->addMinutes($interval*$resetRowNo);
-            }
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$wednesday.' '.$startTime);
         }
         if($rowNo >51  && $rowNo <=68){
-            $result = Carbon::createFromFormat('Y-m-d g:ia',$thursday->format($format).' '.$startTime);
-            if($resetRowNo !=3){
-                $result = $result->addMinutes($interval*$resetRowNo);
-            }
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$thursday.' '.$startTime);
         }
         if($rowNo >68 && $rowNo <=85){
-            $result = Carbon::createFromFormat('Y-m-d g:ia',$friday->format($format).' '.$startTime);
-            if($resetRowNo !=1){
-                $result = $result->addMinutes($interval*$resetRowNo);
-            }
+            $result = Carbon::createFromFormat('Y-m-d g:ia',$friday.' '.$startTime);
+        }
+        if($resetRowNo > 1 ){
+            $result = $result->addMinutes( ($interval*$resetRowNo)-$interval );
         }
         return $result;
     }
