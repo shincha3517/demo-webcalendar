@@ -90,7 +90,7 @@ class ScheduleController extends AdminBaseController
         $objPHPExcel = \PHPExcel_IOFactory::load($path);
         $objWorksheet = $objPHPExcel->getActiveSheet();
         $highestRow = $objWorksheet->getHighestRow();
-        $limitRow = 10;
+        $limitRow = 3;
 
         $limitRunRow = $highestRow / $limitRow;
 
@@ -109,8 +109,8 @@ class ScheduleController extends AdminBaseController
         for ($row = 1; $row <= $limitRunRow; $row++) {
 
             Log::info('=====start processing row ' . $row . '=========');
-            event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
-//            $this->import($path, $limitRow, $row,$interval,$startTime);
+//            event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
+            $this->import($path, $limitRow, $row,$interval,$startTime);
             Log::info('=====end processing row ' . $row . '=========');
         }
 
