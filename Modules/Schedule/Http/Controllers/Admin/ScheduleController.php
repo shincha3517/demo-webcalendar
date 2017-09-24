@@ -109,8 +109,8 @@ class ScheduleController extends AdminBaseController
         for ($row = 1; $row <= $limitRunRow; $row++) {
 
             Log::info('=====start processing row ' . $row . '=========');
-//            event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
-            $this->import($path, $limitRow, $row,$interval,$startTime);
+            event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
+//            $this->import($path, $limitRow, $row,$interval,$startTime);
             Log::info('=====end processing row ' . $row . '=========');
         }
 
