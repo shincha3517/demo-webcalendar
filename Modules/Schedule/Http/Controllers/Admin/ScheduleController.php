@@ -90,7 +90,8 @@ class ScheduleController extends AdminBaseController
         $objPHPExcel = \PHPExcel_IOFactory::load($path);
         $objWorksheet = $objPHPExcel->getActiveSheet();
         $highestRow = $objWorksheet->getHighestRow();
-        $limitRow = 3;
+        $highestRow= 20;
+        $limitRow = 10;
 
         $limitRunRow = $highestRow / $limitRow;
 
