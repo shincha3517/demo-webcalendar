@@ -653,4 +653,117 @@ class ScheduleController extends AdminBaseController
         }
         return $result;
     }
+
+    public function getAvailableUserByEvents(Request $request){
+        $events = $request->get('eventIds');
+        $date = $request->get('date');
+
+        $min = Carbon::parse($date)->hour(0)->minute(0)->second(0)->format('Y-m-d\TH:i:s');
+        $max = Carbon::parse($date)->hour(23)->minute(59)->second(59)->format('Y-m-d\TH:i:s');
+
+        if(count($events)>0){
+            $event = $events[0];
+            $eventItem = $this->scheduleRepository->find($event);
+
+            $eventItem = $this->scheduleRepository->find($event);
+            $timeSlotId = $eventItem->date_id;
+            $startDate = $eventItem->start_date;
+
+            $teachers = Teacher::where('id','!=',$eventItem->teacher_id)->get()->toArray();
+            $availableTeachers = $teachers;
+            $query = Schedule::where('teacher_id','!=',$eventItem->teacher_id)
+                ->whereDate('start_date',$eventItem->start_date);
+
+            foreach($events as $e){
+                $et = $this->scheduleRepository->find($e);
+                $query->where('date_id',$et->date_id);
+            }
+            $busyTeachers = $query->groupBy('teacher_id')->get();
+
+            if(count($busyTeachers) > 0){
+                foreach($busyTeachers as $teacher){
+                    $teacherId = $teacher->teacher_id;
+                    for($i = 0; $i < count($teachers); $i++){
+                        if($teachers[$i]['id'] == $teacherId){
+                            unset($availableTeachers[$i]);
+                        }
+                    }
+                }
+                $availableTeachers = array_values($availableTeachers);
+            }
+
+            $users = [];
+            $timelines = [];
+            $expand = [];
+            if(count($availableTeachers) > 0){
+                $i=0;
+                foreach($availableTeachers as $user){
+                    $row = [
+                        'id'=>$user['id'],
+                        'content'=>$user['name'],
+                        'value'=>$user['id'],
+                    ];
+                    array_push($users,$row);
+                    $i++;
+                }
+            }
+
+            if(count($users)>0){
+                $date = Carbon::parse($eventItem->start_date)->format('Y-m-d');
+                foreach ($users as $key=> $user){
+                    //get timelines foreach user
+                    DB::enableQueryLog();
+                    $userTimelines = Schedule::where('teacher_id',$user['id'])
+                        ->where('date_id','>',$timeSlotId)
+                        ->whereDate('start_date',$date)->get();
+//                    ->whereDate('start_date','!=',$eventItem->start_date)->get()->first();
+
+
+//                dd(DB::getQueryLog());
+//                $item = [
+//                    'id'=>$eventItem->id,
+//                    'group'=>$user['id'],
+//                    'content'=> $eventItem->subject_code,
+//                    'start'=> Carbon::parse($eventItem->start_date)->format('Y-m-d\TH:i:s'),
+//                    'end'=> Carbon::parse($eventItem->end_date)->format('Y-m-d\TH:i:s'),
+//                ];
+
+                    if($userTimelines){
+                        foreach($userTimelines as $k => $uTimeline) {
+
+                            if($k==0){
+                                $item = [
+                                    'id' => $eventItem->id.'_'.uniqid(),
+                                    'group' => $user['id'],
+                                    'content' => '',
+                                    'start' => Carbon::parse($eventItem->start_date)->format('Y-m-d\TH:i:s'),
+                                    'end' => Carbon::parse($eventItem->end_date)->format('Y-m-d\TH:i:s'),
+                                    'className'=> 'orange',
+                                ];
+                                array_push($timelines, $item);
+                            }
+                            $item = [
+                                'id' => $uTimeline->id,
+                                'group' => $user['id'],
+                                'content' => $uTimeline->subject_code,
+                                'start' => Carbon::parse($uTimeline->start_date)->format('Y-m-d\TH:i:s'),
+                                'end' => Carbon::parse($uTimeline->end_date)->format('Y-m-d\TH:i:s'),
+                            ];
+
+                            array_push($timelines, $item);
+                        }
+                    }
+                }
+            }
+
+            $result = [
+                'users' => $users,
+                'timelines'=>$timelines
+            ];
+            return response()->json(['result'=>$result,'status'=>1,'event'=>$eventItem,'min'=>$min,'max'=>$max]);
+        }
+        else{
+            return response()->json(['result'=>[],'status'=>0,'event'=>[],'min'=>$min,'max'=>$max]);
+        }
+    }
 }

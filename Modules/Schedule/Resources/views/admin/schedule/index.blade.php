@@ -78,6 +78,9 @@
                                     <div class="col-xs-12">
                                         <div id="visualization"></div>
                                     </div>
+                                    <div class="col-xs-12">
+                                        <button type="button" id="searchTeacher" class="btn btn-default">Search available teacher</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

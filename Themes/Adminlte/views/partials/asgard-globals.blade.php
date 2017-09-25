@@ -6,6 +6,7 @@
         dropzonePostUrl: '{{ route('api.media.store') }}',
         mediaSortUrl: '{{ route('api.media.sort') }}',
         mediaLinkUrl: '{{ route('api.media.link') }}',
-        mediaUnlinkUrl: '{{ route('api.media.unlink') }}'
+        mediaUnlinkUrl: '{{ route('api.media.unlink') }}',
+        token: '{{csrf_token()}}'
     };
 </script>

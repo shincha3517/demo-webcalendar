@@ -94,13 +94,14 @@ var Home = {
                         max: data.max,
                         zoomable:false,
                         horizontalScroll: true,
+                        multiselect:true,
                         zoomMin: 1000 * 10 * 60 * 30,
                     };
 
                     // Create a Timeline
                     Home.timeline = new vis.Timeline(container, items,groups, options);
 
-                    Home.onSelectTimeline(data.result);
+                    Home.onSelectTimeline();
 
                     $('#step2').show();
 
@@ -110,21 +111,25 @@ var Home = {
                 }
             }
         });
-
-
+    },
+    onSelectTimeline: function(){
 
 
     },
-    onSelectTimeline: function(result){
+    searchAvailableTeacher: function(){
 
-        this.timeline.on('select', function (properties) {
-            var eventId = parseInt(properties.items,10);
-            if(eventId > 0){
+        $('#searchTeacher').on('click',function(e){
+
+            if(Home.timeline !=''){
+                var selections = Home.timeline.getSelection();
+                var selectedDate = $('#my_hidden_input').val();
 
                 $.ajax({
+                    url : "/backend/schedule/getAvailableUserByEvents",
                     type: "GET",
-                    url: "/backend/schedule/getAvailableUser?eventId=" + eventId,
-                    success: function (data) {
+                    data: {eventIds: selections,date:selectedDate},
+                    success: function(data, textStatus, jqXHR)
+                    {
                         console.log(data);
 
                         if(data.status==1){
@@ -147,12 +152,26 @@ var Home = {
                                 scrollTop: ($('#step2').offset().top)
                             },500);
                         }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)
+                    {
+                        console.log( errorThrown );
                     }
                 });
-
-
             }
         });
+
+    },
+    stringifyObject: function(object) {
+            if (!object) return;
+            var replacer = function(key, value) {
+                if (value && value.tagName) {
+                    return "DOM Element";
+                } else {
+                    return value;
+                }
+            }
+            return JSON.stringify(object, replacer)
     },
     onShowAvailableUser: function(users,timelines,min,max){
         if(this.availableUserTimeline){
@@ -259,6 +278,7 @@ var Home = {
 
         this.onSelectUser();
         this.onSelectCalendar();
+        this.searchAvailableTeacher();
         // this.onShowTimeLine();
         // this.onSelectTimeline();
     }

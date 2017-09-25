@@ -45,6 +45,11 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'ScheduleController@getAvailableUser',
         'middleware' => 'can:schedule.schedules.index',
     ]);
+    $router->get('/getAvailableUserByEvents', [
+        'as' => 'admin.schedule.getAvailableUserByEvents',
+        'uses' => 'ScheduleController@getAvailableUserByEvents',
+//        'middleware' => 'can:schedule.schedules.index',
+    ]);
 
     $router->post('send-sms', [
         'as' => 'admin.schedule.sendSMS',
