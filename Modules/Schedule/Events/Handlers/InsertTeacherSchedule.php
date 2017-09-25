@@ -134,7 +134,8 @@ class InsertTeacherSchedule implements ShouldQueue
                                             'start_date'=> $startDate,
                                             'end_date'=> $endDate,
                                             'start_time'=> $scheduleStartTime,
-                                            'end_time'=> $scheduleEndTime
+                                            'end_time'=> $scheduleEndTime,
+                                            'day_name'=> $day,
                                         ];
                                         $this->scheduleRepository->create($scheduleData);
                                     }
@@ -147,7 +148,8 @@ class InsertTeacherSchedule implements ShouldQueue
                                         'start_date'=> $startDate,
                                         'end_date'=> $endDate,
                                         'start_time'=> $scheduleStartTime,
-                                        'end_time'=> $scheduleEndTime
+                                        'end_time'=> $scheduleEndTime,
+                                        'day_name'=> $day,
                                     ];
                                     $this->scheduleRepository->create($scheduleData);
                                 }

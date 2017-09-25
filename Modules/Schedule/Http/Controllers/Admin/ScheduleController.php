@@ -90,7 +90,7 @@ class ScheduleController extends AdminBaseController
         $objPHPExcel = \PHPExcel_IOFactory::load($path);
         $objWorksheet = $objPHPExcel->getActiveSheet();
         $highestRow = $objWorksheet->getHighestRow();
-        $highestRow = 10;
+//        $highestRow = 10;
         $limitRow = 10;
 
         $limitRunRow = $highestRow / $limitRow;
@@ -351,11 +351,29 @@ class ScheduleController extends AdminBaseController
 
     public function getUserByDate(Request $request){
         $date = $request->get('date');
-        $date = Carbon::createFromFormat('m/d/Y',$date)->format('Y-m-d');
+        $date = Carbon::createFromFormat('m/d/Y',$date)->toDateString();
+        $dayName = Carbon::parse($date);
 
-        DB::enableQueryLog();
+//        DB::enableQueryLog();
 //        $rows = $this->scheduleRepository->getByAttributes(['start_date'=>$date]);
-        $rows = Schedule::with('teacher')->whereDate('start_date',$date)->groupBy('teacher_id')->get();
+        $query = Schedule::with('teacher');
+        if($dayName->isMonday()){
+            $query->where('day_name','Monday');
+        }elseif($dayName->isTuesday()){
+            $query->where('day_name','Tuesday');
+        }elseif($dayName->isWednesday()){
+            $query->where('day_name','Wednesday');
+        }elseif($dayName->isThursday()){
+            $query->where('day_name','Thursday');
+        }elseif($dayName->isFriday()){
+            $query->where('day_name','Friday');
+        }
+        else{
+            $query->whereNull('day_name');
+        }
+        $query->groupBy('teacher_id');
+
+        $rows = $query->get();
 //        dd(DB::getQueryLog());
         $result = [];
         if(count($rows) > 0){
@@ -377,14 +395,68 @@ class ScheduleController extends AdminBaseController
     public function getUserTimeline(Request $request){
         $teacherId = $request->get('teacher_id');
         $teacher = $this->teacherRepository->find($teacherId);
-        $startDate = Carbon::createFromFormat('m/d/Y',$request->get('date'))->format('Y-m-d');
+        $paramDate = $request->get('date');
+        $startDate = Carbon::createFromFormat('m/d/Y',$paramDate)->toDateString();
+        $dayName = Carbon::parse($request->get('date'));
 
-
-        $min = Carbon::createFromFormat('m/d/Y',$request->get('date'))->hour(0)->minute(0)->second(0)->format('Y-m-d\TH:i:s');
-        $max = Carbon::createFromFormat('m/d/Y',$request->get('date'))->hour(23)->minute(59)->second(59)->format('Y-m-d\TH:i:s');
+        $min = Carbon::createFromFormat('m/d/Y',$paramDate)->hour(0)->minute(0)->second(0)->format('Y-m-d\TH:i:s');
+        $max = Carbon::createFromFormat('m/d/Y',$paramDate)->hour(23)->minute(59)->second(59)->format('Y-m-d\TH:i:s');
 
 //        $rows = $this->scheduleRepository->getByAttributes(['teacher_id'=>$teacherId,'start_date'=>$startDate]);
-        $rows = Schedule::where('teacher_id',$teacherId)->whereDate('start_date',$startDate)->get();
+        $query = Schedule::where('teacher_id',$teacherId);
+
+        $dayNameData = '';
+        if($dayName->isMonday()){
+            $query->where('day_name','Monday');
+            $dayNameData = 'Monday';
+        }elseif($dayName->isTuesday()){
+            $query->where('day_name','Tuesday');
+            $dayNameData = 'Tuesday';
+        }elseif($dayName->isWednesday()){
+            $query->where('day_name','Wednesday');
+            $dayNameData = 'Wednesday';
+        }elseif($dayName->isThursday()){
+            $query->where('day_name','Thursday');
+            $dayNameData = 'Thursday';
+        }elseif($dayName->isFriday()){
+            $query->where('day_name','Friday');
+            $dayNameData = 'Friday';
+        }else{
+            $query->whereNull('day_name');
+            $dayNameData = '';
+        }
+
+        $query->groupBy('date_id');
+        $rows= $query->get();
+
+//        $rows = DB::select(DB::raw("SELECT
+//	s.id,s.teacher_id,s.date_id,s.subject_code, tbl.start_time, tbl_max.end_time
+//FROM
+//	makeit__schedules s
+//INNER JOIN(
+//	SELECT
+//		subject_code ,
+//		min(start_time) AS start_time
+//	FROM
+//		makeit__schedules
+//	WHERE
+//		teacher_id = $teacherId
+//	AND day_name = '$dayNameData'
+//	GROUP BY
+//		subject_code
+//) tbl ON s.subject_code = tbl.subject_code
+//INNER JOIN(
+//	SELECT
+//		subject_code ,
+//		max(end_time) AS end_time
+//	FROM
+//		makeit__schedules
+//	WHERE
+//		teacher_id = $teacherId
+//	AND day_name = '$dayNameData'
+//	GROUP BY
+//		subject_code
+//) tbl_max ON s.subject_code = tbl_max.subject_code GROUP BY subject_code"));
 
         $result = [];
         $group[] = [
@@ -397,9 +469,9 @@ class ScheduleController extends AdminBaseController
                 $data = [
                     'id'=>$row->id,
                     'group'=>$teacherId,
-                    'content'=> $row->subject_code,
-                    'start'=>Carbon::parse($row->start_date)->format('Y-m-d\TH:i:s'),
-                    'end'=>Carbon::parse($row->end_date)->format('Y-m-d\TH:i:s'),
+                    'content'=> urlencode($row->subject_code),
+                    'start'=>Carbon::parse($paramDate)->setTimeFromTimeString($row->start_time)->format('Y-m-d\TH:i:s'),
+                    'end'=>Carbon::parse($paramDate)->setTimeFromTimeString($row->end_time)->format('Y-m-d\TH:i:s'),
                 ];
                 array_push($result,$data);
             }

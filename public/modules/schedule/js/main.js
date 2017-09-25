@@ -14,7 +14,24 @@ var Home = {
                 $('#datepicker').datepicker('getFormattedDate')
             );
 
-            $('#step2').hide();
+            if($('#ddUser').val() > 0){
+                if(Home.timeline !=''){
+                    // console.log('disable timeline');
+                    Home.timeline.destroy();
+                }
+                var teacher_id = $('#ddUser').val();
+                var selectedDate = $('#my_hidden_input').val();
+                //show timeline
+                Home.onShowTimeLine(teacher_id,selectedDate);
+
+                $('#step2').show();
+            }
+            else{
+                //alert('No schedule for user '+$('#ddUser').text()+' on this day');
+                $('#step2').hide();
+            }
+
+
             $('#step3').hide();
             $('#step4').hide();
 
@@ -83,7 +100,7 @@ var Home = {
                     // Create a Timeline
                     Home.timeline = new vis.Timeline(container, items,groups, options);
 
-                    Home.onSelectTimeline();
+                    Home.onSelectTimeline(data.result);
 
                     $('#step2').show();
 
@@ -98,7 +115,7 @@ var Home = {
 
 
     },
-    onSelectTimeline: function(){
+    onSelectTimeline: function(result){
 
         this.timeline.on('select', function (properties) {
             var eventId = parseInt(properties.items,10);
