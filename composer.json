@@ -30,7 +30,8 @@
         "idavoll/adminlte-theme": "~2.0",
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "^2.1",
-        "phpoffice/phpexcel": "^1.8"
+        "phpoffice/phpexcel": "^1.8",
+        "predis/predis": "~1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
