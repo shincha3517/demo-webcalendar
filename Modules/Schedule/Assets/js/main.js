@@ -89,13 +89,19 @@ var Home = {
                         // moment: function(date) {
                         //     return vis.moment(date).utcOffset('+08:00');
                         // },
-                        height: '200px',
+                        // height: '200px',
                         min: data.min,                // lower limit of visible range
                         max: data.max,
                         zoomable:false,
                         horizontalScroll: true,
                         multiselect:true,
                         zoomMin: 1000 * 10 * 60 * 30,
+                        orientation:'top',
+                        stack: false,
+                        margin: {
+                            item: 10, // minimal margin between items
+                            axis: 5   // minimal margin between items and the axis
+                        },
                     };
 
                     // Create a Timeline
@@ -206,7 +212,13 @@ var Home = {
             zoomable:false,
             horizontalScroll: true,
             zoomMin: 1000 * 10 * 60 * 30,
-            verticalScroll: true
+            verticalScroll: true,
+            orientation:'top',
+            stack: false,
+            margin: {
+                item: 10, // minimal margin between items
+                axis: 5   // minimal margin between items and the axis
+            },
         };
 
         // Create a Timeline

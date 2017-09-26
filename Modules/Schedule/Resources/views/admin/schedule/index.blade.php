@@ -17,9 +17,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
 <style>
-    .vis-item .vis-item-overflow {
-        overflow: visible;
-    }
+
     .vis-item.orange {
         background-color: gold;
         border-color: orange;

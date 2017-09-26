@@ -469,7 +469,7 @@ class ScheduleController extends AdminBaseController
                 $data = [
                     'id'=>$row->id,
                     'group'=>$teacherId,
-                    'content'=> urlencode($row->subject_code),
+                    'content'=> $row->subject_code,
                     'start'=>Carbon::parse($paramDate)->setTimeFromTimeString($row->start_time)->format('Y-m-d\TH:i:s'),
                     'end'=>Carbon::parse($paramDate)->setTimeFromTimeString($row->end_time)->format('Y-m-d\TH:i:s'),
                 ];
@@ -657,6 +657,7 @@ class ScheduleController extends AdminBaseController
     public function getAvailableUserByEvents(Request $request){
         $events = $request->get('eventIds');
         $date = $request->get('date');
+        $dayName = Carbon::parse($request->get('date'));
 
         $min = Carbon::parse($date)->hour(0)->minute(0)->second(0)->format('Y-m-d\TH:i:s');
         $max = Carbon::parse($date)->hour(23)->minute(59)->second(59)->format('Y-m-d\TH:i:s');
@@ -671,14 +672,36 @@ class ScheduleController extends AdminBaseController
 
             $teachers = Teacher::where('id','!=',$eventItem->teacher_id)->get()->toArray();
             $availableTeachers = $teachers;
-            $query = Schedule::where('teacher_id','!=',$eventItem->teacher_id)
-                ->whereDate('start_date',$eventItem->start_date);
+            DB::enableQueryLog();
+            $query = Schedule::where('teacher_id','!=',$eventItem->teacher_id);
+//                ->whereDate('start_date',$eventItem->start_date);
 
-            foreach($events as $e){
-                $et = $this->scheduleRepository->find($e);
-                $query->where('date_id',$et->date_id);
+            if($dayName->isMonday()){
+                $query->where('day_name','Monday');
+            }elseif($dayName->isTuesday()){
+                $query->where('day_name','Tuesday');
+            }elseif($dayName->isWednesday()){
+                $query->where('day_name','Wednesday');
+            }elseif($dayName->isThursday()){
+                $query->where('day_name','Thursday');
+            }elseif($dayName->isFriday()){
+                $query->where('day_name','Friday');
+            }else{
+                $query->whereNull('day_name');
             }
-            $busyTeachers = $query->groupBy('teacher_id')->get();
+
+            foreach($events as $k=> $e){
+                $et = $this->scheduleRepository->find($e);
+                if($k==0){
+                    $query->where('date_id',$et->date_id);
+                }
+                else{
+                    $query->orWhere('date_id',$et->date_id);
+                }
+
+            }
+            $busyTeachers = $query->groupBy('teacher_id')->orderBy('id','DESC')->get();
+//            dd(DB::getQueryLog());
 
             if(count($busyTeachers) > 0){
                 foreach($busyTeachers as $teacher){
@@ -713,9 +736,24 @@ class ScheduleController extends AdminBaseController
                 foreach ($users as $key=> $user){
                     //get timelines foreach user
                     DB::enableQueryLog();
-                    $userTimelines = Schedule::where('teacher_id',$user['id'])
-                        ->where('date_id','>',$timeSlotId)
-                        ->whereDate('start_date',$date)->get();
+                    $query = Schedule::where('teacher_id',$user['id'])
+                        ->where('date_id','>',$timeSlotId);
+
+                    if($dayName->isMonday()){
+                        $query->where('day_name','Monday');
+                    }elseif($dayName->isTuesday()){
+                        $query->where('day_name','Tuesday');
+                    }elseif($dayName->isWednesday()){
+                        $query->where('day_name','Wednesday');
+                    }elseif($dayName->isThursday()){
+                        $query->where('day_name','Thursday');
+                    }elseif($dayName->isFriday()){
+                        $query->where('day_name','Friday');
+                    }else{
+                        $query->whereNull('day_name');
+                    }
+
+                    $userTimelines = $query->get();
 //                    ->whereDate('start_date','!=',$eventItem->start_date)->get()->first();
 
 
@@ -732,22 +770,26 @@ class ScheduleController extends AdminBaseController
                         foreach($userTimelines as $k => $uTimeline) {
 
                             if($k==0){
-                                $item = [
-                                    'id' => $eventItem->id.'_'.uniqid(),
-                                    'group' => $user['id'],
-                                    'content' => '',
-                                    'start' => Carbon::parse($eventItem->start_date)->format('Y-m-d\TH:i:s'),
-                                    'end' => Carbon::parse($eventItem->end_date)->format('Y-m-d\TH:i:s'),
-                                    'className'=> 'orange',
-                                ];
-                                array_push($timelines, $item);
+                                foreach($events as $n=> $e){
+                                    $et = $this->scheduleRepository->find($e);
+                                    $item = [
+                                        'id' => $et->id.'_'.uniqid(),
+                                        'group' => $user['id'],
+                                        'content' => 'FREE',
+                                        'start' => Carbon::parse($request->get('date'))->setTimeFromTimeString($et->start_time)->format('Y-m-d\TH:i:s'),
+                                        'end' => Carbon::parse($request->get('date'))->setTimeFromTimeString($et->end_time)->format('Y-m-d\TH:i:s'),
+                                        'className'=> 'orange',
+                                    ];
+                                    array_push($timelines, $item);
+                                }
+
                             }
                             $item = [
                                 'id' => $uTimeline->id,
                                 'group' => $user['id'],
                                 'content' => $uTimeline->subject_code,
-                                'start' => Carbon::parse($uTimeline->start_date)->format('Y-m-d\TH:i:s'),
-                                'end' => Carbon::parse($uTimeline->end_date)->format('Y-m-d\TH:i:s'),
+                                'start' => Carbon::parse($request->get('date'))->setTimeFromTimeString($uTimeline->start_time)->format('Y-m-d\TH:i:s'),
+                                'end' => Carbon::parse($request->get('date'))->setTimeFromTimeString($uTimeline->end_time)->format('Y-m-d\TH:i:s'),
                             ];
 
                             array_push($timelines, $item);
