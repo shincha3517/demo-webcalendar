@@ -8,5 +8,5 @@ class ScheduleDate extends Model
 {
 
     protected $table = 'makeit__schedule_dates';
-    protected $fillable = ['date','day_name'];
+    protected $fillable = ['date','day_name','start_date','interval'];
 }

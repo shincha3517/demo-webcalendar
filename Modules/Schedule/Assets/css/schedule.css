@@ -1,0 +1,262 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+p {
+	margin-bottom: 0;
+}
+
+.p-r-0 {
+	padding-right: 0;
+}
+
+.position-rel {
+	position: relative;
+}
+
+.html-step3 {
+	display: block;
+}
+
+table {
+	width: 100%;
+}
+
+table p {
+	margin-bottom: 0;
+}
+
+.time_slot {
+	margin-top: 50px;
+}
+
+table.time_slot > thead > tr > th:first-child,
+table.time_slot > tbody > tr > td:first-child,
+table.time_slot-selected > thead > tr > th:first-child {
+	width: 13.2%;
+}
+
+table.time_slot > thead > tr > th:first-child {
+	border-top-left-radius: 5px;
+	border-left: 0;
+}
+
+table.time_slot > thead > tr > th:last-child,
+table.time_slot > tbody > tr > td:last-child {
+	border-right: 0;
+}
+
+table.time_slot > thead > tr > th,
+table.time_slot > tbody > tr > td,
+table.time_slot-selected > thead > tr > th,
+table.time_slot-selected > tbody > tr > td {
+	width: 2.8%;
+}
+
+table.time_slot > thead > tr > th,
+table.time_slot-selected > thead > tr > th {
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	background: #0e2f44;
+	color:  #fff;
+	text-align: center;
+}
+
+table.time_slot > thead > tr > th p,
+table.time_slot-selected > tbody > tr > td > p {
+	font-size: 10px;
+}
+
+table.time_slot > thead > tr > th .lesson {
+	font-size: 20px;
+}
+
+table.time_slot > tbody > tr > td,
+table.time_slot-selected > tbody > tr > td {
+	background: #C4C4C4;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	text-align: center;
+	font-size: 14px;
+}
+
+table.time_slot > tbody > tr > td:first-child {
+	vertical-align: top;
+}
+
+.time_slot-child > tbody > tr > td {
+	width: 25%;
+	height: 50px;
+	border: 2px solid #fff;
+	border-bottom: 0;
+	cursor: pointer;
+}
+
+.time_slot-child > tbody > tr > td:first-child {
+	border-left: 1px solid #fff;
+}
+.time_slot-child > tbody > tr > td:last-child {
+	border-right: 1px solid #fff;
+}
+
+.time_slot-child > tbody > tr > .action {
+	background: #6a6d75;
+}
+
+.time_slot-child > tbody > tr > .action:hover {
+	background: #ff6600;
+}
+
+.time_slot-child > tbody > tr > .action.active,
+.time_slot-selected > tbody > tr > td.active {
+	background: #ff6600;
+}
+
+.time_slot-child > tbody > tr > .paired {
+	background: #00ccff;
+}
+
+.step4 {
+	display: block;
+}
+
+.time_slot-selected, .step4 {
+	margin-top: 50px;
+}
+table.time_slot-selected > thead > tr > th {
+	font-size: 20px;
+	color: #fff;
+	background: #0e2f44;
+}
+
+table.time_slot-selected > tbody > tr > td {
+	border-bottom: 1px solid #fff;
+}
+
+table.time_slot-selected > tbody > tr > td:nth-child(2) {
+	width: 10.4px;
+}
+
+table.time_slot-selected > tbody > tr > td > .danger {
+	padding: 0px 5px;
+	font-size: 10px;
+}
+
+table.time_slot-selected > tbody > tr > td.active {
+	cursor: pointer;
+}
+
+table.time_slot-hasclass > tbody > tr > td {
+	background: #494b4c;
+	height: 49px;
+	border: 2px solid #fff;
+	color: #fff;
+}
+
+.title {
+	margin-bottom: 10px;
+}
+
+.title .number{
+	float: left;
+	background: #00ccff;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	font-size: 30px;
+	font-weight: bold;
+	color: #fff;
+	margin-right: 10px;
+}
+
+.title .title_text {
+	color: #ff6600;
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 50px;
+}
+
+#step5 .form-group {
+	margin-bottom: 0;
+}
+
+.step5-container {
+	margin: 50px auto;
+}
+
+.step5-content {
+	background: #636363;
+	border-radius: 0;
+	border-top: 5px solid #ff6600;
+}
+
+.step5-textarea {
+	resize: none;
+	border-radius: 0;
+	margin-bottom: 5px;
+}
+
+.step5-content .remind-me {
+	color: #fff;
+}
+
+.step5-content form {
+	font-size: 13px;
+}
+
+.step5-select {
+	width: 100%;
+}
+
+.step5-content .check-send {
+	margin-right: 5px;
+}
+
+.btn-cancel,
+.btn-assign {
+	width: 80px;
+	height: 35px;
+	margin-right: 5px;
+	padding: 0;
+	font-weight: bold;
+}
+
+.btn-assign {
+	background: #7fff00;
+}
+
+.btn-cancel {
+	background: #7d7d7d;
+	color: #fff;
+}
+
+.col-left {
+	border-right: 2px solid #7d7d7d;
+	padding-right: 20px;
+}
+
+.col-right {
+	padding-left: 30px;
+	color: #fff;
+	font-size: 13px;
+}
+
+.step5-content .relief {
+	margin-top: 15px;
+}
+
+.step5-content .relief h5 {
+	margin-bottom: 20px;
+}
+
+.step5-content .info {
+	margin-top: 180px;
+}
+
+#step5 .modal-dialog {
+	max-width: 1140px;
+	width:800px;
+}

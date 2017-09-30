@@ -47,7 +47,7 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
     ]);
     $router->get('/getAvailableUserByEvents', [
         'as' => 'admin.schedule.getAvailableUserByEvents',
-        'uses' => 'ScheduleController@getAvailableUserByEvents',
+        'uses' => 'ScheduleController@getAvailableUserByEvents2',
 //        'middleware' => 'can:schedule.schedules.index',
     ]);
 
@@ -67,5 +67,11 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'as' => 'admin.schedule.upload.form',
         'uses' => 'ScheduleController@getUpload',
         'middleware' => 'can:schedule.schedules.upload',
+    ]);
+
+    $router->get('assign-form-modal', [
+        'as' => 'admin.schedule.assign.form.modal',
+        'uses' => 'ScheduleController@getAssignFormModal',
+        'middleware' => 'can:schedule.schedules.index',
     ]);
 });

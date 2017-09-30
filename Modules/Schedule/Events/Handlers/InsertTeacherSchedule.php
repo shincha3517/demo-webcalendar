@@ -106,7 +106,7 @@ class InsertTeacherSchedule implements ShouldQueue
 
                     }
                     foreach($scheduleRow as $day => $srow){
-
+                        $e=1;
                         foreach($srow as $key => $value ){
                             if($value == null){
 //                                unset($scheduleRow[$key]);
@@ -131,6 +131,7 @@ class InsertTeacherSchedule implements ShouldQueue
                                             'teacher_id'=>$teacherObject->id,
                                             'subject_code'=>$values[$v],
                                             'date_id'=> $key,
+                                            'slot_id'=> $e,
                                             'start_date'=> $startDate,
                                             'end_date'=> $endDate,
                                             'start_time'=> $scheduleStartTime,
@@ -145,6 +146,7 @@ class InsertTeacherSchedule implements ShouldQueue
                                         'teacher_id'=>$teacherObject->id,
                                         'subject_code'=>$value,
                                         'date_id'=> $key,
+                                        'slot_id'=> $e,
                                         'start_date'=> $startDate,
                                         'end_date'=> $endDate,
                                         'start_time'=> $scheduleStartTime,
@@ -155,6 +157,12 @@ class InsertTeacherSchedule implements ShouldQueue
                                 }
 
 
+                            }
+                            if($key%$hoursInDays==0){
+                                $e=1;
+                            }
+                            else{
+                                $e++;
                             }
                         }
                     }
