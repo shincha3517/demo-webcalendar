@@ -393,7 +393,7 @@ class ScheduleController extends AdminBaseController
         else{
             $query->whereNull('day_name');
         }
-        $query->groupBy('teacher_id');
+        $query->groupBy('teacher_id')->orderBy('name','ASC');
 
         $rows = $query->get();
 //        dd(DB::getQueryLog());
