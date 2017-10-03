@@ -191,6 +191,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Nexmo\Laravel\NexmoServiceProvider::class,
     ],
 
     /*
@@ -238,6 +239,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Nexmo' => \Nexmo\Laravel\Facade\Nexmo::class
     ],
 
 ];
