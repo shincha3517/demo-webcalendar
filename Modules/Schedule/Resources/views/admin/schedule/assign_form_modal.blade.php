@@ -1,7 +1,7 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="{{ Module::asset('schedule:css/bootstrap-datepicker.min.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+{{--<link rel="stylesheet" href="{{ Module::asset('schedule:css/bootstrap-datepicker.min.css') }}">--}}
+{{--<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />--}}
 
 <link rel="stylesheet" type="text/css" href="{{ Module::asset('schedule:css/schedule.css?v='.\Carbon\Carbon::now()->timestamp) }}">
 
@@ -14,11 +14,18 @@
                 <div class="number">5</div>
                 <div class="title_text">Review and edit SMS body if necessary</div>
             </div>
-            <form>
+            <form method="post" action="{{route('admin.schedule.sendSMS')}}">
+                {{csrf_field()}}
+                @foreach($schedules as $schedule)
+                    <input type="hidden" name="schedules[]" value="{{$schedule->id}}" />
+                @endforeach
+                <input type="hidden" name="replaceTeacher" value="{{$teacher->id}}" />
+                <input type="hidden" name="replaceTeacher" value="{{$selectedDate}}" />
+
                 <div class="form-group">
-								<textarea class="form-control step5-textarea txt-sms" rows="10">Dear {{$teacher->name}},
+								<textarea name="msg_body" class="form-control step5-textarea txt-sms" rows="10">Dear {{$teacher->name}},
 Please substitute for {{$schedules[0]->teacher->name}} for:
-August 15, 2017
+{{$selectedDate}}
 
 @foreach($schedules as $key => $schedule)
  {{$key++}}, ({{$schedule->start_time}}) - {{$schedule->end_time}}){{$schedule->subject_code}}
@@ -42,7 +49,7 @@ Thank you.</textarea>
                 <div class="row">
                     <div class="col-md-6">
                         <label class="check-send">
-                            <input type="checkbox" name="send_sms" value="">
+                            <input type="checkbox" name="send_sms" checked value="">
                             Send SMS
                         </label>
                         <label>
@@ -96,12 +103,13 @@ Thank you.</textarea>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="{{ Module::asset('schedule:js/bootstrap-datepicker.min.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+{{--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>--}}
+{{--<script src="{{ Module::asset('schedule:js/bootstrap-datepicker.min.js') }}"></script>--}}
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>--}}
 
 {{--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>--}}
 
-<script src="{{ Module::asset('schedule:js/admin-schedule.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript" charset="utf-8" async defer></script>
+{{--<script src="{{ Module::asset('schedule:js/admin-schedule.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript" charset="utf-8" async defer></script>--}}
+
 

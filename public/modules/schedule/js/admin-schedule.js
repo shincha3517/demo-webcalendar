@@ -20,6 +20,7 @@ var Home = {
             if($('#ddUser').val() > 0){
                 var teacher_id = $('#ddUser').val();
                 var selectedDate = $('#my_hidden_input').val();
+                console.log(selectedDate);
                 //show timeline
                 Home.onShowTimeLine(teacher_id,selectedDate);
             }
@@ -242,30 +243,31 @@ var Home = {
 
                         $(".container-step4").html(html);
 
-                        // var list_id = [];
-                        var id = $this.data("id");
 
-                        if($this.hasClass('active')) {
-                            $this.removeClass('active');
-                            if($("td.show-step4.active").length <= 0) {
-                                $(".step4").hide();
-                            }
-                            Home.list_id.splice($.inArray(id, Home.list_id),1);
-                            for(var h = 0; h < Home.list_id.length; h++) {
-                                $(".time_slot-selected > tbody > tr > td[data-slot='"+Home.list_id[h]+"']").addClass('active');
-                            }
-                        } else {
-                            $this.addClass('active');
-                            $(".step4").show();
-                            Home.list_id.push(id);
-                            for(var l = 0; l < Home.list_id.length; l++) {
-                                $(".time_slot-selected > tbody > tr > td[data-slot='"+Home.list_id[l]+"']").addClass('active');
-                            }
-                        }
                     }
                     else{
                         $(".step4").html('');
                         // alert('No available teacher');
+                    }
+                    // var list_id = [];
+                    var id = $this.data("id");
+
+                    if($this.hasClass('active')) {
+                        $this.removeClass('active');
+                        if($("td.show-step4.active").length <= 0) {
+                            $(".step4").hide();
+                        }
+                        Home.list_id.splice($.inArray(id, Home.list_id),1);
+                        for(var h = 0; h < Home.list_id.length; h++) {
+                            $(".time_slot-selected > tbody > tr > td[data-slot='"+Home.list_id[h]+"']").addClass('active');
+                        }
+                    } else {
+                        $this.addClass('active');
+                        $(".step4").show();
+                        Home.list_id.push(id);
+                        for(var l = 0; l < Home.list_id.length; l++) {
+                            $(".time_slot-selected > tbody > tr > td[data-slot='"+Home.list_id[l]+"']").addClass('active');
+                        }
                     }
 
                 },
@@ -321,20 +323,17 @@ var Home = {
         });
 
         $(".container-step4").on("click", "td.active", function(event) {
+
             $("#step5").modal('toggle', $(this));
         });
-
-        // $(".btn-close").click(function() {
-        //     $(".sms").hide();
-        // });
         //
         // $(".sms").click(function(event) {
         //     event.stopPropagation();
         // });
         //
-        // $(document).click(function() {
-        //     $(".sms").hide();
-        // });
+        $(document).on('click','.btn-close',function() {
+            $("#step5").modal('toggle', $(this));
+        });
 
         $(".txt-sms").on("keydown keyup", function() {
             var length_sms = $(".txt-sms").val().length;
@@ -346,12 +345,12 @@ var Home = {
             $(".ch-mark span").html(length_mark);
         });
 
-        $(window).on("load",function() {
-            var length_sms = $(".txt-sms").val().length;
-            var length_mark = $(".txt-mark").val().length;
-            $(".ch-sms span").html(length_sms);
-            $(".ch-mark span").html(length_mark);
-        });
+        // $(window).on("load",function() {
+        //     var length_sms = $(".txt-sms").val().length;
+        //     var length_mark = $(".txt-mark").val().length;
+        //     $(".ch-sms span").html(length_sms);
+        //     $(".ch-mark span").html(length_mark);
+        // });
 
         this.onSelectUser();
         this.onSelectCalendar();
@@ -360,11 +359,12 @@ var Home = {
         $("#step5").on("show.bs.modal", function(e) {
 
             var teacher_id = $(e.relatedTarget).data();
+            var selectedDate = $('#my_hidden_input').val();
 
             $.ajax({
                 url : "/backend/schedule/assign-form-modal",
                 type: "GET",
-                data: {schedule_ids: Home.schedule_ids,teacher_id:teacher_id},
+                data: {schedule_ids: Home.schedule_ids,teacher_id:teacher_id,selected_date: selectedDate},
                 success: function(result, textStatus, jqXHR)
                 {
                     $(".modal-body").html(result);

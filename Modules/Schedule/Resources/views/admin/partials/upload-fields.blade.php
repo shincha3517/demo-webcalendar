@@ -7,7 +7,7 @@
         </div>
         <div class='form-group{{ $errors->has("interval") ? ' has-error' : '' }}'>
             {!! Form::label("interval", 'Intervals') !!}
-            {!! Form::select("interval", [''=>'Please select your intervals','30'=>'30 mins'],'15',['class' => 'form-control','id'=>'interval']) !!}
+            {!! Form::select("interval", [''=>'Please select your intervals','15'=>'15 mins','30'=>'30 mins'],'15',['class' => 'form-control','id'=>'interval']) !!}
             {!! $errors->first("interval", '<span class="help-block">:message</span>') !!}
         </div>
         <div class='form-group{{ $errors->has("startTime") ? ' has-error' : '' }}'>

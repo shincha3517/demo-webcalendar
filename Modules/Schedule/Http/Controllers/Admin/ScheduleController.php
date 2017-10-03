@@ -23,6 +23,7 @@ use Modules\User\Contracts\Authentication;
 use Modules\User\Permissions\PermissionManager;
 use Modules\User\Repositories\RoleRepository;
 use Modules\User\Repositories\UserRepository;
+use Nexmo\Laravel\Facade\Nexmo;
 
 class ScheduleController extends AdminBaseController
 {
@@ -614,9 +615,34 @@ class ScheduleController extends AdminBaseController
 
     public function sendNotification(Request $request){
 
-        $request->session()->flash('success','Send SMS successfully');
-//        dd($request->all());
+        //update schedule
+        $schedules = $request->get('schedules');
+        $replaceTeacherId = $request->get('replaceTeacher');
+        if(is_array($schedules)){
+            foreach($schedules as $scheduleId){
+                $selectedSchedule = $this->scheduleRepository->find($scheduleId);
+                $selectedSchedule->teacher_id = $replaceTeacherId;
+                $selectedSchedule->save();
+            }
+        }
+
+        $body = $request->get('msg_body');
+        if($replaceTeacherId){
+            $phoneNumber = env('DEFAULT_PHONENUMBER');
+            $from = env('DEFAULT_PHONENUMBER');
+
+            Nexmo::message()->send([
+                'to' => $phoneNumber,
+                'from' => $from,
+                'text' => $body
+            ]);
+            $request->session()->flash('success','Send SMS successfully');
+        }
+        else{
+            $request->session()->flash('error','Send SMS error');
+        };
         return redirect()->back();
+
     }
 
     public function getUserByEvent(Request $request){
@@ -1199,11 +1225,12 @@ WHERE s.day_name = ?
         $teacher_id = $request->get('teacher_id');
         $teacher = $this->teacherRepository->find($teacher_id)->first();
         $scheduleIds = $request->get('schedule_ids');
+        $selectedDate = Carbon::parse($request->get('selected_date'))->toDateString();
 
         if(count($scheduleIds) > 0){
             $schedules = Schedule::whereIn('id',$scheduleIds)->get();
         }
 
-        return view('schedule::admin.schedule.assign_form_modal',compact('teacher','schedules'));
+        return view('schedule::admin.schedule.assign_form_modal',compact('teacher','schedules','selectedDate'));
     }
 }

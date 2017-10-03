@@ -31,7 +31,8 @@
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "^2.1",
         "phpoffice/phpexcel": "^1.8",
-        "predis/predis": "~1.0"
+        "predis/predis": "~1.0",
+        "nexmo/laravel": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
