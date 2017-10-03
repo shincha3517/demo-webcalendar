@@ -304,11 +304,11 @@ var Home = {
                     if(data.status == 1){
                         $('#ddUser').select2({
                             data: data.result,
-                            sorter: function(data) {
-                                return data.sort(function(a, b) {
-                                    return a.text < b.text ? -1 : a.text > b.text ? 1 : 0;
-                                });
-                            }
+                            // sorter: function(data) {
+                            //     return data.sort(function(a, b) {
+                            //         return a.text < b.text ? -1 : a.text > b.text ? 1 : 0;
+                            //     });
+                            // }
                             // allowClear: true
                         });
                     }
@@ -375,6 +375,7 @@ var Home = {
                     console.log( errorThrown );
                 }
             });
+            return;
         });
 
 

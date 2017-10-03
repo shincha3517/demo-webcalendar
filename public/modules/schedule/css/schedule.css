@@ -21,6 +21,11 @@ p {
 
 table {
 	width: 100%;
+	table-layout: fixed;
+}
+
+table td {
+	word-wrap: break-word;
 }
 
 table p {
@@ -81,6 +86,10 @@ table.time_slot-selected > tbody > tr > td {
 	font-size: 14px;
 }
 
+table.time_slot > tbody > tr > td {
+	vertical-align: bottom;
+}
+
 table.time_slot > tbody > tr > td:first-child {
 	vertical-align: top;
 }
@@ -104,8 +113,8 @@ table.time_slot > tbody > tr > td:first-child {
 	background: #6a6d75;
 }
 
-.time_slot-child > tbody > tr > .action:hover {
-	background: #ff6600;
+.time_slot-child > tbody > tr > td:hover {
+	background: rgba(0,0,0,0.3);
 }
 
 .time_slot-child > tbody > tr > .action.active,
@@ -258,5 +267,4 @@ table.time_slot-hasclass > tbody > tr > td {
 
 #step5 .modal-dialog {
 	max-width: 1140px;
-	width:800px;
 }
