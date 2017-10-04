@@ -402,8 +402,8 @@ class ScheduleController extends AdminBaseController
         if(count($rows) > 0){
             foreach($rows as $row){
                 $teacher = [
-                  'id'=>$row->teacher->id,
-                  'text'=>$row->teacher->name,
+                  'id'=>$row->teacher ? $row->teacher->id:0,
+                  'text'=>$row->teacher ? $row->teacher->name: '',
                 ];
                 array_push($result,$teacher);
             }
@@ -631,11 +631,11 @@ class ScheduleController extends AdminBaseController
             $phoneNumber = env('DEFAULT_PHONENUMBER');
             $from = env('DEFAULT_PHONENUMBER');
 
-            Nexmo::message()->send([
-                'to' => $phoneNumber,
-                'from' => $from,
-                'text' => $body
-            ]);
+//            Nexmo::message()->send([
+//                'to' => $phoneNumber,
+//                'from' => $from,
+//                'text' => $body
+//            ]);
             $request->session()->flash('success','Send SMS successfully');
         }
         else{
@@ -721,13 +721,12 @@ class ScheduleController extends AdminBaseController
 
                 $subQuery .= 's.slot_id=?';
                 $whereData[]= $slot->day_name;
+                $whereData[]= $slot->day_name;
                 $whereData[]= $slot->teacher_id;
             }elseif(count($events) > 1){
                 foreach($events as $k => $event){
                     $slot = $this->scheduleRepository->find($event);
                     array_push($whereData,$slot->slot_id);
-
-
 
                     if($k==0){
                         $subQuery .= 's.slot_id=? OR ';
@@ -736,6 +735,7 @@ class ScheduleController extends AdminBaseController
                         if($k  == count($events) -1){
                             $subQuery .= 's.slot_id=?';
 
+                            $whereData[]= $slot->day_name;
                             $whereData[]= $slot->day_name;
                             $whereData[]= $slot->teacher_id;
                         }else{
@@ -746,11 +746,9 @@ class ScheduleController extends AdminBaseController
                 }
             }
 
-
-
 //            DB::enableQueryLog();
             $userTimelines = DB::select('SELECT t.name,t.id as teacher_id,s.*  FROM 
-	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules s WHERE t.id = s.teacher_id AND ( '.$subQuery.') ) ) t
+	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules s WHERE t.id = s.teacher_id AND ( '.$subQuery.') AND s.day_name=? ) ) t
 	LEFT JOIN makeit__schedules s ON t.id = s.teacher_id
 WHERE s.day_name = ?
  AND s.teacher_id != ?',$whereData);
@@ -1005,16 +1003,18 @@ WHERE s.day_name = ?
             'value'=>$teacherId
         ];
 
-        $syStartTime = '1:00am';
-        $interval = 30;
+        $scheduleDate = ScheduleDate::first();
+
+        $syStartTime = Carbon::parse($scheduleDate->start_date)->toTimeString();
+        $interval = $scheduleDate->interval;
         $paramDate = $request->get('date');
 
         $result['data']['time_slot'] = [];
 
         for($i=1; $i<=17; $i++){
-            $startDate = Carbon::createFromFormat('m/d/Y',$paramDate)->setTimeFromTimeString('01:00:00');
+            $startDate = Carbon::createFromFormat('m/d/Y',$paramDate)->setTimeFromTimeString($syStartTime);
             if($i>1){
-                $pushMinute = $i*$interval - 30;
+                $pushMinute = $i*$interval - $interval;
                 $startDate = $startDate->addMinutes($pushMinute);
             }
             $startTime = substr($startDate->toTimeString(),0,-3);

@@ -7,7 +7,9 @@ var UploadExcel = {
     onIntervalSelect: function(){
         $('#interval').on('change', function (properties) {
             var interval = $(this).val();
-            console.log(interval);
+            if(interval > 0){
+                $('#startTime').timepicker('remove');
+            }
             $('#startTime').timepicker({
                 'step': interval
             });

@@ -20,7 +20,7 @@
                     <input type="hidden" name="schedules[]" value="{{$schedule->id}}" />
                 @endforeach
                 <input type="hidden" name="replaceTeacher" value="{{$teacher->id}}" />
-                <input type="hidden" name="replaceTeacher" value="{{$selectedDate}}" />
+                <input type="hidden" name="replaceDate" value="{{$selectedDate}}" />
 
                 <div class="form-group">
 								<textarea name="msg_body" class="form-control step5-textarea txt-sms" rows="10">Dear {{$teacher->name}},
