@@ -7,13 +7,22 @@
         </div>
         <div class='form-group{{ $errors->has("interval") ? ' has-error' : '' }}'>
             {!! Form::label("interval", 'Intervals') !!}
-            {!! Form::select("interval", [''=>'Please select your intervals','15'=>'15 mins','30'=>'30 mins'],null,['class' => 'form-control','id'=>'interval']) !!}
+            {!! Form::select("interval", [''=>'Please select your intervals','15'=>'15 mins','30'=>'30 mins'],false,['class' => 'form-control','id'=>'interval']) !!}
             {!! $errors->first("interval", '<span class="help-block">:message</span>') !!}
         </div>
-        <div class='form-group{{ $errors->has("startTime") ? ' has-error' : '' }}'>
-            {!! Form::label("startTime", 'Start Time') !!}
-            {!! Form::text("startTime", old("startTime"), ['class' => 'form-control','id'=>'startTime']) !!}
-            {!! $errors->first("startTime", '<span class="help-block">:message</span>') !!}
+        <div class="bootstrap-timepicker">
+            <div class="bootstrap-timepicker-widget dropdown-menu"></div>
+            <div class='form-group{{ $errors->has("startTime") ? ' has-error' : '' }}'>
+                {!! Form::label("startTime", 'Start Time') !!}
+                <div class="input-group">
+                    {!! Form::text("startTime", old("startTime"), ['class' => 'form-control timepicker','id'=>'startTime']) !!}
+                    {!! $errors->first("startTime", '<span class="help-block">:message</span>') !!}
+
+                    <div class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <?php if (config('asgard.page.config.partials.translatable.create') !== []): ?>

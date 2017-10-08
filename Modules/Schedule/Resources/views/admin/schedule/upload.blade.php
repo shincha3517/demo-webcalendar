@@ -10,8 +10,7 @@
 </ol>
 @stop
 @push('css-stack')
-<link rel="stylesheet" type="text/css" href="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.css" />
-<link rel="stylesheet" type="text/css" href="http://jonthornton.github.io/jquery-timepicker/lib/bootstrap-datepicker.css" />
+
 @endpush
 
 @section('content')
@@ -34,14 +33,7 @@
                     <?php endforeach; ?>
                     <?php endif; ?>
 
-                        <div class="progress">
-                            <div id="progress-label" class="progress-label">
-                                <!-- Progress text will be rendered here -->
-                            </div>
-                            <div id="progress-container" class="progress-container">
-                                <!-- Progress bar will be rendered here -->
-                            </div>
-                        </div>
+
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary btn-flat">Upload</button>
                     </div>
@@ -57,8 +49,6 @@
 
 @push('js-stack')
 <?php $locale = App::getLocale(); ?>
-<script type="text/javascript" src="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
-<script type="text/javascript" src="http://jonthornton.github.io/jquery-timepicker/lib/bootstrap-datepicker.js"></script>
 
 <script src="{{ Module::asset('schedule:js/uploadExcel.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
 <script type="text/javascript">

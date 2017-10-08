@@ -78,7 +78,7 @@ var Home = {
 
                     var html = '<div class="step3">';
                     html += '<div class="title clearfix">';
-                    html += '<div class="number">3</div>';
+                    html += '<div class="number">2</div>';
                     html += '<div class="title_text">Select the lesson to be replace</div>';
                     html += '</div>';
                     html += '<table class="time_slot">';
@@ -191,7 +191,7 @@ var Home = {
                     if(result.status ==1){
                         var html = '<div class="step4">';
                         html += '<div class="title clearfix">';
-                        html += '<div class="number">4</div>';
+                        html += '<div class="number">3</div>';
                         html += '<div class="title_text">Select a substitute teacher</div>';
                         html += '</div>';
                         html += '<table class="time_slot-selected">';

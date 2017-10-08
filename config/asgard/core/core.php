@@ -88,6 +88,7 @@ return [
         'icheck.blue.css' => ['theme' => 'vendor/iCheck/skins/flat/blue.css'],
         'AdminLTE.css' => ['theme' => 'vendor/admin-lte/dist/css/AdminLTE.css'],
         'AdminLTE.all.skins.css' => ['theme' => 'vendor/admin-lte/dist/css/skins/_all-skins.min.css'],
+        'bootstrap-timepicker.css'=>['theme' => 'css/vendor/timepicker/bootstrap-timepicker.css'],
         'asgard.css' => ['theme' => 'css/asgard.css'],
         //'gridstack.css' => ['module' => 'dashboard:vendor/gridstack/dist/gridstack.min.css'],
         'gridstack.css' => ['module' => 'dashboard:gridstack/gridstack.min.css'],
@@ -124,6 +125,7 @@ return [
         'moment.js' => ['theme' => 'vendor/admin-lte/plugins/daterangepicker/moment.min.js'],
         'clipboard.js' => ['theme' => 'vendor/clipboard/dist/clipboard.min.js'],
         'simplemde.js' => ['theme' => 'vendor/simplemde/dist/simplemde.min.js'],
+        'bootstrap-timepicker.js' => ['theme' => 'vendor/timepicker/bootstrap-timepicker.js'],
     ],
 
     /*
@@ -145,6 +147,7 @@ return [
             'animate.css',
             'pace.css',
             'selectize-default.css',
+            'bootstrap-timepicker.css',
             'asgard.css',
         ],
         'js' => [
@@ -159,6 +162,7 @@ return [
             'app.js',
             'pace.js',
             'selectize.js',
+            'bootstrap-timepicker.js',
             'main.js',
         ],
     ],
