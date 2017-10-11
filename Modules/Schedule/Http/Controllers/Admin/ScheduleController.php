@@ -126,7 +126,7 @@ class ScheduleController extends AdminBaseController
         for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
             event(new ReadTeacherExcelFile($rowNumber,$interval,$startTime));
         }
-//        dd($highestRow);
+        dd($highestRow);
 
 //        for ($row = 1; $row <= $limitRunRow; $row++) {
 //            //Log::info('=====start processing row ' . $row . '=========');
@@ -608,7 +608,7 @@ WHERE s.day_name = ?
             foreach($rows as $row){
                 $data = [
                     'id'=>$row->id,
-                    'class' => '',
+                    'class' => $row->class_name,
                     'lesson'=> str_replace('\n','/',$row->subject_code),
                     'slot'=> [$row->slot_id],
                     'start'=> substr($row->start_time,0,-3),
@@ -629,7 +629,7 @@ WHERE s.day_name = ?
                 foreach($beAssignedSchedules as $beAssignedSchedule){
                     $data = [
                         'id'=>$beAssignedSchedule->schedule->id,
-                        'class' => '',
+                        'class' => $beAssignedSchedule->schedule->class_name,
                         'lesson'=> str_replace('\n','/',$beAssignedSchedule->schedule->subject_code),
                         'slot'=> [$beAssignedSchedule->schedule->slot_id],
                         'start'=> substr($beAssignedSchedule->schedule->start_time,0,-3),

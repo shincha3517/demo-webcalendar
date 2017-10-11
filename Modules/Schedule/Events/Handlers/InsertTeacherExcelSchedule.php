@@ -109,7 +109,8 @@ class InsertTeacherExcelSchedule implements ShouldQueue
 //                        unset($scheduleRow[$key]);
                     }
                     else{
-                        $values = explode('\n',$value);
+                        $values = explode("\n",$value);
+                        Log::info('schedule text: '.$values[0]);
                         $startDate = $dateSchedules[$key];
                         $endDate = Carbon::parse($startDate)->addMinutes($interval);
 
@@ -123,25 +124,45 @@ class InsertTeacherExcelSchedule implements ShouldQueue
 //                                Log::info('----ENDTIME' . $scheduleEndTime.'--------');
 
                         if(count($values) > 0){
-                            for($v = 0; $v < count($values); $v++){
-                                $scheduleData = [
-                                    'teacher_id'=>$teacherObject->id,
-                                    'subject_code'=>$values[$v],
-                                    'date_id'=> $key,
-                                    'slot_id'=> $e,
-                                    'start_date'=> $startDate,
-                                    'end_date'=> $endDate,
-                                    'start_time'=> $scheduleStartTime,
-                                    'end_time'=> $scheduleEndTime,
-                                    'day_name'=> $day,
-                                ];
-                                $this->scheduleRepository->create($scheduleData);
+                            $classNamesArray = json_encode($values[0]);
+                            $classNamesArray = explode("\n",json_decode($classNamesArray));
+                            $className = '';
+                            $subjectCode = '';
+                            if(count($classNamesArray)>0){
+                                $className = $classNamesArray[0];
+//                                if(!empty(array_last($classNamesArray))){
+//                                    $subjectCode .=' '.array_last($classNamesArray);
+//                                }
                             }
+                            else{
+                                $className = $values[0];
+                            }
+
+
+                            for($v = 1; $v< count($values); $v++){
+                                if(!empty($values[$v]) && $values[$v] != ' '){
+                                    $subjectCode .= ' '.$values[$v];
+                                }
+                            }
+                            $scheduleData = [
+                                'teacher_id'=>$teacherObject->id,
+                                'subject_code'=>$subjectCode,
+                                'class_name'=>$className,
+                                'date_id'=> $key,
+                                'slot_id'=> $e,
+                                'start_date'=> $startDate,
+                                'end_date'=> $endDate,
+                                'start_time'=> $scheduleStartTime,
+                                'end_time'=> $scheduleEndTime,
+                                'day_name'=> $day,
+                            ];
+                            $this->scheduleRepository->create($scheduleData);
                         }
                         else{
                             $scheduleData = [
                                 'teacher_id'=>$teacherObject->id,
-                                'subject_code'=>$value,
+                                'class_name'=>$value,
+                                'subject_code'=>'',
                                 'date_id'=> $key,
                                 'slot_id'=> $e,
                                 'start_date'=> $startDate,
