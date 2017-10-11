@@ -57,19 +57,21 @@ class InsertTeacherSchedule implements ShouldQueue
 
         $objPHPExcel = \PHPExcel_IOFactory::load($path);
         $objWorksheet = $objPHPExcel->getActiveSheet();
+        $hoursInDaysArray = $objWorksheet->rangeToArray($objWorksheet->getCellByColumnAndRow(2,1)->getMergeRange());
 
-        $startRow = ($limitRow * $limitRunRow) > $limitRow ? ($limitRow * $limitRunRow) - $limitRow +1 : 0;
+        $startRow = ($limitRow * $limitRunRow) > $limitRow ? ($limitRow * $limitRunRow) - $limitRow +1 : 3;
         $endRow = $limitRow * $limitRunRow;
+        Log::info('***START ROW' . $startRow.'***');
         Log::info('***END ROW' . $endRow.'***');
 
         $daysInWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-        $hoursInDays = 17;
+        $hoursInDays = count($hoursInDaysArray[0]);
 
         $result = [];
 
         for ($row = $startRow; $row <= $endRow; ++$row) {
-            Log::info('***INSERT' . $row.'***');
             $teacherName = $objWorksheet->getCellByColumnAndRow(0 , $row)->getValue();
+            Log::info('====================================== START INSERT TEACHER' . $teacherName.'==========================');
             $scheduleRow = [];
                 if(!empty($teacherName)){
                     $n=0;
@@ -119,11 +121,11 @@ class InsertTeacherSchedule implements ShouldQueue
                                 $scheduleStartTime = Carbon::parse($startDate)->toTimeString();
                                 $scheduleEndTime = Carbon::parse($endDate)->toTimeString();
 
-                                Log::info('----STARTDATE' . $startDate.'--------');
-                                Log::info('----ENDDATE' . $endDate.'--------');
-
-                                Log::info('----STARTTIME' . $scheduleStartTime.'--------');
-                                Log::info('----ENDTIME' . $scheduleEndTime.'--------');
+//                                Log::info('----STARTDATE' . $startDate.'--------');
+//                                Log::info('----ENDDATE' . $endDate.'--------');
+//
+//                                Log::info('----STARTTIME' . $scheduleStartTime.'--------');
+//                                Log::info('----ENDTIME' . $scheduleEndTime.'--------');
 
                                 if(count($values) > 0){
                                     for($v = 0; $v < count($values); $v++){
@@ -170,7 +172,7 @@ class InsertTeacherSchedule implements ShouldQueue
                 else{
                     //teacher name blank
                 }
-            Log::info('***end processing row ' . $row.'***');
+            Log::info('====================================== END INSERT TEACHER' . $teacherName.'==========================');
         }
         sleep(2);
     }

@@ -16,7 +16,9 @@ use Modules\Schedule\Entities\Activity;
 use Modules\Schedule\Entities\Schedule;
 use Modules\Schedule\Entities\ScheduleDate;
 use Modules\Schedule\Entities\Teacher;
+use Modules\Schedule\Events\Handlers\InsertTeacherExcelSchedule;
 use Modules\Schedule\Events\ImportExcelSchedule;
+use Modules\Schedule\Events\ReadTeacherExcelFile;
 use Modules\Schedule\Http\Requests\UploadExcelRequest;
 use Modules\Schedule\Repositories\ScheduleRepository;
 use Modules\Schedule\Repositories\TeacherRepository;
@@ -93,19 +95,18 @@ class ScheduleController extends AdminBaseController
         $objPHPExcel = \PHPExcel_IOFactory::load($path);
         $objWorksheet = $objPHPExcel->getActiveSheet();
         $highestRow = $objWorksheet->getHighestRow();
+        $highestRow = $highestRow -2;
 //        $highestRow = 10;
-        $limitRow = 10;
+        $limitRow = 5;
+        $mergeCells = $objWorksheet->getMergeCells();
+        $hoursInDaysArray = $objWorksheet->rangeToArray($objWorksheet->getCellByColumnAndRow(2,1)->getMergeRange());
 
         $limitRunRow = $highestRow / $limitRow;
 
-//        dd(Carbon::now()->toDateString());
-
         $daysInWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-        $hoursInDays = 17;
+        $hoursInDays = count($hoursInDaysArray[0]);
         //update schedule
         $week = $this->_get_current_week();
-        //
-        $mergeCells = $objWorksheet->getMergeCells();
 
         DB::table('makeit__schedules')->delete();
         DB::table('makeit__teachers')->delete();
@@ -122,14 +123,17 @@ class ScheduleController extends AdminBaseController
             'interval'=> $interval
         ]);
 
-
-        for ($row = 1; $row <= $limitRunRow; $row++) {
-
-            Log::info('=====start processing row ' . $row . '=========');
-            event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
-//            $this->import($path, $limitRow, $row,$interval,$startTime);
-            Log::info('=====end processing row ' . $row . '=========');
+        for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
+            event(new ReadTeacherExcelFile($rowNumber,$interval,$startTime));
         }
+//        dd($highestRow);
+
+//        for ($row = 1; $row <= $limitRunRow; $row++) {
+//            //Log::info('=====start processing row ' . $row . '=========');
+//            event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
+////            $this->import($path, $limitRow, $row,$interval,$startTime);
+//            //Log::info('=====end processing row ' . $row . '=========');
+//        }
 
         $request->session()->flash('success','Upload excel file successfully');
         return redirect()->back();
@@ -582,13 +586,21 @@ WHERE s.day_name = ?
         $result['data']['time_data'][0]['required']['teacher'] = $teacher->name;
         $classes = $result['data']['time_data'][0]['required']['classes'] = [];
 
-        $result['data']['time_data'][0]['paired'] =[];
-        $pairs = $result['data']['time_data'][0]['paired'] =[];
+//        $result['data']['time_data'][0]['paired'] =[];
+        $pairs = [];
+        $beAssigned = [];
 
         $assignedSchedules = Activity::where('teacher_id',$teacher->id)
             ->where('selected_date',$dayName->toDateString())
             ->get();
         $collectionSchedule = collect($assignedSchedules)->map(function($schedule){
+            return $schedule->schedule_id;
+        })->toArray();
+
+        $beAssignedSchedules = Activity::where('replaced_teacher_id',$teacher->id)
+            ->where('selected_date',$dayName->toDateString())
+            ->get();
+        $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_id;
         })->toArray();
 
@@ -605,16 +617,35 @@ WHERE s.day_name = ?
                     'content'=>'relif made',
                     'number'=> '99'
                 ];
-                if(!in_array($row->id, $collectionSchedule) ){
-                    array_push($classes,$data);
+                if(in_array($row->id, $collectionSchedule) ){
+                    array_push($pairs,$data);
                 }
                 else{
-                    array_push($pairs,$data);
+                    array_push($classes,$data);
                 }
 
             }
+            if(count($beAssignedSchedules) > 0){
+                foreach($beAssignedSchedules as $beAssignedSchedule){
+                    $data = [
+                        'id'=>$beAssignedSchedule->schedule->id,
+                        'class' => '',
+                        'lesson'=> str_replace('\n','/',$beAssignedSchedule->schedule->subject_code),
+                        'slot'=> [$beAssignedSchedule->schedule->slot_id],
+                        'start'=> substr($beAssignedSchedule->schedule->start_time,0,-3),
+                        'end'=> substr($beAssignedSchedule->schedule->end_time,0,-3),
+                        'status'=>'unavaliable',
+                        'content'=>'relif made',
+                        'number'=> '99'
+                    ];
+                    array_push($beAssigned,$data);
+                }
+            }
             $result['data']['time_data'][0]['required']['classes'] = $classes;
-            $result['data']['time_data'][0]['paired'] = $pairs;
+            $result['data']['time_data'][0]['required']['paired'] = $pairs;
+            $result['data']['time_data'][0]['required']["substituted"] = [];
+            $result['data']['time_data'][0]['required']['red'] = $beAssigned;
+
             return response()->json(['result'=>$result,'status'=>1]);
         }else{
             return response()->json(['result'=>$result,'status'=>0]);

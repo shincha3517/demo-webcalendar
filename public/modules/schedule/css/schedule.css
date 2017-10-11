@@ -36,49 +36,49 @@ table p {
 	margin-top: 50px;
 }
 
-table.time_slot > thead > tr > th:first-child,
-table.time_slot > tbody > tr > td:first-child,
-table.time_slot-selected > thead > tr > th:first-child {
+table.time_slot>thead>tr>th:first-child,
+table.time_slot>tbody>tr>td:first-child,
+table.time_slot-selected>thead>tr>th:first-child {
 	width: 13.2%;
 }
 
-table.time_slot > thead > tr > th:first-child {
+table.time_slot>thead>tr>th:first-child {
 	border-top-left-radius: 5px;
 	border-left: 0;
 }
 
-table.time_slot > thead > tr > th:last-child,
-table.time_slot > tbody > tr > td:last-child {
+table.time_slot>thead>tr>th:last-child,
+table.time_slot>tbody>tr>td:last-child {
 	border-right: 0;
 }
 
-table.time_slot > thead > tr > th,
-table.time_slot > tbody > tr > td,
-table.time_slot-selected > thead > tr > th,
-table.time_slot-selected > tbody > tr > td {
+table.time_slot>thead>tr>th,
+table.time_slot>tbody>tr>td,
+table.time_slot-selected>thead>tr>th,
+table.time_slot-selected>tbody>tr>td {
 	width: 2.8%;
 }
 
-table.time_slot > thead > tr > th,
-table.time_slot-selected > thead > tr > th {
+table.time_slot>thead>tr>th,
+table.time_slot-selected>thead>tr>th {
 	border-left: 1px solid #fff;
 	border-right: 1px solid #fff;
 	background: #0e2f44;
-	color:  #fff;
+	color: #fff;
 	text-align: center;
 }
 
-table.time_slot > thead > tr > th p,
-table.time_slot-selected > tbody > tr > td > p {
+table.time_slot>thead>tr>th p,
+table.time_slot-selected>tbody>tr>td>p {
 	font-size: 10px;
 }
 
-table.time_slot > thead > tr > th .lesson {
+table.time_slot>thead>tr>th .lesson {
 	font-size: 20px;
 }
 
-table.time_slot > tbody > tr > td,
-table.time_slot-selected > tbody > tr > td {
+table.time_slot>tbody>tr>td,
+table.time_slot-selected>tbody>tr>td {
 	background: #C4C4C4;
 	border-left: 1px solid #fff;
 	border-right: 1px solid #fff;
@@ -86,15 +86,15 @@ table.time_slot-selected > tbody > tr > td {
 	font-size: 14px;
 }
 
-table.time_slot > tbody > tr > td {
+table.time_slot>tbody>tr>td {
 	vertical-align: bottom;
 }
 
-table.time_slot > tbody > tr > td:first-child {
+table.time_slot>tbody>tr>td:first-child {
 	vertical-align: top;
 }
 
-.time_slot-child > tbody > tr > td {
+.time_slot-child>tbody>tr>td {
 	width: 25%;
 	height: 50px;
 	border: 2px solid #fff;
@@ -102,61 +102,72 @@ table.time_slot > tbody > tr > td:first-child {
 	cursor: pointer;
 }
 
-.time_slot-child > tbody > tr > td:first-child {
+.time_slot-child>tbody>tr>td:first-child {
 	border-left: 1px solid #fff;
 }
-.time_slot-child > tbody > tr > td:last-child {
+
+.time_slot-child>tbody>tr>td:last-child {
 	border-right: 1px solid #fff;
 }
 
-.time_slot-child > tbody > tr > .action {
+.time_slot-child>tbody>tr>.action {
 	background: #6a6d75;
 }
 
-.time_slot-child > tbody > tr > td:hover {
-	background: rgba(0,0,0,0.3);
+.time_slot-child>tbody>tr>td:hover {
+	background: rgba(0, 0, 0, 0.3);
 }
 
-.time_slot-child > tbody > tr > .action.active,
-.time_slot-selected > tbody > tr > td.active {
+.time_slot-child>tbody>tr>.action.active,
+.time_slot-selected>tbody>tr>td.active {
 	background: #ff6600;
 }
 
-.time_slot-child > tbody > tr > .paired {
+.time_slot-child>tbody>tr>.paired {
 	background: #00ccff;
+}
+
+.time_slot-child>tbody>tr>.substituted {
+	background: #15FF00;
+}
+
+.time_slot-child>tbody>tr>.red {
+	background: #FF0000;
 }
 
 .step4 {
 	display: block;
 }
 
-.time_slot-selected, .step4 {
+.time_slot-selected,
+.step4 {
 	margin-top: 50px;
 }
-table.time_slot-selected > thead > tr > th {
+
+table.time_slot-selected>thead>tr>th {
 	font-size: 20px;
 	color: #fff;
 	background: #0e2f44;
 }
 
-table.time_slot-selected > tbody > tr > td {
+table.time_slot-selected>tbody>tr>td {
 	border-bottom: 1px solid #fff;
 }
 
-table.time_slot-selected > tbody > tr > td:nth-child(2) {
+table.time_slot-selected>tbody>tr>td:nth-child(2) {
 	width: 10.4px;
 }
 
-table.time_slot-selected > tbody > tr > td > .danger {
+table.time_slot-selected>tbody>tr>td>.danger {
 	padding: 0px 5px;
 	font-size: 10px;
 }
 
-table.time_slot-selected > tbody > tr > td.active {
+table.time_slot-selected>tbody>tr>td.active {
 	cursor: pointer;
 }
 
-table.time_slot-hasclass > tbody > tr > td {
+table.time_slot-hasclass>tbody>tr>td {
 	background: #494b4c;
 	height: 49px;
 	border: 2px solid #fff;
@@ -167,7 +178,7 @@ table.time_slot-hasclass > tbody > tr > td {
 	margin-bottom: 10px;
 }
 
-.title .number{
+.title .number {
 	float: left;
 	background: #00ccff;
 	border-radius: 50%;
