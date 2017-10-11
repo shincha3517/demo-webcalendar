@@ -126,7 +126,7 @@ class ScheduleController extends AdminBaseController
         for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
             event(new ReadTeacherExcelFile($rowNumber,$interval,$startTime));
         }
-        dd($highestRow);
+//        dd($highestRow);
 
 //        for ($row = 1; $row <= $limitRunRow; $row++) {
 //            //Log::info('=====start processing row ' . $row . '=========');
