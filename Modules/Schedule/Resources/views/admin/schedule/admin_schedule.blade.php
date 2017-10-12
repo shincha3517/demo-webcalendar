@@ -87,6 +87,27 @@
 </div>
 </div>
 
+<div class="modal fade" id="confirm" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Cancel replace teacher</h4>
+                <p>Are you sure to cancel replace teacher?</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{{route('admin.schedule.cancel')}}">
+                    {{csrf_field()}}
+                    <input type="hidden" name="scheduleid" value="" />
+                    <input type="hidden" name="selectedDate" value="" />
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-primary">Yes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @stop
 

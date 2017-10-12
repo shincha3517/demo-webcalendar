@@ -18,6 +18,7 @@ use Modules\Schedule\Entities\ScheduleDate;
 use Modules\Schedule\Entities\Teacher;
 use Modules\Schedule\Events\Handlers\InsertTeacherExcelSchedule;
 use Modules\Schedule\Events\ImportExcelSchedule;
+use Modules\Schedule\Events\ReadEventSchedule;
 use Modules\Schedule\Events\ReadTeacherExcelFile;
 use Modules\Schedule\Http\Requests\UploadExcelRequest;
 use Modules\Schedule\Repositories\ScheduleRepository;
@@ -88,31 +89,16 @@ class ScheduleController extends AdminBaseController
         $startTime = $request->get('startTime');
 
         $file = $request->file('importedFile');
-        $file->move(storage_path('imports'), 'import.' . $file-> getClientOriginalExtension());
+        $file->move(storage_path('imports'), 'import.' . $file->getClientOriginalExtension());
 
         $path = storage_path('imports')."/import.xlsx";
 
-        $objPHPExcel = \PHPExcel_IOFactory::load($path);
-        $objWorksheet = $objPHPExcel->getActiveSheet();
-        $highestRow = $objWorksheet->getHighestRow();
-        $highestRow = $highestRow -2;
-//        $highestRow = 10;
-        $limitRow = 5;
-        $mergeCells = $objWorksheet->getMergeCells();
-        $hoursInDaysArray = $objWorksheet->rangeToArray($objWorksheet->getCellByColumnAndRow(2,1)->getMergeRange());
-
-        $limitRunRow = $highestRow / $limitRow;
-
-        $daysInWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-        $hoursInDays = count($hoursInDaysArray[0]);
-        //update schedule
-        $week = $this->_get_current_week();
-
         DB::table('makeit__schedules')->delete();
+        DB::table('makeit__schedules_event')->delete();
         DB::table('makeit__teachers')->delete();
         DB::table('makeit__schedule_dates')->delete();
 
-        //
+        //SETUP STARTTIME
         $date = Carbon::now()->toDateString();
         $scheduleDate = Carbon::createFromFormat('Y-m-d g:ia',$date.' '.$startTime)->toDateTimeString();
 
@@ -123,21 +109,62 @@ class ScheduleController extends AdminBaseController
             'interval'=> $interval
         ]);
 
-        for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
-            event(new ReadTeacherExcelFile($rowNumber,$interval,$startTime));
-        }
-//        dd($highestRow);
+        $this->_doImportSheetOld($path,$interval,$startTime);
 
-//        for ($row = 1; $row <= $limitRunRow; $row++) {
-//            //Log::info('=====start processing row ' . $row . '=========');
-//            event(new ImportExcelSchedule($path, $limitRow, $row,$interval,$startTime));
-////            $this->import($path, $limitRow, $row,$interval,$startTime);
-//            //Log::info('=====end processing row ' . $row . '=========');
-//        }
+        $this->_doImportSheetEvent($path,$interval,$startTime);
+
 
         $request->session()->flash('success','Upload excel file successfully');
         return redirect()->back();
     }
+
+    private function _doImportSheetOld($path,$interval,$startTime){
+
+        $objPHPExcel = \PHPExcel_IOFactory::load($path);
+
+        //GET OLD SHEET
+        $objWorksheet = $objPHPExcel->getSheet(0);
+        $highestRow = $objWorksheet->getHighestRow();
+        $highestRow = $highestRow -2;
+
+        $mondayMergeRange = $objWorksheet->getCell('B1')->getMergeRange();
+        $totalTimeSlotArray = $objWorksheet->rangeToArray($mondayMergeRange);
+        $totalTimeSlot = count($totalTimeSlotArray[0]);
+
+        //update old timeslots number
+        $item = ScheduleDate::first();
+        $item->old_total_timeslots = $totalTimeSlot;
+        $item->save();
+
+        for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
+            event(new ReadTeacherExcelFile($rowNumber,$interval,$startTime));
+        }
+    }
+
+    private function _doImportSheetEvent($path,$interval,$startTime){
+
+        $objPHPExcel = \PHPExcel_IOFactory::load($path);
+
+        //GET EVENT SHEET
+        $objWorksheet = $objPHPExcel->getSheet(1);
+        $highestRow = $objWorksheet->getHighestRow();
+        $highestRow = $highestRow -2;
+
+        $mondayMergeRange = $objWorksheet->getCell('B1')->getMergeRange();
+        $totalTimeSlotArray = $objWorksheet->rangeToArray($mondayMergeRange);
+        $totalTimeSlot = count($totalTimeSlotArray[0]);
+
+        //update old timeslots number
+        $item = ScheduleDate::first();
+        $item->event_total_timeslots = $totalTimeSlot;
+        $item->save();
+
+        for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
+            event(new ReadEventSchedule($rowNumber,$interval,$startTime));
+        }
+    }
+
+
     private function _importExcelSchedule($path,$limitRow,$limitRunRow){
 
 
@@ -279,7 +306,7 @@ class ScheduleController extends AdminBaseController
         else{
             $query->whereNull('day_name');
         }
-        $query->groupBy('teacher_id');
+        $query->orderBy('teacher_id','ASC')->groupBy('teacher_id');
 
         $rows = $query->get();
 //        dd(DB::getQueryLog());
@@ -292,6 +319,23 @@ class ScheduleController extends AdminBaseController
                 ];
                 array_push($result,$teacher);
             }
+        }
+
+        $assignedTeacher = Activity::where('selected_date',$dayName->toDateString())->get();
+        if(count($assignedTeacher) > 0){
+            foreach($assignedTeacher as $row){
+                $teacher = [
+                    'id'=>$row->replaced_teacher_id ? $row->replaced_teacher_id:0,
+                    'text'=>$row->replaceTeacher ? $row->replaceTeacher->name: '',
+                ];
+                array_push($result,$teacher);
+            }
+        }
+
+        //sort list result
+        ksort($result);
+
+        if(count($result) > 0){
             return response()->json(['result'=>$result,'status'=>1]);
         }
         else{
@@ -419,19 +463,21 @@ class ScheduleController extends AdminBaseController
             DB::enableQueryLog();
             $whereData = [];
             $subQuery = '';
+            $slotIds = [];
 
             if(count($events) == 1){
                 $slot = $this->scheduleRepository->find($events[0]);
                 array_push($whereData,$slot->slot_id);
+                array_push($slotIds,$slot->slot_id);
 
                 $subQuery .= 's.slot_id=?';
-                $whereData[]= $slot->day_name;
                 $whereData[]= $slot->day_name;
                 $whereData[]= $slot->teacher_id;
             }elseif(count($events) > 1){
                 foreach($events as $k => $event){
                     $slot = $this->scheduleRepository->find($event);
                     array_push($whereData,$slot->slot_id);
+                    array_push($slotIds,$slot->slot_id);
 
                     if($k==0){
                         $subQuery .= 's.slot_id=? OR ';
@@ -440,7 +486,6 @@ class ScheduleController extends AdminBaseController
                         if($k  == count($events) -1){
                             $subQuery .= 's.slot_id=?';
 
-                            $whereData[]= $slot->day_name;
                             $whereData[]= $slot->day_name;
                             $whereData[]= $slot->teacher_id;
                         }else{
@@ -452,17 +497,15 @@ class ScheduleController extends AdminBaseController
             }
 
 //            DB::enableQueryLog();
-            $userTimelines = DB::select('SELECT t.name,t.id as teacher_id,s.*  FROM 
-	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules s WHERE t.id = s.teacher_id AND ( '.$subQuery.') AND s.day_name=? ) ) t
-	LEFT JOIN makeit__schedules s ON t.id = s.teacher_id
-WHERE s.day_name = ?
- AND s.teacher_id != ?',$whereData);
+            $userTimelines = DB::select('SELECT t.name,t.id as teacher_id  FROM 
+	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules s WHERE t.id = s.teacher_id AND ( '.$subQuery.') AND s.day_name=? ) ) t	
+WHERE t.id != ?',$whereData);
 //            dd(DB::getQueryLog());
 
 //            $userTimelines = $query->groupBy('teacher_id')->get();
             if(!empty($userTimelines)){
-                $collection = collect($userTimelines);
-                $userTimelines = $collection->groupBy('name')->toArray();
+//                $collection = collect($userTimelines);
+//                $userTimelines = $collection->groupBy('name')->toArray();
 
                 $status = 1;
                 $i = 0;
@@ -483,19 +526,30 @@ WHERE s.day_name = ?
                     return $schedule->replaced_teacher_id;
                 })->toArray();
 
-                foreach($userTimelines as $teacher => $items) {
+                foreach($userTimelines as $key => $items) {
+                    $teacherName = $items->name;
+                    $teacherId = $items->teacher_id;
 
-                    foreach($items as $item){
-                        $result['data']['time_data'][$i]['required']['classes'][] = [
-                            'slot'=>[$item->slot_id],
-                            'lesson'=>str_replace('/',',',trim(preg_replace('/\r\n|\r|\n/', ',', $item->subject_code)))
-                        ];
+                    $schedulesByTeacher = Schedule::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->get();
+//                    dd(DB::getQueryLog());
+//                    dd($schedulesByTeacher);
+                    if(count($schedulesByTeacher) > 0){
+                        foreach($schedulesByTeacher as $item){
+                            $result['data']['time_data'][$i]['required']['classes'][] = [
+                                'slot'=>[$item->slot_id],
+                                'lesson'=>str_replace('/',',',trim(preg_replace('/\r\n|\r|\n/', ',', $item->subject_code)))
+                            ];
+                        }
                     }
-                    $result['data']['time_data'][$i]['required']['teacher'] = $teacher;
-                    $result['data']['time_data'][$i]['required']['teacher_id'] = $item->teacher_id;
+                    else{
+                        $result['data']['time_data'][$i]['required']['classes'] =[];
+                    }
+
+                    $result['data']['time_data'][$i]['required']['teacher'] = $teacherName;
+                    $result['data']['time_data'][$i]['required']['teacher_id'] = $teacherId;
                     $result['data']['time_data'][$i]['required']['status'] = '';
                     $result['data']['time_data'][$i]['required']['number'] = '';
-                    if(in_array($item->teacher_id, $collectionSchedule)){
+                    if(in_array($teacherId, $collectionSchedule)){
                         $result['data']['time_data'][$i]['required']['content'] = 'Assigned';
                     }
                     else{
@@ -558,30 +612,11 @@ WHERE s.day_name = ?
             'value'=>$teacherId
         ];
 
-        $scheduleDate = ScheduleDate::first();
+        //GET OLD TIME SLOT
+        $timeData = $this->scheduleRepository->getOldTimeSlot($request->get('date'));
+        $result['data']['time_slot'] = $timeData;
 
-        $syStartTime = Carbon::parse($scheduleDate->start_date)->toTimeString();
-        $interval = $scheduleDate->interval;
-        $paramDate = $request->get('date');
 
-        $result['data']['time_slot'] = [];
-
-        for($i=1; $i<=17; $i++){
-            $startDate = Carbon::createFromFormat('m/d/Y',$paramDate)->setTimeFromTimeString($syStartTime);
-            if($i>1){
-                $pushMinute = $i*$interval - $interval;
-                $startDate = $startDate->addMinutes($pushMinute);
-            }
-            $startTime = substr($startDate->toTimeString(),0,-3);
-            $endTime   = substr($startDate->addMinutes($interval)->toTimeString('h:m'),0,-3);
-
-            $timeSlot = [
-                'slot' => "$i",
-                'start'=>$startTime,
-                'end'=>$endTime
-            ];
-            array_push($result['data']['time_slot'],$timeSlot);
-        }
         $result['data']['time_data'][0] = [];
         $result['data']['time_data'][0]['required']['teacher'] = $teacher->name;
         $classes = $result['data']['time_data'][0]['required']['classes'] = [];
@@ -619,6 +654,7 @@ WHERE s.day_name = ?
                 ];
                 if(in_array($row->id, $collectionSchedule) ){
                     array_push($pairs,$data);
+//                    array_push($classes,$data);//need custom script js
                 }
                 else{
                     array_push($classes,$data);
@@ -639,6 +675,7 @@ WHERE s.day_name = ?
                         'number'=> '99'
                     ];
                     array_push($beAssigned,$data);
+                    array_push($classes,$data);
                 }
             }
             $result['data']['time_data'][0]['required']['classes'] = $classes;
@@ -763,5 +800,15 @@ WHERE s.day_name = ?
         }
 
         return view('schedule::admin.schedule.assign_form_modal',compact('teacher','schedules','selectedDate'));
+    }
+
+    public function cancelReplaceTeacher(Request $request){
+
+        $selectedDate = Carbon::parse($request->get('selectedDate'))->toDateString();
+        Activity::where('schedule_id',$request->get('scheduleid'))->where('selected_date',$selectedDate)->delete();
+
+        $request->session()->flash('success','Cancel replace teacher successfully');
+
+        return redirect()->to('backend/schedule');
     }
 }

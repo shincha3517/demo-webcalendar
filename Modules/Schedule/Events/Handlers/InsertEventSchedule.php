@@ -13,14 +13,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Modules\Page\Events\PageIsCreating;
-use Modules\Schedule\Entities\Schedule;
 use Modules\Schedule\Entities\ScheduleDate;
 use Modules\Schedule\Events\ImportExcelSchedule;
+use Modules\Schedule\Events\ReadEventSchedule;
 use Modules\Schedule\Events\ReadTeacherExcelFile;
+use Modules\Schedule\Repositories\EventScheduleRepository;
 use Modules\Schedule\Repositories\ScheduleRepository;
 use Modules\Schedule\Repositories\TeacherRepository;
 
-class InsertTeacherExcelSchedule implements ShouldQueue
+class InsertEventSchedule implements ShouldQueue
 {
     public $tries = 1;
     public $timeout = 360;
@@ -33,7 +34,7 @@ class InsertTeacherExcelSchedule implements ShouldQueue
     protected $teacherRepository;
     protected $scheduleRepository;
 
-    public function __construct(TeacherRepository $teacherRepository, ScheduleRepository $scheduleRepository)
+    public function __construct(TeacherRepository $teacherRepository, EventScheduleRepository $scheduleRepository)
     {
         $this->teacherRepository = $teacherRepository;
         $this->scheduleRepository = $scheduleRepository;
@@ -45,7 +46,7 @@ class InsertTeacherExcelSchedule implements ShouldQueue
      * @param  ImportExcelSchedule  $event
      * @return void
      */
-    public function handle(ReadTeacherExcelFile $event)
+    public function handle(ReadEventSchedule $event)
     {
 //        if (true) {
 //            $this->release(2);
@@ -56,7 +57,7 @@ class InsertTeacherExcelSchedule implements ShouldQueue
 
         $path = storage_path('imports')."/import.xlsx";
         $objPHPExcel = \PHPExcel_IOFactory::load($path);
-        $objWorksheet = $objPHPExcel->getSheet(0);
+        $objWorksheet = $objPHPExcel->getSheet(1);
 
         //
         $hoursInDaysArray = $objWorksheet->rangeToArray($objWorksheet->getCellByColumnAndRow(2,1)->getMergeRange());

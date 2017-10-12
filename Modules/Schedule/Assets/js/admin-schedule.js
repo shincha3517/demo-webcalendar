@@ -21,21 +21,17 @@ var Home = {
                 var teacher_id = $('#ddUser').val();
                 var selectedDate = $('#my_hidden_input').val();
                 console.log(selectedDate);
-                //show timeline
-                Home.onShowTimeLine(teacher_id,selectedDate);
-            }
-            else{
-                //alert('No schedule for user '+$('#ddUser').text()+' on this day');
-                $('#step2').hide();
+                //hide timeline
+                //Home.onShowTimeLine(teacher_id,selectedDate);
             }
 
-
+            $('#step2').fadeOut();
             $('#step3').hide();
             $('#step4').hide();
 
-            $('html, body').animate({
-                scrollTop: ($('#step1').offset().top)
-            },500);
+            // $('html, body').animate({
+            //     scrollTop: ($('#step1').offset().top)
+            // },500)  ;
         });
     },
 
@@ -128,7 +124,7 @@ var Home = {
                                             html += '<tbody>';
                                             html += '<tr>';
                                             for (var l = 0; l < data.time_data[j].required.paired[p].slot.length; l++) {
-                                                html += '<td class="paired show-step4" data-id="' + data.time_data[j].required.paired[p].slot[l] + '" data-scheduleid="'+data.time_data[j].required.paired[p].id+'">&nbsp;</td>';
+                                                html += '<td class="paired confirm show-step4" data-id="' + data.time_data[j].required.paired[p].slot[l] + '" data-scheduleid="'+data.time_data[j].required.paired[p].id+'">&nbsp;</td>';
                                             }
                                             html += '</tr>';
                                             html += '</tbody>';
@@ -205,6 +201,9 @@ var Home = {
         $(".container-step3").on("click", "td.show-step4",function(event) {
             event.stopPropagation();
             //request ajax
+            if($(this).hasClass('confirm')){
+                return false;
+            }
             var selection = $(this).data('scheduleid');
             var selectedDate = $('#my_hidden_input').val();
             var $this = $(this);
@@ -336,8 +335,10 @@ var Home = {
         $('#step4').hide();
         // $('select').select2();
         $('#datepicker').datepicker({
-            todayHighlight: true,
+            todayBtn: "linked",
+            daysOfWeekHighlighted:[1,2,3,4,5],
         }).on('changeDate', function(e) {
+            $('#ddUser').select2();
             // `e` here contains the extra attributes
             var data = e.format();
             $.ajax({
@@ -346,12 +347,16 @@ var Home = {
                 success: function(data)
                 {
                     if(data.status == 1){
+                        $('#ddUser').select2('destroy');
+                        $("#ddUser").html("<option>Please select teacher on this date</option>");
+
                         $('#ddUser').select2({
                             data: data.result
                         });
                     }
                     else{
                         // $('#ddUser').select2('destroy');
+                        // $("#ddUser").html("");
                         $('#ddUser').html(' <option>--Please select date first</option>');
                     }
                 }
@@ -379,6 +384,17 @@ var Home = {
         $(".txt-mark").on("keydown keyup", function() {
             var length_mark = $(".txt-mark").val().length;
             $(".ch-mark span").html(length_mark);
+        });
+
+        $(".container-step3").on("click", "td.confirm", function() {
+
+            var scheduleid = $(this).data('scheduleid');
+            var selectedDate = $('#my_hidden_input').val();
+
+            $('#confirm input[name=scheduleid]').val(scheduleid);
+            $('#confirm input[name=selectedDate]').val(selectedDate);
+
+            $("#confirm").modal("show");
         });
 
         // $(window).on("load",function() {
@@ -412,6 +428,11 @@ var Home = {
                 }
             });
             return;
+        });
+
+        $("#confirm").on("hide.bs.modal", function(e) {
+            $('#confirm input[name=scheduleid]').val('');
+            $('#confirm input[name=selectedDate]').val('');
         });
 
 
