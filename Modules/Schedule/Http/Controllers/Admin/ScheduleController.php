@@ -454,6 +454,7 @@ class ScheduleController extends AdminBaseController
     public function getAvailableUserByEvents2(Request $request){
         $events = $request->get('eventIds');
         $date = $request->get('date');
+        $optionRead = $request->get('optionAssigned');
         $dayName = Carbon::parse($date);
 
         $result['data']['time_data'] = [];
@@ -571,6 +572,27 @@ WHERE t.id != ?',$whereData);
         return response()->json(['result'=>$result,'status'=>$status]);
     }
 
+    public function getFreeListTeacherWithAssigned(Request $request){
+        $events = $request->get('eventIds');
+        $date = $request->get('date');
+        $optionRead = $request->get('optionAssigned');
+        $dayName = Carbon::parse($date);
+
+        $result['data']['time_data'] = [];
+        $status = 0;
+
+        if(count($events)>0){
+            foreach($events as $eventId){
+
+            }
+            
+        }
+        else{
+            //empty events
+        }
+        return response()->json(['result'=>$result,'status'=>$status]);
+    }
+
 
     public function getUserTimeline(Request $request){
         $teacherId = $request->get('teacher_id');
@@ -675,7 +697,7 @@ WHERE t.id != ?',$whereData);
                         'number'=> '99'
                     ];
                     array_push($beAssigned,$data);
-                    array_push($classes,$data);
+//                    array_push($classes,$data);
                 }
             }
             $result['data']['time_data'][0]['required']['classes'] = $classes;
