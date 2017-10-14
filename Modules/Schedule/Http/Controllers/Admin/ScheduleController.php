@@ -585,7 +585,7 @@ WHERE t.id != ?',$whereData);
             foreach($events as $eventId){
 
             }
-            
+
         }
         else{
             //empty events
