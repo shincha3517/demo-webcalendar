@@ -1,0 +1,5 @@
+<?php
+
+return [
+    'report'=> 'Report'
+];

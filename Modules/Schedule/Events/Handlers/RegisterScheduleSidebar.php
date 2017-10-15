@@ -70,6 +70,15 @@ class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
                         $this->auth->hasAccess('schedule.schedules.worker')
                     );
                 });
+
+                $item->item(trans('schedule::report.report'), function (Item $item) {
+                    $item->weight(14);
+                    $item->icon('fa fa-clock-o');
+                    $item->route('admin.schedule.report');
+                    $item->authorize(
+                        $this->auth->hasAccess('schedule.report.index')
+                    );
+                });
             });
 
         });

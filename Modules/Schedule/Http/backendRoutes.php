@@ -36,7 +36,7 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
 
     $router->get('/getUserTimeline', [
         'as' => 'admin.schedule.getUserTimeline',
-        'uses' => 'ScheduleController@getUserTimeline',
+        'uses' => 'ScheduleController@getUserSchedules',
 //        'middleware' => 'can:schedule.schedules.index',
     ]);
 
@@ -47,7 +47,7 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
     ]);
     $router->get('/getAvailableUserByEvents', [
         'as' => 'admin.schedule.getAvailableUserByEvents',
-        'uses' => 'ScheduleController@getAvailableUserByEvents2',
+        'uses' => 'ScheduleController@getFreeUsersWithSchedule',
 //        'middleware' => 'can:schedule.schedules.index',
     ]);
 
@@ -78,5 +78,12 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'as' => 'admin.schedule.assign.form.modal',
         'uses' => 'ScheduleController@getAssignFormModal',
         'middleware' => 'can:schedule.schedules.index',
+    ]);
+
+    //REPORT
+    $router->get('report', [
+        'as' => 'admin.schedule.report',
+        'uses' => 'ReportController@index',
+        'middleware' => 'can:schedule.report.index',
     ]);
 });
