@@ -13,6 +13,7 @@ use Illuminate\Validation\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Modules\Schedule\Entities\Activity;
+use Modules\Schedule\Entities\Assignment;
 use Modules\Schedule\Entities\Schedule;
 use Modules\Schedule\Entities\ScheduleDate;
 use Modules\Schedule\Entities\Teacher;
@@ -66,8 +67,9 @@ class ReportController extends AdminBaseController
     public function index()
     {
         $currentUser = $this->auth->user();
+        $reports = Assignment::orderBy('id','DESC')->get();
 
-        return view('schedule::admin.schedule.report.index');
+        return view('schedule::admin.schedule.report.index',compact('reports'));
     }
 
 

@@ -278,11 +278,13 @@ class ScheduleController extends AdminBaseController
         $replaceTeacherId = $request->get('replaceTeacher');
         $replaceDate = $request->get('replaceDate');
         $body = $request->get('msg_body');
+        $reason = $request->get('reason_absent');
+        $additionalRemark = $request->get('addition_remark');
 
         $scheduleTable = $this->_getScheduleTable($replaceDate);
         $this->_getRepository($scheduleTable);
 
-        $replaceStatus = $this->repository->replaceTeacher($schedules,$replaceTeacherId,$replaceDate);
+        $replaceStatus = $this->repository->replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark);
         if($replaceStatus){
             $phoneNumber = env('DEFAULT_PHONENUMBER');
             $from = env('DEFAULT_PHONENUMBER');
@@ -365,8 +367,16 @@ class ScheduleController extends AdminBaseController
 
     public function cancelReplaceTeacher(Request $request){
 
-        $selectedDate = Carbon::parse($request->get('selectedDate'))->toDateString();
-        Activity::where('schedule_id',$request->get('scheduleid'))->where('selected_date',$selectedDate)->delete();
+        $date = $request->get('selectedDate');
+        $selectedDate = Carbon::parse($date)->toDateString();
+        $scheduleId = $request->get('scheduleid');
+
+        $scheduleTable = $this->_getScheduleTable($date);
+        $this->_getRepository($scheduleTable);
+
+        //new activity log
+//        $activity = Activity::where('schedule_id',$request->get('scheduleid'))->where('selected_date',$selectedDate)->get()->first();
+        $this->repository->userCancelAssignSchedule($scheduleId,$date);
 
         $request->session()->flash('success','Cancel replace teacher successfully');
 

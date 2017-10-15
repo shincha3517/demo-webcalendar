@@ -62,6 +62,10 @@ var Home = {
         $.ajax({
             type: "GET",
             url: "/backend/schedule/getUserTimeline?teacher_id="+teacherId+'&date='+dateSelected,
+            beforeSend: function( xhr ) {
+                // Show full page LoadingOverlay
+                $.LoadingOverlay("show");
+            },
             success: function(result)
             {
                 if(result.status==1){
@@ -433,7 +437,13 @@ var Home = {
                     $('html, body').animate({
                         scrollTop: ($('#step2').offset().top)
                     },500);
+
                 }
+
+                // Hide it after 3 seconds
+                setTimeout(function(){
+                    $.LoadingOverlay("hide");
+                }, 100);
             }
         });
     },
@@ -443,7 +453,7 @@ var Home = {
         $(".container-step3").on("click", "td.show-step4",function(event) {
             event.stopPropagation();
             //request ajax
-            if($(this).hasClass('confirm')){
+            if($(this).hasClass('confirm') || $(this).hasClass('red')){
                 return false;
             }
             var optionAssigned = false;
@@ -467,6 +477,10 @@ var Home = {
                 url : "/backend/schedule/getAvailableUserByEvents",
                 type: "GET",
                 data: {eventIds: Home.schedule_ids,date:selectedDate,optionAssigned: optionAssigned},
+                beforeSend: function( xhr ) {
+                    // Show full page LoadingOverlay
+                    $.LoadingOverlay("show");
+                },
                 success: function(result, textStatus, jqXHR)
                 {
                     var data = Home.data;
@@ -569,6 +583,11 @@ var Home = {
                 scrollTop: ($('#step3').offset().top)
             },500);
 
+            // Hide it after 3 seconds
+            setTimeout(function(){
+                $.LoadingOverlay("hide");
+            }, 100);
+
         });
 
 
@@ -633,6 +652,17 @@ var Home = {
         });
 
         $(".container-step3").on("click", "td.confirm", function() {
+
+            var scheduleid = $(this).data('scheduleid');
+            var selectedDate = $('#my_hidden_input').val();
+
+            $('#confirm input[name=scheduleid]').val(scheduleid);
+            $('#confirm input[name=selectedDate]').val(selectedDate);
+
+            $("#confirm").modal("show");
+        });
+
+        $(".container-step3").on("click", "td.red", function() {
 
             var scheduleid = $(this).data('scheduleid');
             var selectedDate = $('#my_hidden_input').val();

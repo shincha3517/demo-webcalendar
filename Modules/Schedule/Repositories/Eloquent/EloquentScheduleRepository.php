@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Repositories\Eloquent\EloquentBaseRepository;
 use Modules\Schedule\Entities\Activity;
+use Modules\Schedule\Entities\Assignment;
 use Modules\Schedule\Entities\Schedule;
 use Modules\Schedule\Entities\ScheduleDate;
 use Modules\Schedule\Entities\Teacher;
@@ -75,14 +76,25 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
                 array_push($result,$teacher);
             }
         }
-        $assignedTeacher = Activity::where('selected_date',$date->toDateString())->get();
+        $assignedTeacher = Assignment::where('selected_date',$date->toDateString())->get();
         if(count($assignedTeacher) > 0){
             foreach($assignedTeacher as $row){
-                $teacher = [
-                    'id'=>$row->replaced_teacher_id ? $row->replaced_teacher_id:0,
-                    'text'=>$row->replaceTeacher ? $row->replaceTeacher->name: '',
-                ];
-                array_push($result,$teacher);
+                $i=0;
+                foreach($result as $rs){
+                    if($rs['id'] == $row->replaced_teacher_id){
+                        break;
+                    }
+                    else{
+                        if($i == count($result) -1){
+                            $teacher = [
+                                'id'=>$row->replaced_teacher_id ? $row->replaced_teacher_id:0,
+                                'text'=>$row->replaceTeacher ? $row->replaceTeacher->name: '',
+                            ];
+                            array_push($result,$teacher);
+                        }
+                    }
+                    $i++;
+                }
             }
         }
         //sort list result
@@ -326,16 +338,17 @@ WHERE t.id != ?',$whereData);
         return $result;
     }
 
-    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate){
+    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark){
         if(is_array($schedules)){
+            $selectedDate = Carbon::parse($replaceDate)->toDateString();
             foreach($schedules as $scheduleId){
                 $selectedSchedule = $this->model->find($scheduleId);
-
+                $replacedTeacher = Teacher::find($replaceTeacherId);
                 //delete first
-                Activity::where('teacher_id',$selectedSchedule->teacher_id)
-                    ->where('schedule_id',$scheduleId)
-                    ->where('selected_date',Carbon::parse($replaceDate)->toDateString())
-                    ->delete();
+//                Activity::where('teacher_id',$selectedSchedule->teacher_id)
+//                    ->where('schedule_id',$scheduleId)
+//                    ->where('selected_date',Carbon::parse($replaceDate)->toDateString())
+//                    ->delete();
 
 
                 Activity::create([
@@ -345,6 +358,24 @@ WHERE t.id != ?',$whereData);
                     'selected_date'=> Carbon::parse($replaceDate)->toDateString(),
                     'status'=> Activity::ASSIGNED_STATUS
                 ]);
+
+                Assignment::create([
+                    'teacher_id'=>$selectedSchedule->teacher_id,
+                    'replaced_teacher_id'=>$replaceTeacherId,
+                    'teacher_name'=> $selectedSchedule->teacher->name,
+                    'replaced_teacher_name'=> $replacedTeacher->name,
+
+                    'schedule_id'=>$scheduleId,
+                    'lesson'=>$selectedSchedule->class_name,
+                    'subject'=>$selectedSchedule->subject_code,
+                    'start_date'=> $selectedSchedule->start_date,
+                    'end_date'=> $selectedSchedule->end_date,
+                    'slot_id'=>$selectedSchedule->slot_id,
+                    'day_name'=>$selectedSchedule->day_name,
+                    'selected_date'=>$selectedDate,
+                    'reason'=>$reason,
+                    'additionalRemark'=>$additionalRemark
+                ]);
             }
             return true;
         }
@@ -353,5 +384,21 @@ WHERE t.id != ?',$whereData);
 
     public function getSchedulesInArray($ids = array()){
         return $this->model->whereIn('id',$ids)->get();
+    }
+
+    public function userCancelAssignSchedule($scheduleId,$date){
+        $selectedDate = Carbon::parse($date)->toDateString();
+        $activity = Activity::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->get()->first();
+
+        $cancelActivity = new Activity();
+        $cancelActivity->teacher_id = $activity->teacher_id;
+        $cancelActivity->replaced_teacher_id = $activity->replaced_teacher_id;
+        $cancelActivity->schedule_id = $activity->schedule_id;
+        $cancelActivity->selected_date = $activity->selected_date;
+        $cancelActivity->status = 2;
+        $cancelActivity->save();
+
+        //Assignment
+        $assignment = Assignment::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->delete();
     }
 }

@@ -13,13 +13,6 @@
 @section('content')
     <div class="row">
         <div class="col-xs-12">
-            <div class="row">
-                <div class="btn-group pull-right" style="margin: 0 15px 15px 0;">
-                    <a href="{{ URL::route('admin.page.page.create') }}" class="btn btn-primary btn-flat" style="padding: 4px 10px;">
-                        <i class="fa fa-pencil"></i> {{ trans('page::pages.button.create page') }}
-                    </a>
-                </div>
-            </div>
             <div class="box box-primary">
                 <div class="box-header">
                 </div>
@@ -29,55 +22,33 @@
                         <thead>
                         <tr>
                             <th>Id</th>
-                            <th>{{ trans('page::pages.table.name') }}</th>
-                            <th>{{ trans('page::pages.table.slug') }}</th>
+                            <th>Absent Teacher</th>
+                            <th>Relief Teacher Name</th>
+                            <th>Absent Date</th>
+                            <th>Absent Time</th>
+                            <th>Lesson</th>
+                            <th>Reason for absence</th>
+                            <th>Additional remarks</th>
                             <th>{{ trans('core::core.table.created at') }}</th>
-                            <th data-sortable="false">{{ trans('core::core.table.actions') }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php if (isset($pages)): ?>
-                        <?php foreach ($pages as $page): ?>
+                        <?php if (isset($reports)): ?>
+                        <?php foreach ($reports as $item): ?>
                         <tr>
-                            <td>
-                                <a href="{{ URL::route('admin.page.page.edit', [$page->id]) }}">
-                                    {{ $page->id }}
-                                </a>
-                            </td>
-                            <td>
-                                <a href="{{ URL::route('admin.page.page.edit', [$page->id]) }}">
-                                    {{ $page->title }}
-                                </a>
-                            </td>
-                            <td>
-                                <a href="{{ URL::route('admin.page.page.edit', [$page->id]) }}">
-                                    {{ $page->slug }}
-                                </a>
-                            </td>
-                            <td>
-                                <a href="{{ URL::route('admin.page.page.edit', [$page->id]) }}">
-                                    {{ $page->created_at }}
-                                </a>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <a href="{{ URL::route('admin.page.page.edit', [$page->id]) }}" class="btn btn-default btn-flat"><i class="fa fa-pencil"></i></a>
-                                    <button data-toggle="modal" data-target="#modal-delete-confirmation" data-action-target="{{ route('admin.page.page.destroy', [$page->id]) }}" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>
-                                </div>
-                            </td>
+                            <td>{{$item->id}}</td>
+                            <td>{{$item->teacher_name}}</td>
+                            <td>{{$item->replaced_teacher_name}}</td>
+                            <td>{{$item->selected_date}}</td>
+                            <td>{{ substr(\Carbon\Carbon::parse($item->start_date)->toTimeString(),0,-3)}} - {{substr(\Carbon\Carbon::parse($item->end_date)->toTimeString(),0,-3)}}</td>
+                            <td>{{$item->lesson}}</td>
+                            <td>{{$item->reason}}</td>
+                            <td>{{$item->additionalRemark}}</td>
+                            <td>{{$item->created_at}}</td>
                         </tr>
                         <?php endforeach; ?>
                         <?php endif; ?>
                         </tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Id</th>
-                            <th>{{ trans('page::pages.table.name') }}</th>
-                            <th>{{ trans('page::pages.table.slug') }}</th>
-                            <th>{{ trans('core::core.table.created at') }}</th>
-                            <th>{{ trans('core::core.table.actions') }}</th>
-                        </tr>
-                        </tfoot>
                     </table>
                     <!-- /.box-body -->
                 </div>

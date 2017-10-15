@@ -11,7 +11,7 @@ class Activity extends Model
     const REPLACE_STATUS = 2;
 
     protected $table = 'makeit__activity_log';
-    protected $fillable = ['teacher_id','replaced_teacher_id','schedule_id','selected_date','status'];
+    protected $fillable = ['teacher_id','replaced_teacher_id','schedule_id','schedule_event_id','selected_date','status'];
 
     public function teacher(){
         return $this->belongsTo(Teacher::class);

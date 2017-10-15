@@ -60,13 +60,37 @@ Thank you.</textarea>
                 </div>
                 <div class="row">
                     <div class="col-md-3">
+                        <p>Reason Absent</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <select class="form-control" name="reason_absent">
+                            <option value="">--choose item bellow</option>
+                            <option value="medical leave">medical leave</option>
+                            <option value="on course">on course</option>
+                            <option value="on official duty">on official duty</option>
+                            <option value="off-in-lieu">off-in-lieu</option>
+                            <option value="time off">time off</option>
+                            <option value="child care leave">child care leave</option>
+                            <option value="child care sick leave">child care sick leave</option>
+                            <option value="compassionate leave">compassionate leave</option>
+                            <option value="hospitalisation leave">hospitalisation leave</option>
+                            <option value="maternity leave">maternity leave</option>
+                            <option value="maternity leave">paternity leave</option>
+                            <option value="others">others</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
                         <p>Additional remarks</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <textarea class="form-control step5-textarea txt-mark" rows="2"></textarea>
+                            <textarea name="addition_remark" class="form-control step5-textarea txt-mark" rows="2"></textarea>
                         </div>
                     </div>
                     <div class="col-md-5 text-right">
