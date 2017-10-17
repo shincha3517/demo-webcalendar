@@ -156,14 +156,14 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
         $pairs = [];
         $beAssigned = [];
 
-        $assignedSchedules = Activity::where('teacher_id',$teacher->id)
+        $assignedSchedules = Assignment::where('teacher_id',$teacher->id)
             ->where('selected_date',$dayName->toDateString())
             ->get();
         $collectionSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_id;
         })->toArray();
 
-        $beAssignedSchedules = Activity::where('replaced_teacher_id',$teacher->id)
+        $beAssignedSchedules = Assignment::where('replaced_teacher_id',$teacher->id)
             ->where('selected_date',$dayName->toDateString())
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
@@ -277,15 +277,19 @@ WHERE t.id != ?',$whereData);
                 $status = 1;
                 $i = 0;
 
-                $query = Activity::where('teacher_id',$slot->teacher_id)
-                    ->where('selected_date',$dayName->toDateString());
+                $query = Assignment::where('selected_date',$dayName->toDateString());
                 if(count($events) > 1){
                     foreach($events as $scheduleId){
-                        $query->where('schedule_id',$scheduleId);
+                        $slot = $this->model->find($scheduleId);
+                        $query->where('schedule_type','old');
+                        $query->where('slot_id',$slot->slot_id);
                     }
                 }
                 else{
-                    $query->where('schedule_id',$events[0]);
+                    $slot = $this->model->find($events[0]);
+
+                    $query->where('schedule_type','old');
+                    $query->where('slot_id',$slot->slot_id);
                 }
 
                 $assignedSchedules= $query->get();
@@ -296,6 +300,11 @@ WHERE t.id != ?',$whereData);
                 foreach($userTimelines as $key => $items) {
                     $teacherName = $items->name;
                     $teacherId = $items->teacher_id;
+
+                    if(in_array($teacherId, $collectionSchedule)){
+                        unset($userTimelines[$key]);
+                        continue;
+                    }
 
                     $schedulesByTeacher = Schedule::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->get();
 //                    dd(DB::getQueryLog());
@@ -312,16 +321,12 @@ WHERE t.id != ?',$whereData);
                         $result['data']['time_data'][$i]['required']['classes'] =[];
                     }
 
+
                     $result['data']['time_data'][$i]['required']['teacher'] = $teacherName;
                     $result['data']['time_data'][$i]['required']['teacher_id'] = $teacherId;
                     $result['data']['time_data'][$i]['required']['status'] = '';
                     $result['data']['time_data'][$i]['required']['number'] = '';
-                    if(in_array($teacherId, $collectionSchedule)){
-                        $result['data']['time_data'][$i]['required']['content'] = 'Assigned';
-                    }
-                    else{
-                        $result['data']['time_data'][$i]['required']['content'] = '';
-                    }
+                    $result['data']['time_data'][$i]['required']['content'] = '';
 
 
                     $i++;
@@ -355,7 +360,7 @@ WHERE t.id != ?',$whereData);
                     'teacher_id'=>$selectedSchedule->teacher_id,
                     'replaced_teacher_id'=>$replaceTeacherId,
                     'schedule_id'=>$scheduleId,
-                    'selected_date'=> Carbon::parse($replaceDate)->toDateString(),
+                    'selected_date'=> $selectedDate,
                     'status'=> Activity::ASSIGNED_STATUS
                 ]);
 
@@ -374,7 +379,8 @@ WHERE t.id != ?',$whereData);
                     'day_name'=>$selectedSchedule->day_name,
                     'selected_date'=>$selectedDate,
                     'reason'=>$reason,
-                    'additionalRemark'=>$additionalRemark
+                    'additionalRemark'=>$additionalRemark,
+                    'schedule_type'=>'old'
                 ]);
             }
             return true;
@@ -396,7 +402,7 @@ WHERE t.id != ?',$whereData);
         $cancelActivity->schedule_id = $activity->schedule_id;
         $cancelActivity->selected_date = $activity->selected_date;
         $cancelActivity->status = 2;
-        $cancelActivity->save();
+//        $cancelActivity->save();
 
         //Assignment
         $assignment = Assignment::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->delete();

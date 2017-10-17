@@ -278,15 +278,19 @@ WHERE t.id != ?',$whereData);
                 $status = 1;
                 $i = 0;
 
-                $query = Activity::where('teacher_id',$slot->teacher_id)
+                $query = Assignment::where('teacher_id',$slot->teacher_id)
                     ->where('selected_date',$dayName->toDateString());
                 if(count($events) > 1){
                     foreach($events as $scheduleId){
-                        $query->where('schedule_id',$scheduleId);
+                        $slot = $this->model->find($scheduleId);
+                        $query->where('schedule_type','event');
+                        $query->where('slot_id',$slot->slot_id);
                     }
                 }
                 else{
-                    $query->where('schedule_id',$events[0]);
+                    $slot = $this->model->find($events[0]);
+                    $query->where('schedule_type','event');
+                    $query->where('slot_id',$slot->slot_id);
                 }
 
                 $assignedSchedules= $query->get();
@@ -297,6 +301,11 @@ WHERE t.id != ?',$whereData);
                 foreach($userTimelines as $key => $items) {
                     $teacherName = $items->name;
                     $teacherId = $items->teacher_id;
+
+                    if(in_array($teacherId, $collectionSchedule)){
+                        unset($userTimelines[$key]);
+                        continue;
+                    }
 
                     $schedulesByTeacher = ScheduleEvent::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->get();
 //                    dd(DB::getQueryLog());
@@ -317,12 +326,7 @@ WHERE t.id != ?',$whereData);
                     $result['data']['time_data'][$i]['required']['teacher_id'] = $teacherId;
                     $result['data']['time_data'][$i]['required']['status'] = '';
                     $result['data']['time_data'][$i]['required']['number'] = '';
-                    if(in_array($teacherId, $collectionSchedule)){
-                        $result['data']['time_data'][$i]['required']['content'] = 'Assigned';
-                    }
-                    else{
-                        $result['data']['time_data'][$i]['required']['content'] = '';
-                    }
+                    $result['data']['time_data'][$i]['required']['content'] = '';
 
 
                     $i++;
@@ -376,7 +380,8 @@ WHERE t.id != ?',$whereData);
                     'day_name'=>$selectedSchedule->day_name,
                     'selected_date'=>$selectedDate,
                     'reason'=>$reason,
-                    'additionalRemark'=>$additionalRemark
+                    'additionalRemark'=>$additionalRemark,
+                    'schedule_type'=>'event'
                 ]);
             }
             return true;
