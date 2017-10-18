@@ -270,16 +270,11 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
 WHERE t.id != ?',$whereData);
 //            dd(DB::getQueryLog());
 
-//            $userTimelines = $query->groupBy('teacher_id')->get();
             if(!empty($userTimelines)){
-//                $collection = collect($userTimelines);
-//                $userTimelines = $collection->groupBy('name')->toArray();
-
                 $status = 1;
                 $i = 0;
 
-                $query = Assignment::where('teacher_id',$slot->teacher_id)
-                    ->where('selected_date',$dayName->toDateString());
+                $query = Assignment::where('selected_date',$dayName->toDateString());
                 if(count($events) > 1){
                     foreach($events as $scheduleId){
                         $slot = $this->model->find($scheduleId);
@@ -309,7 +304,6 @@ WHERE t.id != ?',$whereData);
 
                     $schedulesByTeacher = ScheduleEvent::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->get();
 //                    dd(DB::getQueryLog());
-//                    dd($schedulesByTeacher);
                     if(count($schedulesByTeacher) > 0){
                         foreach($schedulesByTeacher as $item){
                             $result['data']['time_data'][$i]['required']['classes'][] = [
