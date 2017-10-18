@@ -279,11 +279,13 @@ WHERE t.id != ?',$whereData);
 
                 $query = Assignment::where('selected_date',$dayName->toDateString());
                 if(count($events) > 1){
+                    $slotArray = [];
                     foreach($events as $scheduleId){
                         $slot = $this->model->find($scheduleId);
-                        $query->where('schedule_type','old');
-                        $query->where('slot_id',$slot->slot_id);
+                        array_push($slotArray,$slot->slot_id);
                     }
+                    $query->where('schedule_type','old');
+                    $query->whereIn('slot_id',$slotArray);
                 }
                 else{
                     $slot = $this->model->find($events[0]);

@@ -276,11 +276,13 @@ WHERE t.id != ?',$whereData);
 
                 $query = Assignment::where('selected_date',$dayName->toDateString());
                 if(count($events) > 1){
+                    $query->where('schedule_type','event');
+                    $slotArray = [];
                     foreach($events as $scheduleId){
                         $slot = $this->model->find($scheduleId);
-                        $query->where('schedule_type','event');
-                        $query->where('slot_id',$slot->slot_id);
+                        array_push($slotArray,$slot->slot_id);
                     }
+                    $query->whereIn('slot_id',$slotArray);
                 }
                 else{
                     $slot = $this->model->find($events[0]);
@@ -289,6 +291,8 @@ WHERE t.id != ?',$whereData);
                 }
 
                 $assignedSchedules= $query->get();
+//                dd($assignedSchedules);
+//                dd(DB::getQueryLog());
                 $collectionSchedule = collect($assignedSchedules)->map(function($schedule){
                     return $schedule->replaced_teacher_id;
                 })->toArray();
