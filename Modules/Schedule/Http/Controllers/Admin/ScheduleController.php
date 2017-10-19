@@ -267,9 +267,25 @@ class ScheduleController extends AdminBaseController
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
+        $assignmentList = Assignment::where('selected_date',$date)->get();
+        $collection = collect($assignmentList);
+
+        $assignmentArray = $collection->map(function ($item, $key) {
+
+            return [
+                'id'=>$item->id,
+                'teacher_name'=>$item->teacher_name,
+                'replaced_teacher_name'=>$item->replaced_teacher_name,
+                'lesson'=>$item->lesson,
+                'start_time'=>substr(Carbon::parse($item->start_date)->toTimeString(),0,-3),
+                'end_time'=>substr(Carbon::parse($item->end_time)->toTimeString(),0,-3),
+            ];
+        });
+        $assignments = $assignmentArray->all();
+
         $users = $this->repository->getUsersByDate($date);
         if(count($users) > 0){
-            return response()->json(['result'=>$users,'status'=>1,'schedule'=>$scheduleTable]);
+            return response()->json(['result'=>$users,'status'=>1,'schedule'=>$scheduleTable,'assignments'=>$assignments]);
         }
         else{
             return response()->json(['result'=>[],'status'=>0,'schedule'=>$scheduleTable]);

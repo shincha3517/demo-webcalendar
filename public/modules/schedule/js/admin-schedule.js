@@ -633,6 +633,19 @@ var Home = {
                         $('#ddUser').select2({
                             data: data.result
                         });
+
+                        if(data.assignments.length > 0){
+                            $('.assignment-box ul').html('');
+                            $.each(data.assignments, function( index, value ) {
+                                // console.log( index + ": " + value );
+                                $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' for lesson '+value.lesson+' from '+value.start_time+'-'+value.end_time+'</li>');
+                                $('.assignment-box').fadeIn();
+                            });
+                        }
+                        else{
+                            $('.assignment-box ul').html('');
+                            $('.assignment-box').fadeOut();
+                        }
                     }
                     else{
                         // $('#ddUser').select2('destroy');
