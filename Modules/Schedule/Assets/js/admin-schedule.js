@@ -79,7 +79,7 @@ var Home = {
 
                     var html = '<div class="step3">';
                     html += '<div class="title clearfix">';
-                    html += '<div class="number">3</div>';
+                    html += '<div class="number">2</div>';
                     html += '<div class="title_text">Select the lesson to be replace</div>';
                     html += '</div>';
                     html += '<table class="time_slot">';
@@ -639,12 +639,13 @@ var Home = {
                             $.each(data.assignments, function( index, value ) {
                                 // console.log( index + ": " + value );
                                 $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' for lesson '+value.lesson+' from '+value.start_time+'-'+value.end_time+'</li>');
-                                $('.assignment-box').fadeIn();
+                                // $('.assignment-box').fadeIn();
                             });
                         }
                         else{
                             $('.assignment-box ul').html('');
-                            $('.assignment-box').fadeOut();
+                            $('.assignment-box ul').append('<li>There is no relief assigned today</li>');
+                            // $('.assignment-box').fadeOut();
                         }
                     }
                     else{
