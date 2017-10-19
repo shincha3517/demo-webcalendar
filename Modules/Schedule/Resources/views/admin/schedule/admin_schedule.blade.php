@@ -123,5 +123,9 @@
 <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.5.4/src/loadingoverlay.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.5.4/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
 
-<script src="{{ Module::asset('schedule:js/admin-schedule.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript" charset="utf-8" async defer></script>
+<script src="{{ Module::asset('schedule:js/admin-schedule.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
+<script>
+    Home.active_assignment_dates = <?php echo json_encode($assignments) ?>;
+    Home.init();
+</script>
 @endpush

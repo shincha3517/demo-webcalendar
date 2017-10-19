@@ -8,6 +8,7 @@ var Home = {
     data: '',
     list_id: [],
     schedule_ids: [],
+    active_assignment_dates:[],
 
     onSelectCalendar: function(){
         $('#datepicker').datepicker();
@@ -602,6 +603,20 @@ var Home = {
         $('#datepicker').datepicker({
             todayBtn: "linked",
             daysOfWeekHighlighted:[1,2,3,4,5],
+            beforeShowDay: function(date){
+                var d = date;
+                var curr_date = d.getDate();
+                var curr_month = d.getMonth() + 1; //Months are zero based
+                var curr_year = d.getFullYear();
+                var formattedDate = curr_date + "/" + curr_month + "/" + curr_year;
+
+                if ($.inArray(formattedDate, Home.active_assignment_dates) != -1){
+                    return {
+                        classes: 'activeDate'
+                    };
+                }
+                return;
+            }
         }).on('changeDate', function(e) {
             $('#ddUser').select2();
             // `e` here contains the extra attributes
@@ -714,4 +729,3 @@ var Home = {
 
     }
 }
-Home.init();

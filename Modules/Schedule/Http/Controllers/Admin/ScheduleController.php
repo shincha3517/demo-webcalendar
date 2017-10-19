@@ -13,6 +13,7 @@ use Illuminate\Validation\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Modules\Schedule\Entities\Activity;
+use Modules\Schedule\Entities\Assignment;
 use Modules\Schedule\Entities\Schedule;
 use Modules\Schedule\Entities\ScheduleDate;
 use Modules\Schedule\Entities\Teacher;
@@ -74,7 +75,21 @@ class ScheduleController extends AdminBaseController
         $currentUser = $this->auth->user();
         $teachers = $this->teacherRepository->all();
 
-        return view('schedule::admin.schedule.admin_schedule', compact('currentUser','teachers'));
+        $assignments = [];
+        $assignmentList = Assignment::all();
+        if($assignmentList){
+            $collection = collect($assignmentList);
+
+            $assignmentArray = $collection->map(function ($item, $key) {
+                return Carbon::parse($item->selected_date)->format('d/m/Y');
+            });
+
+
+            $assignments = $assignmentArray->all();
+//            dd($assignmentArray->all());
+        }
+
+        return view('schedule::admin.schedule.admin_schedule', compact('currentUser','teachers','assignments'));
     }
 
     public function getUpload(){

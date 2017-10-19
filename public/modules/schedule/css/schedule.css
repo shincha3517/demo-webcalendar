@@ -280,3 +280,6 @@ table.time_slot-hasclass>tbody>tr>td {
 	max-width: 1140px;
 	width: 890px;
 }
+.activeDate{
+	color: #F00 !important;
+}
