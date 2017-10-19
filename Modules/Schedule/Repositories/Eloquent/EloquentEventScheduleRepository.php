@@ -241,6 +241,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
                 $subQuery .= 's.slot_id=?';
                 $whereData[]= $slot->day_name;
                 $whereData[]= $slot->teacher_id;
+                $whereData[]= $slot->teacher->subject;
             }elseif(count($events) > 1){
                 foreach($events as $k => $event){
                     $slot = $this->model->find($event);
@@ -256,6 +257,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
 
                             $whereData[]= $slot->day_name;
                             $whereData[]= $slot->teacher_id;
+                            $whereData[]= $slot->teacher->subject;
                         }else{
                             $subQuery .= 's.slot_id=? OR ';
                         }
@@ -267,7 +269,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
 //            DB::enableQueryLog();
             $userTimelines = DB::select('SELECT t.name,t.id as teacher_id,t.subject  FROM 
 	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules s WHERE t.id = s.teacher_id AND ( '.$subQuery.') AND s.day_name=? ) ) t	
-WHERE t.id != ? ORDER BY FIELD (t.subject,"Bio") DESC, teacher_id',$whereData);
+WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
 //            dd(DB::getQueryLog());
 
             if(!empty($userTimelines)){
