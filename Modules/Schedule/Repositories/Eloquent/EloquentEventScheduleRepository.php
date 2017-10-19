@@ -265,9 +265,9 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
             }
 
 //            DB::enableQueryLog();
-            $userTimelines = DB::select('SELECT t.name,t.id as teacher_id  FROM 
+            $userTimelines = DB::select('SELECT t.name,t.id as teacher_id,t.subject  FROM 
 	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules s WHERE t.id = s.teacher_id AND ( '.$subQuery.') AND s.day_name=? ) ) t	
-WHERE t.id != ?',$whereData);
+WHERE t.id != ? ORDER BY FIELD (t.subject,"Bio") DESC, teacher_id',$whereData);
 //            dd(DB::getQueryLog());
 
             if(!empty($userTimelines)){

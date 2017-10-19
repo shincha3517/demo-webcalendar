@@ -19,6 +19,7 @@ use Modules\Schedule\Entities\Teacher;
 use Modules\Schedule\Events\Handlers\InsertTeacherExcelSchedule;
 use Modules\Schedule\Events\ImportExcelSchedule;
 use Modules\Schedule\Events\ReadEventSchedule;
+use Modules\Schedule\Events\ReadSubjectSheet;
 use Modules\Schedule\Events\ReadTeacherExcelFile;
 use Modules\Schedule\Http\Requests\UploadExcelRequest;
 use Modules\Schedule\Repositories\EventScheduleRepository;
@@ -110,6 +111,8 @@ class ScheduleController extends AdminBaseController
 
         $this->_doImportSheetEvent($path,$interval,$startTime);
 
+        $this->_doImportSheetSubject($path);
+
 
         $request->session()->flash('success','Upload excel file successfully');
         return redirect()->back();
@@ -158,6 +161,19 @@ class ScheduleController extends AdminBaseController
 
         for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
             event(new ReadEventSchedule($rowNumber,$interval,$startTime));
+        }
+    }
+    private function _doImportSheetSubject($path){
+
+        $objPHPExcel = \PHPExcel_IOFactory::load($path);
+
+        //GET EVENT SHEET
+        $objWorksheet = $objPHPExcel->getSheet(2);
+        $highestRow = $objWorksheet->getHighestRow();
+        $highestRow = $highestRow-1;
+
+        for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
+            event(new ReadSubjectSheet($rowNumber));
         }
     }
 

@@ -7,8 +7,10 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Modules\Schedule\Events\Handlers\InsertEventSchedule;
 use Modules\Schedule\Events\Handlers\InsertTeacherExcelSchedule;
 use Modules\Schedule\Events\Handlers\InsertTeacherSchedule;
+use Modules\Schedule\Events\Handlers\UpdateTeacherSubject;
 use Modules\Schedule\Events\ImportExcelSchedule;
 use Modules\Schedule\Events\ReadEventSchedule;
+use Modules\Schedule\Events\ReadSubjectSheet;
 use Modules\Schedule\Events\ReadTeacherExcelFile;
 
 class EventServiceProvider extends ServiceProvider
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         ReadEventSchedule::class=> [
             InsertEventSchedule::class
+        ],
+        ReadSubjectSheet::class=> [
+            UpdateTeacherSubject::class
         ]
     ];
 
