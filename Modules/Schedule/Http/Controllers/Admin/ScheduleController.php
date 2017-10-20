@@ -23,6 +23,7 @@ use Modules\Schedule\Events\ReadEventSchedule;
 use Modules\Schedule\Events\ReadSubjectSheet;
 use Modules\Schedule\Events\ReadTeacherExcelFile;
 use Modules\Schedule\Http\Requests\UploadExcelRequest;
+use Modules\Schedule\Repositories\AssignmentRepository;
 use Modules\Schedule\Repositories\EventScheduleRepository;
 use Modules\Schedule\Repositories\ScheduleRepository;
 use Modules\Schedule\Repositories\TeacherRepository;
@@ -43,6 +44,7 @@ class ScheduleController extends AdminBaseController
     protected $teacherRepository;
     protected $scheduleRepository;
     protected $eventScheduleRepository;
+    protected $assignmentRepository;
     protected $repository;
 
     /**
@@ -55,7 +57,8 @@ class ScheduleController extends AdminBaseController
         Authentication $auth,
         TeacherRepository $teacherRepository,
         ScheduleRepository $scheduleRepository,
-        EventScheduleRepository $eventScheduleRepository
+        EventScheduleRepository $eventScheduleRepository,
+        AssignmentRepository $assignmentRepository
     ) {
         parent::__construct();
 
@@ -63,6 +66,7 @@ class ScheduleController extends AdminBaseController
         $this->teacherRepository = $teacherRepository;
         $this->scheduleRepository = $scheduleRepository;
         $this->eventScheduleRepository = $eventScheduleRepository;
+        $this->assignmentRepository = $assignmentRepository;
     }
 
     /**
@@ -76,7 +80,7 @@ class ScheduleController extends AdminBaseController
         $teachers = $this->teacherRepository->all();
 
         $assignments = [];
-        $assignmentList = Assignment::all();
+        $assignmentList = Assignment::where('is_past',0)->get();
         if($assignmentList){
             $collection = collect($assignmentList);
 
@@ -110,6 +114,8 @@ class ScheduleController extends AdminBaseController
         DB::table('makeit__schedules_event')->delete();
         DB::table('makeit__teachers')->delete();
         DB::table('makeit__schedule_dates')->delete();
+
+        Assignment::whereNotNull('teacher_id')->update(['is_past'=>1]);
 
         //SETUP STARTTIME
         $date = Carbon::now()->toDateString();
@@ -267,7 +273,7 @@ class ScheduleController extends AdminBaseController
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
-        $assignmentList = Assignment::where('selected_date',$date)->get();
+        $assignmentList = Assignment::where('selected_date',$date)->where('is_past',0)->get();
         $collection = collect($assignmentList);
 
         $assignmentArray = $collection->map(function ($item, $key) {
@@ -401,15 +407,23 @@ class ScheduleController extends AdminBaseController
         $scheduleIds = $request->get('schedule_ids');
         $date = $request->get('selected_date');
         $selectedDate = Carbon::parse($request->get('selected_date'))->toDateString();
+        $formatedDate = Carbon::parse($date)->toFormattedDateString();
 
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
+
+
+        $numberAssignmentInSelectedDate = $this->assignmentRepository->getReliefNumber('date',$selectedDate,$teacher->id);
+        $numberAssignmentInWeek = $this->assignmentRepository->getReliefNumber('week',$selectedDate,$teacher->id);
+        $numberAssignmentInMonth = $this->assignmentRepository->getReliefNumber('month',$selectedDate,$teacher->id);
+        $numberAssignmentInYear = $this->assignmentRepository->getReliefNumber('year',$selectedDate,$teacher->id);
+
 
         if(count($scheduleIds) > 0){
             $schedules = $this->repository->getSchedulesInArray($scheduleIds);
         }
 
-        return view('schedule::admin.schedule.assign_form_modal',compact('teacher','schedules','selectedDate'));
+        return view('schedule::admin.schedule.assign_form_modal',compact('teacher','schedules','selectedDate','formatedDate','numberAssignmentInSelectedDate','numberAssignmentInWeek','numberAssignmentInMonth','numberAssignmentInYear'));
     }
 
     public function cancelReplaceTeacher(Request $request){

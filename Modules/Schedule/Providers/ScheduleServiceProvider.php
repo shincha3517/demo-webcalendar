@@ -85,5 +85,17 @@ class ScheduleServiceProvider extends ServiceProvider
                 return new \Modules\Schedule\Repositories\Cache\CacheScheduleDecorator($repository);
             }
         );
+        $this->app->bind(
+            'Modules\Schedule\Repositories\AssignmentRepository',
+            function () {
+                $repository = new \Modules\Schedule\Repositories\Eloquent\EloquentAssignmentRepository(new \Modules\Schedule\Entities\Assignment());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Schedule\Repositories\Cache\CacheScheduleDecorator($repository);
+            }
+        );
     }
 }

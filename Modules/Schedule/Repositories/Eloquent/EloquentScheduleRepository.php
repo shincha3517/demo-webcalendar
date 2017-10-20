@@ -227,7 +227,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
         $status = 0;
 
         if(count($events)>0){
-            DB::enableQueryLog();
+//            DB::enableQueryLog();
             $whereData = [];
             $subQuery = '';
             $slotIds = [];

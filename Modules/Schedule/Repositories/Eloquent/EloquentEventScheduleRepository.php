@@ -228,7 +228,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
         $status = 0;
 
         if(count($events)>0){
-            DB::enableQueryLog();
+//            DB::enableQueryLog();
             $whereData = [];
             $subQuery = '';
             $slotIds = [];

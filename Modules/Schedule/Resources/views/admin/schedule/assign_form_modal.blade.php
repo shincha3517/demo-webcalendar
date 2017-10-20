@@ -107,11 +107,11 @@ Thank you.</textarea>
         </div>
         <div class="col-md-5 col-right">
             <div class="relief">
-                <h5>Mr Noor</h5>
-                <p>Relief assigned August 15, 2017: <span>0</span></p>
-                <p>Relief assigned in week: <span>0</span></p>
-                <p>Relief assigned this term: <span>0</span></p>
-                <p>Relief assigned this year: <span>0</span></p>
+                <h5>{{$teacher->name}}</h5>
+                <p>Relief assigned {{$formatedDate}}: <span>{{$numberAssignmentInSelectedDate}}</span></p>
+                <p>Relief assigned in week: <span>{{$numberAssignmentInWeek}}</span></p>
+                <p>Relief assigned this month: <span>{{$numberAssignmentInMonth}}</span></p>
+                <p>Relief assigned this year: <span>{{$numberAssignmentInYear}}</span></p>
             </div>
             <div class="info">
                 <p>Email: noor_hazemi_ribot@moe.edu.sg</p>
