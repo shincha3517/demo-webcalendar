@@ -76,7 +76,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
                 array_push($result,$teacher);
             }
         }
-        $assignedTeacher = Assignment::where('selected_date',$date->toDateString())->get();
+        $assignedTeacher = Assignment::where('selected_date',$date->toDateString())->where('is_past',0)->get();
         if(count($assignedTeacher) > 0){
             foreach($assignedTeacher as $row){
                 $i=0;
@@ -158,6 +158,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
 
         $assignedSchedules = Assignment::where('teacher_id',$teacher->id)
             ->where('selected_date',$dayName->toDateString())
+            ->where('is_past',0)
             ->get();
         $collectionSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_id;
@@ -165,6 +166,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
 
         $beAssignedSchedules = Assignment::where('replaced_teacher_id',$teacher->id)
             ->where('selected_date',$dayName->toDateString())
+            ->where('is_past',0)
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_id;
@@ -279,7 +281,7 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
                 $status = 1;
                 $i = 0;
 
-                $query = Assignment::where('selected_date',$dayName->toDateString());
+                $query = Assignment::where('selected_date',$dayName->toDateString())->where('is_past',0);
                 if(count($events) > 1){
                     $slotArray = [];
                     foreach($events as $scheduleId){
@@ -409,6 +411,6 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
 //        $cancelActivity->save();
 
         //Assignment
-        $assignment = Assignment::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->delete();
+        $assignment = Assignment::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->where('is_past',0)->delete();
     }
 }
