@@ -278,7 +278,7 @@ class ScheduleController extends AdminBaseController
                 'replaced_teacher_name'=>$item->replaced_teacher_name,
                 'lesson'=>$item->lesson,
                 'start_time'=>substr(Carbon::parse($item->start_date)->toTimeString(),0,-3),
-                'end_time'=>substr(Carbon::parse($item->end_time)->toTimeString(),0,-3),
+                'end_time'=>substr(Carbon::parse($item->end_date)->toTimeString(),0,-3),
             ];
         });
         $assignments = $assignmentArray->all();
