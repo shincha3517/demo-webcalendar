@@ -80,6 +80,18 @@
             });
         });
         $(function () {
+            var buttonCommon = {
+                exportOptions: {
+                    format: {
+                        body: function ( data, row, column, node ) {
+                            // Strip $ from salary column to make it numeric
+                            return column === 5 ?
+                                data.replace( /[$,]/g, '' ) :
+                                data;
+                        }
+                    }
+                }
+            };
             $('.data-table').dataTable({
                 "paginate": true,
                 "lengthChange": true,
@@ -90,7 +102,19 @@
                 "order": [[ 0, "desc" ]],
                 "language": {
                     "url": '<?php echo Module::asset("core:js/vendor/datatables/{$locale}.json") ?>'
-                }
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    $.extend( true, {}, buttonCommon, {
+                        extend: 'copyHtml5'
+                    } ),
+                    $.extend( true, {}, buttonCommon, {
+                        extend: 'excelHtml5'
+                    } ),
+                    $.extend( true, {}, buttonCommon, {
+                        extend: 'pdfHtml5'
+                    } )
+                ]
             });
         });
     </script>

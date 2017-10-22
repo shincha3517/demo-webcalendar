@@ -273,7 +273,7 @@ class ScheduleController extends AdminBaseController
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
-        $assignmentList = Assignment::where('selected_date',$date)->where('is_past',0)->get();
+        $assignmentList = Assignment::where('selected_date',$date)->where('is_past',0)->orderBy('teacher_name','ASC')->get();
         $collection = collect($assignmentList);
 
         $assignmentArray = $collection->map(function ($item, $key) {
