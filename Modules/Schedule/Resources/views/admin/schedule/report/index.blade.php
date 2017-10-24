@@ -10,6 +10,10 @@
     </ol>
 @stop
 
+@push('css-stack')
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.dataTables.min.css">
+@endpush
+
 @section('content')
     <div class="row">
         <div class="col-xs-12">
@@ -70,7 +74,11 @@
 @stop
 
 @push('js-stack')
-    <?php $locale = App::getLocale(); ?>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+
+<?php $locale = App::getLocale(); ?>
     <script type="text/javascript">
         $( document ).ready(function() {
             $(document).keypressAction({
@@ -93,27 +101,19 @@
                 }
             };
             $('.data-table').dataTable({
-                "paginate": true,
-                "lengthChange": true,
-                "filter": true,
-                "sort": true,
-                "info": true,
-                "autoWidth": true,
+               "paginate": true,
+               "lengthChange": true,
+               "filter": true,
+               "sort": true,
+               "info": true,
+               "autoWidth": true,
                 "order": [[ 0, "desc" ]],
                 "language": {
                     "url": '<?php echo Module::asset("core:js/vendor/datatables/{$locale}.json") ?>'
                 },
                 dom: 'Bfrtip',
                 buttons: [
-                    $.extend( true, {}, buttonCommon, {
-                        extend: 'copyHtml5'
-                    } ),
-                    $.extend( true, {}, buttonCommon, {
-                        extend: 'excelHtml5'
-                    } ),
-                    $.extend( true, {}, buttonCommon, {
-                        extend: 'pdfHtml5'
-                    } )
+                    'excelHtml5'
                 ]
             });
         });
