@@ -135,7 +135,6 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
         $query->groupBy('date_id');
         $rows= $query->get();
 
-
         $result = [];
         $group[] = [
             'id'=>$teacherId,
