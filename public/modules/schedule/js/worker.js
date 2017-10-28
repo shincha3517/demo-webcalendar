@@ -25,7 +25,7 @@ var Home = {
                 //show timeline
                 Home.onShowTimeLine(teacher_id,selectedDate);
 
-                $('#step3').hide();
+                // $('#step3').hide();
             }
         });
     },
