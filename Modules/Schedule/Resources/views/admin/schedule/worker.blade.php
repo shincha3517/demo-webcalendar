@@ -77,15 +77,21 @@
                                                     <label>Absent From</label>
                                                     <div class="form-group">
                                                         <select class="form-control">
-                                                            <option>7:00 AM</option>
-                                                            <option>7:30 AM</option>
+                                                            @if(!empty($timeSlot))
+                                                                @foreach($timeSlot as $ts)
+                                                                    <option>{{$ts['start']}}</option>
+                                                                @endforeach
+                                                            @endif
                                                         </select>
                                                     </div>
                                                     <label>Absent To</label>
                                                     <div class="form-group">
                                                         <select class="form-control">
-                                                            <option>7:00 AM</option>
-                                                            <option>7:30 AM</option>
+                                                            @if(!empty($timeSlot))
+                                                                @foreach($timeSlot as $ts)
+                                                                    <option>{{$ts['start']}}</option>
+                                                                @endforeach
+                                                            @endif
                                                         </select>
                                                     </div>
                                                 </div>

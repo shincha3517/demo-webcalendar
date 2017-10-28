@@ -374,7 +374,10 @@ class ScheduleController extends AdminBaseController
         $teacher = Teacher::get()->first();
         $teachers = $this->teacherRepository->all();
 
-        return view('schedule::admin.schedule.worker', compact('currentUser','teachers','teacher'));
+        $date = '10/18/2017';
+        $timeSlot = $this->scheduleRepository->getOldTimeSlot($date);
+
+        return view('schedule::admin.schedule.worker', compact('currentUser','teachers','teacher','timeSlot'));
     }
 
     public function getFreeListTeacherWithAssigned(Request $request){
