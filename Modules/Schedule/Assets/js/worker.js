@@ -25,7 +25,8 @@ var Home = {
                 //show timeline
                 Home.onShowTimeLine(teacher_id,selectedDate);
 
-                $('#step3').hide();
+                $('#step3').show();
+                $('#step4').show();
             }
         });
     },
@@ -554,6 +555,18 @@ var Home = {
 
             $(this).parents('.form-group').remove();
 
+        });
+
+        $("#myTab a").click(function(e){
+            e.preventDefault();
+            $("#myTab a").removeClass('active').removeClass('btn-primary');
+            $(this).addClass('btn-primary');
+
+            $('.tab-pane').removeClass('active');
+
+            $(this).tab('show').addClass('active');
+
+            $('#absentType').val($(this).attr('id'));
         });
     }
 }

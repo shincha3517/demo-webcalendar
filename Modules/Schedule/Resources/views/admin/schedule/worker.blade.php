@@ -54,15 +54,15 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">Step 3: Select Full Day absent or Partial Day absent </div>
                             <div class="panel-body">
-                                <div class="row btn-pref">
+                                <div class="row btn-pref" id="myTab">
                                     <div class="col-xs-4">
-                                        <button type="button" class="btn btn-primary" id="fullDay" href="#tab1" data-toggle="tab">FULL DAY Absent</button>
+                                        <a class="btn btn-default btn-primary" id="fullDay" href="#tab1">FULL DAY Absent</a>
                                     </div>
                                     <div class="col-xs-4">
-                                        <button type="button" class="btn btn-default" id="partialDay" href="#tab2" data-toggle="tab">PARTIAL DAY Absent</button>
+                                        <a class="btn btn-default" id="partialDay" href="#tab2">PARTIAL DAY Absent</a>
                                     </div>
                                     <div class="col-xs-4">
-                                        <button type="button" class="btn btn-default" id="prolonged" href="#tab3" data-toggle="tab">PROLONGED Absent</button>
+                                        <a class="btn btn-default" id="prolonged" href="#tab3">PROLONGED Absent</a>
                                     </div>
                                 </div>
                                 <div class="well">
@@ -116,6 +116,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <input type="hidden" value="" id="absentType" />
                             </div>
                         </div>
                     </div>
