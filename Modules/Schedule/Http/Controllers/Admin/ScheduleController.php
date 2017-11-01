@@ -345,11 +345,11 @@ class ScheduleController extends AdminBaseController
             $phoneNumber = env('DEFAULT_PHONENUMBER');
             $from = env('DEFAULT_PHONENUMBER');
 
-//            Nexmo::message()->send([
-//                'to' => $phoneNumber,
-//                'from' => $from,
-//                'text' => $body
-//            ]);
+            Nexmo::message()->send([
+                'to' => $phoneNumber,
+                'from' => $from,
+                'text' => $body
+            ]);
             $request->session()->flash('success','Send SMS successfully');
         }
         else{
