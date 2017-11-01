@@ -637,8 +637,14 @@ var Home = {
                         if(data.assignments.length > 0){
                             $('.assignment-box ul').html('');
                             $.each(data.assignments, function( index, value ) {
-                                // console.log( index + ": " + value );
-                                $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' for lesson '+value.lesson+' from '+value.start_time+'-'+value.end_time+'</li>');
+                                // console.log( value);
+
+                                if(value.schedule_type !='absent'){
+                                    $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' for lesson '+value.lesson+' from '+value.start_time+'-'+value.end_time+'</li>');
+                                }else{
+                                    $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' from '+value.start_date+' to '+value.end_date+'</li>');
+                                }
+
                                 // $('.assignment-box').fadeIn();
                             });
                         }

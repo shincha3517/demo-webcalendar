@@ -37,8 +37,6 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div id="datepicker"></div>
-                                            <input type="hidden" id="my_hidden_input" />
-                                            <input type="hidden" id="teacherId" value="{{$teacher->id}}" />
                                         </div>
                                     </div>
                                 </div>
@@ -76,7 +74,7 @@
                                                 <div class="col-xs-4">
                                                     <label>Absent From</label>
                                                     <div class="form-group">
-                                                        <select class="form-control">
+                                                        <select id="startTime" class="form-control">
                                                             @if(!empty($timeSlot))
                                                                 @foreach($timeSlot as $ts)
                                                                     <option>{{$ts['start']}}</option>
@@ -86,7 +84,7 @@
                                                     </div>
                                                     <label>Absent To</label>
                                                     <div class="form-group">
-                                                        <select class="form-control">
+                                                        <select id="endTime" class="form-control">
                                                             @if(!empty($timeSlot))
                                                                 @foreach($timeSlot as $ts)
                                                                     <option>{{$ts['start']}}</option>
@@ -104,11 +102,11 @@
                                                 <div class="col-xs-4">
                                                     <label> From</label>
                                                     <div class="form-group">
-                                                        <input type="text" value="" placeholder="{{\Carbon\Carbon::today()->format('d-m-Y')}}" />
+                                                        <input type="text" id="startDate" value="{{\Carbon\Carbon::today()->format('m/d/Y')}}" placeholder="{{\Carbon\Carbon::today()->format('m/d/Y')}}" />
                                                     </div>
                                                     <label> To</label>
                                                     <div class="form-group">
-                                                        <input type="text" value="" placeholder="{{\Carbon\Carbon::today()->format('d-m-Y')}}" />
+                                                        <input type="text" id="endDate" value="{{\Carbon\Carbon::tomorrow()->format('m/d/Y')}}" placeholder="{{\Carbon\Carbon::tomorrow()->format('m/d/Y')}}" />
                                                     </div>
                                                 </div>
                                                 <div class="col-xs-4"></div>
@@ -116,7 +114,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" value="" id="absentType" />
+
                             </div>
                         </div>
                     </div>
@@ -127,13 +125,23 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <form class="form-horizontal" method="post" action="{{route('admin.schedule.sendSMS')}}">
+                                        <form class="form-horizontal" method="post" action="{{route('admin.schedule.sendAbsentRequest')}}">
                                             {{csrf_field()}}
+                                            <input type="hidden" name="absentType" value="fullDay" id="absentType" />
+                                            <input type="hidden" name="selectedDate" id="my_hidden_input" />
+                                            <input type="hidden" name="teacherId" id="teacherId" value="{{$teacher->id}}" />
+
+                                            <input type="hidden" name="input_startTime" value="" id="input_startTime" />
+                                            <input type="hidden" name="input_endTime" value="" id="input_endTime" />
+
+                                            <input type="hidden" name="input_startDate" value="" id="input_startDate" />
+                                            <input type="hidden" name="input_endDate" value="" id="input_endDate" />
+
                                             <div class="teacherForm">
                                                 <div class="form-group">
                                                     <label for="name" class="col-md-4 control-label">Select Teacher</label>
                                                     <div class="col-md-5">
-                                                        <select class="form-control" id="selectedUserAvailabel">
+                                                        <select class="form-control" name="replaceTeacherId" id="selectedUserAvailabel">
                                                             @if(count($teachers) > 0)
                                                                 @foreach($teachers as $item)
                                                                     <option value="{{$item->id}}">{{$item->name}}</option>
@@ -150,16 +158,27 @@
                                             <div class="form-group">
                                                 <label for="name" class="col-md-4 control-label">Reason for being absent</label>
                                                 <div class="col-md-6">
-                                                    <select class="form-control">
-                                                        <option>Choose reason bellow</option>
-                                                        <option>Official Reasons</option>
+                                                    <select class="form-control" name="reason">
+                                                        <option value="">--choose item bellow</option>
+                                                        <option value="medical leave">medical leave</option>
+                                                        <option value="on course">on course</option>
+                                                        <option value="on official duty">on official duty</option>
+                                                        <option value="off-in-lieu">off-in-lieu</option>
+                                                        <option value="time off">time off</option>
+                                                        <option value="child care leave">child care leave</option>
+                                                        <option value="child care sick leave">child care sick leave</option>
+                                                        <option value="compassionate leave">compassionate leave</option>
+                                                        <option value="hospitalisation leave">hospitalisation leave</option>
+                                                        <option value="maternity leave">maternity leave</option>
+                                                        <option value="maternity leave">paternity leave</option>
+                                                        <option value="others">others</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="name" class="col-md-4 control-label">Addition Information(optional):</label>
                                                 <div class="col-md-6">
-                                            <textarea class="form-control" cols="4" rows="5"></textarea>
+                                            <textarea class="form-control" cols="4" rows="5" name="remark"></textarea>
                                                 </div>
                                             </div>
                                             <div class="form-group">

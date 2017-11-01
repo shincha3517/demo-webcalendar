@@ -567,6 +567,30 @@ var Home = {
             $(this).tab('show').addClass('active');
 
             $('#absentType').val($(this).attr('id'));
+
+            if($(this).attr('id') == 'partialDay'){
+                $('#input_startTime').val($('#startTime').val());
+                $('#input_endTime').val($('#endTime').val());
+            }
+            if($(this).attr('id') == 'prolonged'){
+                $('#input_startDate').val($('#startDate').val());
+                $('#input_endDate').val($('#endDate').val());
+            }
+
+        });
+
+        $('#startTime').on('change', function (e) {
+            $('#input_startTime').val($(this).val());
+        });
+        $('#endTime').on('change', function (e) {
+            $('#input_endTime').val($(this).val());
+        });
+
+        $('#startDate').on('change', function (e) {
+            $('#input_startDate').val($(this).val());
+        });
+        $('#endDate').on('change', function (e) {
+            $('#input_endDate').val($(this).val());
         });
     }
 }

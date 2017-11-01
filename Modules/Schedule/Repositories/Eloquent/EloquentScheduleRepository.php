@@ -167,6 +167,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
         $beAssignedSchedules = Assignment::where('replaced_teacher_id',$teacher->id)
             ->where('selected_date',$dayName->toDateString())
             ->where('is_past',0)
+            ->where('schedule_type','old')
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_id;
@@ -412,5 +413,28 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
 
         //Assignment
         $assignment = Assignment::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->where('is_past',0)->delete();
+    }
+
+    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType){
+        $selectedDate = Carbon::parse($replaceDate)->toDateString();
+
+        $teacher = Teacher::find($teacherId);
+        $replaceTeacher = Teacher::find($replaceTeacherId);
+
+        Assignment::create([
+            'teacher_id'=>$teacher->id,
+            'replaced_teacher_id'=>$replaceTeacher->id,
+            'teacher_name'=> $teacher->name,
+            'replaced_teacher_name'=> $replaceTeacher->name,
+            'start_date'=> $startDate,
+            'end_date'=> $endDate,
+            'subject'=>$absentType,
+            'selected_date'=>$selectedDate,
+            'reason'=>$reason,
+            'additionalRemark'=>$additionalRemark,
+            'schedule_type'=>'absent'
+        ]);
+
+        return true;
     }
 }

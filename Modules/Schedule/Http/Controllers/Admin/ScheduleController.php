@@ -285,6 +285,9 @@ class ScheduleController extends AdminBaseController
                 'lesson'=>$item->lesson,
                 'start_time'=>substr(Carbon::parse($item->start_date)->toTimeString(),0,-3),
                 'end_time'=>substr(Carbon::parse($item->end_date)->toTimeString(),0,-3),
+                'schedule_type'=>$item->schedule_type,
+                'start_date'=> Carbon::parse($item->start_date)->toDateTimeString(),
+                'end_date'=> Carbon::parse($item->start_date)->toDateTimeString(),
             ];
         });
         $assignments = $assignmentArray->all();
@@ -347,6 +350,64 @@ class ScheduleController extends AdminBaseController
 //                'from' => $from,
 //                'text' => $body
 //            ]);
+            $request->session()->flash('success','Send SMS successfully');
+        }
+        else{
+            $request->session()->flash('error','Send SMS error');
+        };
+        return redirect()->back();
+    }
+
+    public function sendAbsentRequest(Request $request){
+
+        //update schedule
+//        dd($request->all());
+        $selectedDate = $request->get('selectedDate');
+        $teacherId = $request->get('teacherId');
+        $replaceTeacherId = $request->get('replaceTeacherId');
+        $reason = $request->get('reason');
+        $additionalRemark = $request->get('remark');
+
+        $absentType = $request->get('absentType');
+        if($absentType == 'fullDay'){
+            $startDate = Carbon::today()->setTime(00,00,00)->toDateTimeString();
+            $endDate = Carbon::today()->setTime(23,59,59)->toDateTimeString();
+        }
+        if($absentType == 'partialDay'){
+            $startTime = explode(':',$request->get('input_startTime'));
+            $endTime = explode(':',$request->get('input_endTime'));
+
+            $startDate = Carbon::today()->setTime($startTime[0],$startTime[1],00)->toDateTimeString();
+            $endDate = Carbon::today()->setTime($endTime[0],$endTime[1],59)->toDateTimeString();
+        }
+        if($absentType == 'prolonged'){
+            $inputStartDate = $request->get('input_startDate');
+            $inputEndDate = $request->get('input_endDate');
+
+            $startDate = Carbon::parse($inputStartDate)->setTime(00,00,00)->toDateTimeString();
+            $endDate = Carbon::parse($inputEndDate)->setTime(23,59,59)->toDateTimeString();
+        }
+
+        $body = $request->get('msg_body');
+
+        $scheduleTable = $this->_getScheduleTable($selectedDate);
+        $this->_getRepository($scheduleTable);
+
+        $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType);
+        if($replaceStatus){
+            $phoneNumber = env('DEFAULT_PHONENUMBER');
+            $from = env('DEFAULT_PHONENUMBER');
+
+            $teacher = Teacher::find($teacherId);
+            $replaceTeacher = Teacher::find($replaceTeacherId);
+
+            $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name."\n From: $startDate To: $endDate \n Reason: $reason";
+
+            Nexmo::message()->send([
+                'to' => $phoneNumber,
+                'from' => $from,
+                'text' => $body
+            ]);
             $request->session()->flash('success','Send SMS successfully');
         }
         else{

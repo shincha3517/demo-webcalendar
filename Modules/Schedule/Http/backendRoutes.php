@@ -56,6 +56,12 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'ScheduleController@sendNotification',
 //        'middleware' => 'can:schedule.schedules.upload',
     ]);
+    $router->post('send-absent-request', [
+        'as' => 'admin.schedule.sendAbsentRequest',
+        'uses' => 'ScheduleController@sendAbsentRequest',
+//        'middleware' => 'can:schedule.schedules.upload',
+    ]);
+
     $router->post('cancel', [
         'as' => 'admin.schedule.cancel',
         'uses' => 'ScheduleController@cancelReplaceTeacher',

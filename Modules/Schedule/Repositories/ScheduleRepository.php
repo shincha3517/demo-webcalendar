@@ -19,4 +19,6 @@ interface ScheduleRepository extends BaseRepository
     public function getSchedulesInArray($ids = array());
 
     public function userCancelAssignSchedule($scheduleId,$date);
+
+    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType);
 }
