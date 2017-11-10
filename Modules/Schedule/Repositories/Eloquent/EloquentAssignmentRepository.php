@@ -32,6 +32,14 @@ class EloquentAssignmentRepository extends EloquentBaseRepository implements Ass
 
             $query->where('selected_date','>=',$startMonth);
             $query->where('selected_date','<=',$endMonth);
+        }elseif($type == 'term'){
+            $date = Carbon::now()->toDateString();
+
+            $startMonth = Carbon::parse($date)->subMonths(10)->startOfMonth();
+            $endMonth = Carbon::parse($date)->endOfMonth();
+
+            $query->where('selected_date','>=',$startMonth);
+            $query->where('selected_date','<=',$endMonth);
         }elseif($type == 'year'){
             $date = Carbon::now()->toDateString();
 

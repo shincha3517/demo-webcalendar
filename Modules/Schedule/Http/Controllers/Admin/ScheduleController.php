@@ -309,6 +309,8 @@ class ScheduleController extends AdminBaseController
         $this->_getRepository($scheduleTable);
 
         $schedules = $this->repository->getUserSchedules($userId , $date);
+        $termNumber = $this->assignmentRepository->getReliefNumber('term',$date,$userId);
+        $schedules['data']['time_data'][0]['required']['term_done'] = $termNumber;
 
         return response()->json(['result'=>$schedules,'status'=>1]);
     }
@@ -479,7 +481,7 @@ class ScheduleController extends AdminBaseController
 
         $numberAssignmentInSelectedDate = $this->assignmentRepository->getReliefNumber('date',$selectedDate,$teacher->id);
         $numberAssignmentInWeek = $this->assignmentRepository->getReliefNumber('week',$selectedDate,$teacher->id);
-        $numberAssignmentInMonth = $this->assignmentRepository->getReliefNumber('month',$selectedDate,$teacher->id);
+        $numberAssignmentInTerm = $this->assignmentRepository->getReliefNumber('term',$selectedDate,$teacher->id);
         $numberAssignmentInYear = $this->assignmentRepository->getReliefNumber('year',$selectedDate,$teacher->id);
 
 
@@ -487,7 +489,7 @@ class ScheduleController extends AdminBaseController
             $schedules = $this->repository->getSchedulesInArray($scheduleIds);
         }
 
-        return view('schedule::admin.schedule.assign_form_modal',compact('teacher','schedules','selectedDate','formatedDate','numberAssignmentInSelectedDate','numberAssignmentInWeek','numberAssignmentInMonth','numberAssignmentInYear'));
+        return view('schedule::admin.schedule.assign_form_modal',compact('teacher','schedules','selectedDate','formatedDate','numberAssignmentInSelectedDate','numberAssignmentInWeek','numberAssignmentInTerm','numberAssignmentInYear'));
     }
 
     public function cancelReplaceTeacher(Request $request){

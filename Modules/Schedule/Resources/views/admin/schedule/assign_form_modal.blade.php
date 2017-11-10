@@ -110,7 +110,7 @@ Thank you.</textarea>
                 <h5>{{$teacher->name}}</h5>
                 <p>Relief assigned {{$formatedDate}}: <span>{{$numberAssignmentInSelectedDate}}</span></p>
                 <p>Relief assigned in week: <span>{{$numberAssignmentInWeek}}</span></p>
-                <p>Relief assigned this month: <span>{{$numberAssignmentInMonth}}</span></p>
+                <p>Relief assigned this term: <span>{{$numberAssignmentInTerm}}</span></p>
                 <p>Relief assigned this year: <span>{{$numberAssignmentInYear}}</span></p>
             </div>
             <div class="info">

@@ -100,6 +100,7 @@ var Home = {
                         html += '<tr>';
                         html += '<td>';
                         html += '<b>' + data.time_data[j].required.teacher + '</b>';
+                        html += '<p>Term done: <b>' + data.time_data[j].required.term_done + '</b></p>';
                         html += '</td>';
                         for (var k = 1; k <= data.time_slot.length; k++) {
                             if (typeof data.time_data[j].required.classes != 'undefined') {
