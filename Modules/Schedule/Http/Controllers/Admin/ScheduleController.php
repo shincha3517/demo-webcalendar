@@ -287,7 +287,7 @@ class ScheduleController extends AdminBaseController
                 'end_time'=>substr(Carbon::parse($item->end_date)->toTimeString(),0,-3),
                 'schedule_type'=>$item->schedule_type,
                 'start_date'=> Carbon::parse($item->start_date)->toDateTimeString(),
-                'end_date'=> Carbon::parse($item->start_date)->toDateTimeString(),
+                'end_date'=> Carbon::parse($item->end_date)->toDateTimeString(),
             ];
         });
         $assignments = $assignmentArray->all();
