@@ -4,6 +4,7 @@ namespace Modules\Schedule\Http\Controllers;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Core\Http\Controllers\BasePublicController;
 use Modules\Menu\Repositories\MenuItemRepository;
@@ -50,5 +51,33 @@ class PublicController extends BasePublicController
             Log::info('not inbound message');
             echo 'not inbound message';
         }
+    }
+
+    public function receiveSMSReply(Request $request){
+        if($request->has(['mno','txt','dtm','charset'])){
+
+            $result = [
+                'status'=> true,
+                'message'=> 'update data successful',
+                'data'=> $request->all()
+            ];
+        }else{
+            $result = [
+                'status'=> false,
+                'message'=> 'update data failure',
+                'data'=> $request->all()
+            ];
+
+        }
+
+        DB::table('api_logs')->insert([
+            'method'=>$request->method(),
+            'request_url'=> $request->url(),
+            'request_string'=> json_encode($request->all()),
+            'response_string'=> json_encode($result),
+            'request_ip'=> $request->ip(),
+            'request_header'=> $request->headers,
+        ]);
+        return response()->json($result);
     }
 }
