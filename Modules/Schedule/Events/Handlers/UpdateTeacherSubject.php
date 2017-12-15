@@ -62,8 +62,12 @@ class UpdateTeacherSubject implements ShouldQueue
         if($teacher){
             Log::info('====================================== START UPDATE TEACHER' . $teacherName.'==========================');
             $subject = $objWorksheet->getCellByColumnAndRow(1 , $rowNumber)->getValue();
+            $phone = $objWorksheet->getCellByColumnAndRow(2 , $rowNumber)->getValue();
+            $email = $objWorksheet->getCellByColumnAndRow(3 , $rowNumber)->getValue();
             if(!empty($subject)){
                 $teacher->subject = $subject;
+                $teacher->phone_number = $phone;
+                $teacher->email = $email;
                 $teacher->save();
             }
             Log::info('====================================== END UPDATE TEACHER' . $teacherName.'==========================');

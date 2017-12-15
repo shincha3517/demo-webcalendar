@@ -3,6 +3,7 @@
 namespace Modules\Schedule\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -23,6 +24,7 @@ use Modules\Schedule\Events\ReadEventSchedule;
 use Modules\Schedule\Events\ReadSubjectSheet;
 use Modules\Schedule\Events\ReadTeacherExcelFile;
 use Modules\Schedule\Http\Requests\UploadExcelRequest;
+use Modules\Schedule\Jobs\SendNotificationMail;
 use Modules\Schedule\Repositories\AssignmentRepository;
 use Modules\Schedule\Repositories\EventScheduleRepository;
 use Modules\Schedule\Repositories\ScheduleRepository;
@@ -191,7 +193,7 @@ class ScheduleController extends AdminBaseController
         //GET EVENT SHEET
         $objWorksheet = $objPHPExcel->getSheet(2);
         $highestRow = $objWorksheet->getHighestRow();
-        $highestRow = $highestRow-1;
+//        $highestRow = $highestRow-1;
 
         for($rowNumber=1; $rowNumber<= $highestRow; $rowNumber++){
             event(new ReadSubjectSheet($rowNumber));
@@ -344,18 +346,32 @@ class ScheduleController extends AdminBaseController
 
         $replaceStatus = $this->repository->replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark);
         if($replaceStatus){
-            $phoneNumber = env('DEFAULT_PHONENUMBER');
-            $from = env('DEFAULT_PHONENUMBER');
+            $replaceTeacher = $this->teacherRepository->find($replaceTeacherId);
 
-            Nexmo::message()->send([
-                'to' => $phoneNumber,
-                'from' => $from,
-                'text' => $body
-            ]);
-            $request->session()->flash('success','Send SMS successfully');
+//            if($request->has('send_sms')){
+//                if($replaceTeacher){
+//                    $phoneNumber = $replaceTeacher->phone_number;
+//                    $smsStatus = $this->_sendSMS($phoneNumber,$body);
+//                    if($smsStatus){
+//                        $request->session()->flash('success','Send SMS successfully');
+//                    }
+//                    else{
+//                        $request->session()->flash('error','Can not send SMS to teacher');
+//                    }
+//                }else{
+//                    $request->session()->flash('error','Can not send SMS to teacher');
+//                }
+//            }
+            if($request->has('send_email')){
+                if($replaceTeacher){
+                    dispatch(new SendNotificationMail($replaceTeacher,$body));
+                }else{
+                    $request->session()->flash('error','Can not send Email to teacher');
+                }
+            }
         }
         else{
-            $request->session()->flash('error','Send SMS error');
+            $request->session()->flash('error','Can not relief teacher');
         };
         return redirect()->back();
     }
@@ -405,12 +421,19 @@ class ScheduleController extends AdminBaseController
 
             $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name."\n From: $startDate To: $endDate \n Reason: $reason";
 
-            Nexmo::message()->send([
-                'to' => $phoneNumber,
-                'from' => $from,
-                'text' => $body
-            ]);
-            $request->session()->flash('success','Send SMS successfully');
+//            Nexmo::message()->send([
+//                'to' => $phoneNumber,
+//                'from' => $from,
+//                'text' => $body
+//            ]);
+
+            $smsStatus = $this->_sendSMS($phoneNumber,$body);
+            if($smsStatus){
+                $request->session()->flash('success','Send SMS successfully');
+            }
+            else{
+                $request->session()->flash('error','Can not send SMS to teacher');
+            }
         }
         else{
             $request->session()->flash('error','Send SMS error');
@@ -508,5 +531,56 @@ class ScheduleController extends AdminBaseController
         $request->session()->flash('success','Cancel replace teacher successfully');
 
         return redirect()->to('backend/schedule');
+    }
+
+    public function _sendSMS($toNumber,$body){
+        $username = env('TAR_USERNAME');
+        $pwd = env('TAR_PASSWORD');
+        $tarNumber = $toNumber;
+        $tarBody = $body;
+        $messageId = Carbon::today()->timestamp;
+
+        try {
+            $client = new Client(); //GuzzleHttp\Client
+//            $request = 'http://www.sendquickasp.com/client_api/index.php?username=yuhuasec&passwd=pass1234&tar_num=84986981718&tar_msg=Test&callerid=6584376346&route_to=api_send_sms';
+            $request = 'http://www.sendquickasp.com/client_api/index.php?username='.$username.'&passwd='.$pwd.'&tar_num='.$tarNumber.'&tar_msg='.$tarBody.'&callerid=6584376346&route_to=api_send_sms';
+
+            $sendSMSRequest = $client->get($request);
+            $sendSMSResut = $sendSMSRequest->getBody()->getContents();
+            if(strpos($sendSMSResut,'sent')){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (GuzzleException $error) {
+            echo $error->getMessage();exit;
+        }
+    }
+
+    public function testSMS(Request $request){
+        $username = env('TAR_USERNAME');
+        $pwd = env('TAR_PASSWORD');
+        $tarNumber = '84986981718';
+        $tarBody = 'Test';
+        $messageId = Carbon::today()->timestamp;
+
+        try {
+            $client = new Client(); //GuzzleHttp\Client
+//            $request = 'http://www.sendquickasp.com/client_api/index.php?username=yuhuasec&passwd=pass1234&tar_num=84986981718&tar_msg=Test&callerid=6584376346&route_to=api_send_sms';
+            $request = 'http://www.sendquickasp.com/client_api/index.php?username='.$username.'&passwd='.$pwd.'&tar_num='.$tarNumber.'&tar_msg='.$tarBody.'&callerid=6584376346&route_to=api_send_sms';
+
+            $sendSMSRequest = $client->get($request);
+            $sendSMSResut = $sendSMSRequest->getBody()->getContents();
+            if(strpos($sendSMSResut,'sent')){
+                //sent
+            }else{
+                dd($sendSMSResut);
+            }
+
+
+        }catch (GuzzleException $error) {
+            echo $error->getMessage();exit;
+            return $this->respondInternalError();
+        }
     }
 }

@@ -49,11 +49,11 @@ Thank you.</textarea>
                 <div class="row">
                     <div class="col-md-6">
                         <label class="check-send">
-                            <input type="checkbox" name="send_sms" checked value="">
+                            <input type="checkbox" name="send_sms" checked value="1">
                             Send SMS
                         </label>
                         <label>
-                            <input type="checkbox" name="send_email" value="">
+                            <input type="checkbox" name="send_email" value="1">
                             Send email
                         </label>
                     </div>

@@ -11,4 +11,9 @@ return [
         'index' => 'schedule::report.list schedule',
         'export' => 'schedule::report.export schedule',
     ],
+    'schedule.meeting' => [
+        'index' => 'schedule::meeting.list meeting',
+        'create' => 'schedule::meeting.create meeting',
+        'edit' => 'schedule::meeting.create meeting',
+    ],
 ];

@@ -32,6 +32,7 @@ class ScheduleServiceProvider extends ServiceProvider
     {
         $this->publishConfig('schedule', 'permissions');
         $this->publishConfig('schedule', 'settings');
+        $this->publishConfig('schedule', 'config');
 
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }

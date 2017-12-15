@@ -83,6 +83,27 @@ class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
 
         });
 
+        $menu->group('Meeting', function (Group $group) {
+
+            $group->item(trans('schedule::meeting.meeting'), function (Item $item) {
+                $item->weight(15);
+                $item->authorize(
+                    $this->auth->hasAccess('schedule.meeting.index') or $this->auth->hasAccess('schedule.meeting.create')
+                );
+
+                $item->item(trans('schedule::meeting.list'), function (Item $item) {
+                    $item->weight(16);
+                    $item->icon('fa fa-file-excel-o');
+                    $item->route('admin.schedule.meeting.index');
+                    $item->authorize(
+                        $this->auth->hasAccess('schedule.meeting.index')
+                    );
+                });
+            });
+
+
+        });
+
         return $menu;
     }
 }

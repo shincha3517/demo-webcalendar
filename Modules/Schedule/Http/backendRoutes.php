@@ -92,4 +92,16 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'ReportController@index',
         'middleware' => 'can:schedule.report.index',
     ]);
+
+    $router->get('meeting', [
+        'as' => 'admin.schedule.meeting.index',
+        'uses' => 'ReportController@index',
+        'middleware' => 'can:schedule.meeting.index',
+    ]);
+
+    $router->get('test-sms', [
+        'as' => 'admin.schedule.sms.test',
+        'uses' => 'ScheduleController@testSMS',
+        'middleware' => 'can:schedule.schedules.index',
+    ]);
 });

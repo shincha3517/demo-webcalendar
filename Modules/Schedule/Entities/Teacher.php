@@ -8,7 +8,7 @@ class Teacher extends Model
 {
 
     protected $table = 'makeit__teachers';
-    protected $fillable = ['name','phone_number','subject'];
+    protected $fillable = ['name','phone_number','subject','email'];
 
     public function schedule(){
         return $this->belongsTo(Schedule::class,'id','teacher_id');

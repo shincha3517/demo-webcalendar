@@ -5,5 +5,4 @@ Homestead.yaml
 Homestead.json
 .env
 .php_cs.cache
-composer.lock
 .idea/workspace.xml

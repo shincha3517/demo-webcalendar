@@ -44,9 +44,9 @@ class InsertTeacherSchedule implements ShouldQueue
      */
     public function handle(ImportExcelSchedule $event)
     {
-        if (true) {
-            $this->release(2);
-        }
+//        if (true) {
+//            $this->release(2);
+//        }
 
 
         $path = $event->path;
