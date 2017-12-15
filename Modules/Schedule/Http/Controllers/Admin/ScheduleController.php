@@ -350,7 +350,7 @@ class ScheduleController extends AdminBaseController
 
             if($request->has('send_sms')){
                 if($replaceTeacher){
-                    $phoneNumber = $replaceTeacher->phone_number;
+                    $phoneNumber = '65'.$replaceTeacher->phone_number;
                     $smsStatus = $this->_sendSMS($phoneNumber,$body);
                     if($smsStatus){
                         $request->session()->flash('success','Send SMS successfully');
@@ -413,7 +413,6 @@ class ScheduleController extends AdminBaseController
 
         $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType);
         if($replaceStatus){
-            $phoneNumber = env('DEFAULT_PHONENUMBER');
             $from = env('DEFAULT_PHONENUMBER');
 
             $teacher = Teacher::find($teacherId);
@@ -421,19 +420,21 @@ class ScheduleController extends AdminBaseController
 
             $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name."\n From: $startDate To: $endDate \n Reason: $reason";
 
-//            Nexmo::message()->send([
-//                'to' => $phoneNumber,
-//                'from' => $from,
-//                'text' => $body
-//            ]);
 
-            $smsStatus = $this->_sendSMS($phoneNumber,$body);
-            if($smsStatus){
-                $request->session()->flash('success','Send SMS successfully');
-            }
-            else{
+            if($replaceTeacher){
+                $phoneNumber = '65'.$replaceTeacher->phone_number;
+                $smsStatus = $this->_sendSMS($phoneNumber,$body);
+                if($smsStatus){
+                    $request->session()->flash('success','Send SMS successfully');
+                }
+                else{
+                    $request->session()->flash('error','Can not send SMS to teacher');
+                }
+            }else{
                 $request->session()->flash('error','Can not send SMS to teacher');
             }
+
+            dispatch(new SendNotificationMail($replaceTeacher,$body));
         }
         else{
             $request->session()->flash('error','Send SMS error');
