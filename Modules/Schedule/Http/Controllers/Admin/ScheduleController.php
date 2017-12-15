@@ -348,20 +348,20 @@ class ScheduleController extends AdminBaseController
         if($replaceStatus){
             $replaceTeacher = $this->teacherRepository->find($replaceTeacherId);
 
-//            if($request->has('send_sms')){
-//                if($replaceTeacher){
-//                    $phoneNumber = $replaceTeacher->phone_number;
-//                    $smsStatus = $this->_sendSMS($phoneNumber,$body);
-//                    if($smsStatus){
-//                        $request->session()->flash('success','Send SMS successfully');
-//                    }
-//                    else{
-//                        $request->session()->flash('error','Can not send SMS to teacher');
-//                    }
-//                }else{
-//                    $request->session()->flash('error','Can not send SMS to teacher');
-//                }
-//            }
+            if($request->has('send_sms')){
+                if($replaceTeacher){
+                    $phoneNumber = $replaceTeacher->phone_number;
+                    $smsStatus = $this->_sendSMS($phoneNumber,$body);
+                    if($smsStatus){
+                        $request->session()->flash('success','Send SMS successfully');
+                    }
+                    else{
+                        $request->session()->flash('error','Can not send SMS to teacher');
+                    }
+                }else{
+                    $request->session()->flash('error','Can not send SMS to teacher');
+                }
+            }
             if($request->has('send_email')){
                 if($replaceTeacher){
                     dispatch(new SendNotificationMail($replaceTeacher,$body));
