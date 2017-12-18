@@ -14,4 +14,8 @@ $router->group(['prefix' =>'/sms'], function (Router $router) {
         'as' => 'sms.receive-reply',
         'uses' => 'PublicController@receiveSMSReply',
     ]);
+    $router->post('receive-reply-sms', [
+        'as' => 'sms.receive-reply',
+        'uses' => 'PublicController@receiveSMSReply',
+    ]);
 });
