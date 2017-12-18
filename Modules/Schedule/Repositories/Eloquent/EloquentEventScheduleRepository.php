@@ -348,16 +348,16 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
     public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark){
         if(is_array($schedules)){
             $selectedDate = Carbon::parse($replaceDate)->toDateString();
+            $jobsCode = DB::table('makeit__assignment')->max('code');
+            $jobsCode = $jobsCode+1;
+
+            $pad_length = 4;
+            $pad_char = 0;
+            $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
+
             foreach($schedules as $scheduleId){
                 $selectedSchedule = $this->model->find($scheduleId);
                 $replacedTeacher = Teacher::find($replaceTeacherId);
-
-                $jobsCode = DB::table('makeit__assignment')->max('code');
-                $jobsCode = $jobsCode+1;
-
-                $pad_length = 4;
-                $pad_char = 0;
-                $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
 
                 //delete first
 //                Activity::where('teacher_id',$selectedSchedule->teacher_id)
@@ -394,7 +394,7 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
                     'code'=>$jobsCode,
                 ]);
             }
-            return true;
+            return $jobsCode;
         }
         return false;
     }
