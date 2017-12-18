@@ -38,7 +38,7 @@ Thank you.</textarea>
                         <div class="ch-sms">Character: <span>0</span>/306</div>
                     </div>
                     <div class="col-md-5 text-right p-r-0">
-                        <div class="remind-me">Remind me if <b>Mr Noor</b> does not reply in</div>
+                        <div class="remind-me">Remind me if <b>{{$teacher->name}}</b> does not reply in</div>
                     </div>
                     <div class="col-md-3 text-right">
                         <select class="step5-select">
@@ -114,8 +114,8 @@ Thank you.</textarea>
                 <p>Relief assigned this year: <span>{{$numberAssignmentInYear}}</span></p>
             </div>
             <div class="info">
-                <p>Email: noor_hazemi_ribot@moe.edu.sg</p>
-                <p>Mobile: 6597327704</p>
+                <p>Email: {{$teacher->email}}</p>
+                <p>Mobile: {{$teacher->phone_number}}</p>
             </div>
         </div>
     </div>
