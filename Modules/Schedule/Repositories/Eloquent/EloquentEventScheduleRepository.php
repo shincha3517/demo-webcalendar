@@ -352,6 +352,13 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
                 $selectedSchedule = $this->model->find($scheduleId);
                 $replacedTeacher = Teacher::find($replaceTeacherId);
 
+                $jobsCode = DB::table('makeit__assignment')->max('code');
+                $jobsCode = $jobsCode+1;
+
+                $pad_length = 4;
+                $pad_char = 0;
+                $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
+
                 //delete first
 //                Activity::where('teacher_id',$selectedSchedule->teacher_id)
 //                    ->where('schedule_id',$scheduleId)
@@ -383,7 +390,8 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
                     'selected_date'=>$selectedDate,
                     'reason'=>$reason,
                     'additionalRemark'=>$additionalRemark,
-                    'schedule_type'=>'event'
+                    'schedule_type'=>'event',
+                    'code'=>$jobsCode,
                 ]);
             }
             return true;

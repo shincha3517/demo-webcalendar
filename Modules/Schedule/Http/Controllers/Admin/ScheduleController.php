@@ -347,10 +347,11 @@ class ScheduleController extends AdminBaseController
         $replaceStatus = $this->repository->replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark);
         if($replaceStatus){
             $replaceTeacher = $this->teacherRepository->find($replaceTeacherId);
+            $body .= "\n reply Yes|No ". $replaceStatus;
 
             if($request->has('send_sms')){
                 if($replaceTeacher){
-                    $phoneNumber = '65'.$replaceTeacher->phone_number;
+                    $phoneNumber = $replaceTeacher->phone_number;
                     $smsStatus = $this->_sendSMS($phoneNumber,$body);
                     if($smsStatus){
                         $request->session()->flash('success','Send SMS successfully');

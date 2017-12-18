@@ -13,11 +13,30 @@ use Modules\CompliancePortal\Entities\Compliance;
 use Modules\CompliancePortal\Entities\Control;
 use Modules\CompliancePortal\Entities\CrossCompliance;
 use Modules\CompliancePortal\Entities\Project;
+use Modules\Schedule\Entities\Assignment;
+use Modules\Schedule\Entities\Teacher;
 
 class SMSController extends Controller
 {
     public function receiveSMSReply(Request $request){
         if($request->has(['mno','txt','dtm','charset'])){
+
+            $phoneNumber = substr($request->get('mno'),3,10);
+            $text = explode(' ',$request->get('txt'));
+
+            $teacher = Teacher::where('phone_number',$phoneNumber)->get()->first();
+            if($teacher){
+                if(count($text)){
+                    $jobCode = (int) trim($text[1]);
+                    $status = 0;
+                    if($text[0] == 'Yes' || $text[0]== 'YES'){
+                        $status  = 1;
+                    }elseif($text[0] == 'No' || $text[0]== 'NO'){
+                        $status  = 2;
+                    }
+                    Assignment::where('code',$jobCode)->update(['status'=>$status]);
+                }
+            }
 
             $result = [
                 'status'=> true,

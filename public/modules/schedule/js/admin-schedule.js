@@ -639,11 +639,17 @@ var Home = {
                             $('.assignment-box ul').html('');
                             $.each(data.assignments, function( index, value ) {
                                 // console.log( value);
+                                var jobStatus = '(Not verify)';
+                                if(value.status == 1){
+                                    jobStatus = '(Accepted)';
+                                }else if(value.status == 2){
+                                    jobStatus = '(Rejected)';
+                                }
 
                                 if(value.schedule_type !='absent'){
-                                    $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' for lesson '+value.lesson+' from '+value.start_time+'-'+value.end_time+'</li>');
+                                    $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' for lesson '+value.lesson+' from '+value.start_time+'-'+value.end_time+' '+jobStatus+'</li>');
                                 }else{
-                                    $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' from '+value.start_date+' to '+value.end_date+'</li>');
+                                    $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' from '+value.start_date+' to '+value.end_date+' '+jobStatus+'</li>');
                                 }
 
                                 // $('.assignment-box').fadeIn();
