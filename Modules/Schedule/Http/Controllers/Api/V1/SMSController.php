@@ -19,6 +19,7 @@ use Modules\Schedule\Entities\Teacher;
 class SMSController extends Controller
 {
     public function receiveSMSReply(Request $request){
+        $result = [];
         if($request->has(['mno','txt','dtm','charset'])){
 
             $phoneNumber = substr($request->get('mno'),3,10);
@@ -29,28 +30,44 @@ class SMSController extends Controller
                 if(count($text)){
                     $jobCode = (int) trim($text[1]);
                     $status = 0;
+                    $reply = '';
                     if($text[0] == 'Yes' || $text[0]== 'YES'){
                         $status  = 1;
+                        $reply = 'Confirmed';
                     }elseif($text[0] == 'No' || $text[0]== 'NO'){
                         $status  = 2;
+                        $reply = 'Rejected';
                     }
+
+                    //update confirm SMS
                     Assignment::where('code',$jobCode)->update(['status'=>$status]);
+
+                    $job = Assignment::where('code',$jobCode)->get()->first();
+                    if($job){
+                        //send confirm SMS
+                        $body = $job->replaced_teacher_name.' has '.$reply;
+                        $this->_sendSMS($job->teacher->phone_number,$body);
+                    }
+
+
+
+                    $result = [
+                        'status'=> true,
+                        'message'=> 'update data successful',
+                        'data'=> $request->all()
+                    ];
                 }
             }
+        }
 
-            $result = [
-                'status'=> true,
-                'message'=> 'update data successful',
-                'data'=> $request->all()
-            ];
-        }else{
+        if(empty($result)){
             $result = [
                 'status'=> false,
                 'message'=> 'update data failure',
                 'data'=> $request->all()
             ];
-
         }
+
 
         DB::table('api_logs')->insert([
             'method'=>$request->method(),
@@ -61,5 +78,29 @@ class SMSController extends Controller
             'request_header'=> $request->headers,
         ]);
         return response()->json($result);
+    }
+
+    public function _sendSMS($toNumber,$body){
+        $username = env('TAR_USERNAME');
+        $pwd = env('TAR_PASSWORD');
+        $tarNumber = $toNumber;
+        $tarBody = $body;
+        $messageId = Carbon::today()->timestamp;
+
+        try {
+            $client = new Client(); //GuzzleHttp\Client
+//            $request = 'http://www.sendquickasp.com/client_api/index.php?username=yuhuasec&passwd=pass1234&tar_num=84986981718&tar_msg=Test&callerid=6584376346&route_to=api_send_sms';
+            $request = 'http://www.sendquickasp.com/client_api/index.php?username='.$username.'&passwd='.$pwd.'&tar_num='.$tarNumber.'&tar_msg='.$tarBody.'&callerid=6584376346&route_to=api_send_sms';
+
+            $sendSMSRequest = $client->get($request);
+            $sendSMSResut = $sendSMSRequest->getBody()->getContents();
+            if(strpos($sendSMSResut,'sent')){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (GuzzleException $error) {
+            echo $error->getMessage();exit;
+        }
     }
 }
