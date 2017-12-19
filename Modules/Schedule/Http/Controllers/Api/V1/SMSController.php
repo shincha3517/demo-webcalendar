@@ -2,7 +2,10 @@
 
 namespace Modules\Schedule\Http\Controllers\Api\V1;
 
+use Carbon\Carbon;
 use Faker\Factory;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
