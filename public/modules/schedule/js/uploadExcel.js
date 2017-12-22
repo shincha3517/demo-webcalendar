@@ -15,6 +15,9 @@ var UploadExcel = {
     },
     init: function(){
         this.onIntervalSelect();
+        $('.datepicker').datepicker({
+            todayHighlight: true,
+        });
     }
 }
 UploadExcel.init();

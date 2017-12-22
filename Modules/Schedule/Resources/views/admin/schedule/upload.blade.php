@@ -10,7 +10,7 @@
 </ol>
 @stop
 @push('css-stack')
-
+    <link href="{{ Module::asset('schedule:css/bootstrap-datepicker.min.css?v='.\Carbon\Carbon::now()->timestamp) }}" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -50,9 +50,9 @@
 @push('js-stack')
 <?php $locale = App::getLocale(); ?>
 
+<script src="{{ Module::asset('schedule:js/bootstrap-datepicker.min.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
 <script src="{{ Module::asset('schedule:js/uploadExcel.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
 <script type="text/javascript">
-
     var BASE_URL = '{{url('/')}}';
 </script>
 @endpush

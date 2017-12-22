@@ -25,6 +25,21 @@
             </div>
         </div>
 
+        <div class="bootstrap-timepicker">
+            <div class="bootstrap-timepicker-widget dropdown-menu"></div>
+            <div class='form-group{{ $errors->has("startTime") ? ' has-error' : '' }}'>
+                {!! Form::label("startDate", 'Start Date Old Week') !!}
+                <div class="input-group">
+                    {!! Form::text("startDate", old("startDate"), ['class' => 'form-control datepicker','id'=>'startDate']) !!}
+                    {!! $errors->first("startDate", '<span class="help-block">:message</span>') !!}
+
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <?php if (config('asgard.page.config.partials.translatable.create') !== []): ?>
             <?php foreach (config('asgard.page.config.partials.translatable.create') as $partial): ?>
                 @include($partial)

@@ -124,8 +124,9 @@ class ScheduleController extends AdminBaseController
         Assignment::whereNotNull('teacher_id')->update(['is_past'=>1]);
 
         //SETUP STARTTIME
-        $date = Carbon::now()->toDateString();
-        $scheduleDate = Carbon::createFromFormat('Y-m-d g:ia',$date.' '.$startTime)->toDateTimeString();
+        $date = $request->get('startDate');
+//        $scheduleDate = Carbon::createFromFormat('Y-m-d g:ia',$date.' '.$startTime)->toDateTimeString();
+        $scheduleDate = Carbon::createFromFormat('m/d/Y',$date)->toDateTimeString();
 
         ScheduleDate::create([
            'date'=>$scheduleDate,
@@ -253,15 +254,15 @@ class ScheduleController extends AdminBaseController
 
         $totalWeekOfMonth = $weekOfMonth + $weekOfMonthUploaded;
         if($totalWeekOfMonth % 2 == 0){
-            $tableName = 'old';
-        }else{
             $tableName = 'event';
+        }else{
+            $tableName = 'old';
         }
         return $tableName;
     }
     private function _getDateUploadExcelFile(){
         $item = ScheduleDate::first();
-        return $item->created_at;
+        return $item->start_date;
     }
     private function _getRepository($scheduleTable){
         if($scheduleTable == 'old'){
