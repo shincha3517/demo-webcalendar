@@ -419,27 +419,40 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
         $assignment = Assignment::where('schedule_event_id',$scheduleId)->where('selected_date',$selectedDate)->where('is_past',0)->delete();
     }
 
-    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType){
+    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId){
         $selectedDate = Carbon::parse($replaceDate)->toDateString();
+        $jobsCode = DB::table('makeit__assignment')->max('code');
+        $jobsCode = $jobsCode+1;
+
+        $pad_length = 4;
+        $pad_char = 0;
+        $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
 
         $teacher = Teacher::find($teacherId);
         $replaceTeacher = Teacher::find($replaceTeacherId);
+
+        $selectedSchedule = $this->model->find($scheduleId);
 
         Assignment::create([
             'teacher_id'=>$teacher->id,
             'replaced_teacher_id'=>$replaceTeacher->id,
             'teacher_name'=> $teacher->name,
             'replaced_teacher_name'=> $replaceTeacher->name,
+            'schedule_event_id'=>$scheduleId,
 
             'start_date'=> $startDate,
             'end_date'=> $endDate,
+            'slot_id'=>$selectedSchedule ? $selectedSchedule->slot_id : null,
+            'lesson'=>$selectedSchedule ? $selectedSchedule->class_name : null,
             'subject'=>$absentType,
             'selected_date'=>$selectedDate,
             'reason'=>$reason,
             'additionalRemark'=>$additionalRemark,
-            'schedule_type'=>'absent'
+            'schedule_type'=>'absent',
+            'schedule_type'=>'event',
+            'code'=>$jobsCode,
         ]);
 
-        return true;
+        return $jobsCode;
     }
 }

@@ -33,6 +33,7 @@
                             <th>Lesson</th>
                             <th>Reason for absence</th>
                             <th>Additional remarks</th>
+                            <th>Status</th>
                             <th>{{ trans('core::core.table.created at') }}</th>
                         </tr>
                         </thead>
@@ -48,6 +49,19 @@
                             <td>{{$item->lesson}}</td>
                             <td>{{$item->reason}}</td>
                             <td>{{$item->additionalRemark}}</td>
+                            <td>
+                                <?php
+                                    if($item->status ==1){
+                                        $status = 'Accepted';
+                                    }elseif($item->status ==2){
+                                        $status = 'Rejected';
+                                    }
+                                    else{
+                                        $status = 'Not verify';
+                                    }
+                                    echo $status;
+                                ?>
+                            </td>
                             <td>{{$item->created_at}}</td>
                         </tr>
                         <?php endforeach; ?>

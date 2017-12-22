@@ -174,6 +174,26 @@ var Home = {
                                                                 html += '</table>';
                                                                 html += '</td>';
                                                                 k = k + data.time_data[j].required.red[r].slot.length;
+                                                                if (typeof data.time_data[j].required.light_blue != 'undefined') {
+                                                                    for (var r = 0; r < data.time_data[j].required.light_blue.length; r++) {
+                                                                        if (k == data.time_data[j].required.light_blue[r].slot[0]) {
+                                                                            html += '<td colspan="' + data.time_data[j].required.light_blue[r].slot.length + '">';
+                                                                            html += '<b>' + data.time_data[j].required.light_blue[r].lesson + '</b>';
+                                                                            html += '<p>' + data.time_data[j].required.light_blue[r].class + '</p>';
+                                                                            html += '<table class="time_slot-child">';
+                                                                            html += '<tbody>';
+                                                                            html += '<tr>';
+                                                                            for (var l = 0; l < data.time_data[j].required.light_blue[r].slot.length; l++) {
+                                                                                html += '<td class="light_blue show-step4" data-id="' + data.time_data[j].required.light_blue[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.light_blue[r].id+'">&nbsp;</td>';
+                                                                            }
+                                                                            html += '</tr>';
+                                                                            html += '</tbody>';
+                                                                            html += '</table>';
+                                                                            html += '</td>';
+                                                                            k = k + data.time_data[j].required.light_blue[r].slot.length;
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -254,6 +274,26 @@ var Home = {
                                                                 html += '</table>';
                                                                 html += '</td>';
                                                                 k = k + data.time_data[j].required.red[r].slot.length;
+                                                                if (typeof data.time_data[j].required.light_blue != 'undefined') {
+                                                                    for (var r = 0; r < data.time_data[j].required.light_blue.length; r++) {
+                                                                        if (k == data.time_data[j].required.light_blue[r].slot[0]) {
+                                                                            html += '<td colspan="' + data.time_data[j].required.light_blue[r].slot.length + '">';
+                                                                            html += '<b>' + data.time_data[j].required.light_blue[r].lesson + '</b>';
+                                                                            html += '<p>' + data.time_data[j].required.light_blue[r].class + '</p>';
+                                                                            html += '<table class="time_slot-child">';
+                                                                            html += '<tbody>';
+                                                                            html += '<tr>';
+                                                                            for (var l = 0; l < data.time_data[j].required.light_blue[r].slot.length; l++) {
+                                                                                html += '<td class="light_blue show-step4" data-id="' + data.time_data[j].required.light_blue[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.light_blue[r].id+'">&nbsp;</td>';
+                                                                            }
+                                                                            html += '</tr>';
+                                                                            html += '</tbody>';
+                                                                            html += '</table>';
+                                                                            html += '</td>';
+                                                                            k = k + data.time_data[j].required.light_blue[r].slot.length;
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -334,6 +374,26 @@ var Home = {
                                                                 html += '</table>';
                                                                 html += '</td>';
                                                                 k = k + data.time_data[j].required.red[r].slot.length;
+                                                                if (typeof data.time_data[j].required.light_blue != 'undefined') {
+                                                                    for (var r = 0; r < data.time_data[j].required.light_blue.length; r++) {
+                                                                        if (k == data.time_data[j].required.light_blue[r].slot[0]) {
+                                                                            html += '<td colspan="' + data.time_data[j].required.light_blue[r].slot.length + '">';
+                                                                            html += '<b>' + data.time_data[j].required.light_blue[r].lesson + '</b>';
+                                                                            html += '<p>' + data.time_data[j].required.light_blue[r].class + '</p>';
+                                                                            html += '<table class="time_slot-child">';
+                                                                            html += '<tbody>';
+                                                                            html += '<tr>';
+                                                                            for (var l = 0; l < data.time_data[j].required.light_blue[r].slot.length; l++) {
+                                                                                html += '<td class="light_blue show-step4" data-id="' + data.time_data[j].required.light_blue[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.light_blue[r].id+'">&nbsp;</td>';
+                                                                            }
+                                                                            html += '</tr>';
+                                                                            html += '</tbody>';
+                                                                            html += '</table>';
+                                                                            html += '</td>';
+                                                                            k = k + data.time_data[j].required.light_blue[r].slot.length;
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -414,6 +474,26 @@ var Home = {
                                                                 html += '</table>';
                                                                 html += '</td>';
                                                                 k = k + data.time_data[j].required.substituted[s].slot.length;
+                                                                if (typeof data.time_data[j].required.light_blue != 'undefined') {
+                                                                    for (var r = 0; r < data.time_data[j].required.light_blue.length; r++) {
+                                                                        if (k == data.time_data[j].required.light_blue[r].slot[0]) {
+                                                                            html += '<td colspan="' + data.time_data[j].required.light_blue[r].slot.length + '">';
+                                                                            html += '<b>' + data.time_data[j].required.light_blue[r].lesson + '</b>';
+                                                                            html += '<p>' + data.time_data[j].required.light_blue[r].class + '</p>';
+                                                                            html += '<table class="time_slot-child">';
+                                                                            html += '<tbody>';
+                                                                            html += '<tr>';
+                                                                            for (var l = 0; l < data.time_data[j].required.light_blue[r].slot.length; l++) {
+                                                                                html += '<td class="light_blue show-step4" data-id="' + data.time_data[j].required.light_blue[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.light_blue[r].id+'">&nbsp;</td>';
+                                                                            }
+                                                                            html += '</tr>';
+                                                                            html += '</tbody>';
+                                                                            html += '</table>';
+                                                                            html += '</td>';
+                                                                            k = k + data.time_data[j].required.light_blue[r].slot.length;
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }

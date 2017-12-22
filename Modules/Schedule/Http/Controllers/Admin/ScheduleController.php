@@ -30,6 +30,7 @@ use Modules\Schedule\Repositories\EventScheduleRepository;
 use Modules\Schedule\Repositories\ScheduleRepository;
 use Modules\Schedule\Repositories\TeacherRepository;
 use Modules\User\Contracts\Authentication;
+use Modules\User\Entities\Sentinel\User;
 use Modules\User\Permissions\PermissionManager;
 use Modules\User\Repositories\RoleRepository;
 use Modules\User\Repositories\UserRepository;
@@ -116,6 +117,9 @@ class ScheduleController extends AdminBaseController
         DB::table('makeit__schedules_event')->delete();
         DB::table('makeit__teachers')->delete();
         DB::table('makeit__schedule_dates')->delete();
+
+        //remove all users
+        User::where('id','!=',1)->delete();
 
         Assignment::whereNotNull('teacher_id')->update(['is_past'=>1]);
 
@@ -386,6 +390,7 @@ class ScheduleController extends AdminBaseController
         $replaceTeacherId = $request->get('replaceTeacherId');
         $reason = $request->get('reason');
         $additionalRemark = $request->get('remark');
+        $scheduleId = $request->get('input_scheduleId');
 
         $absentType = $request->get('absentType');
         if($absentType == 'fullDay'){
@@ -412,18 +417,17 @@ class ScheduleController extends AdminBaseController
         $scheduleTable = $this->_getScheduleTable($selectedDate);
         $this->_getRepository($scheduleTable);
 
-        $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType);
+        $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId);
         if($replaceStatus){
-            $from = env('DEFAULT_PHONENUMBER');
-
             $teacher = Teacher::find($teacherId);
             $replaceTeacher = Teacher::find($replaceTeacherId);
 
             $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name."\n From: $startDate To: $endDate \n Reason: $reason";
+            $body .= "\n reply Yes|No ". $replaceStatus;
 
 
             if($replaceTeacher){
-                $phoneNumber = '65'.$replaceTeacher->phone_number;
+                $phoneNumber = $replaceTeacher->phone_number;
                 $smsStatus = $this->_sendSMS($phoneNumber,$body);
                 if($smsStatus){
                     $request->session()->flash('success','Send SMS successfully');
@@ -457,9 +461,12 @@ class ScheduleController extends AdminBaseController
         return response()->json($result);
     }
 
-    public function actionWorker(){
+    public function actionWorker(Request $request){
         $currentUser = $this->auth->user();
-        $teacher = Teacher::get()->first();
+        $teacher = Teacher::where('email',$currentUser->email)->get()->first();
+        if(!$teacher){
+            return redirect()->back()->with('error','Your account can not using this function');
+        }
         $teachers = $this->teacherRepository->all();
 
         $date = '10/18/2017';

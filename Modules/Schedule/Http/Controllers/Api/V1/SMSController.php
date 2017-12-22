@@ -52,8 +52,6 @@ class SMSController extends Controller
                         $this->_sendSMS($job->teacher->phone_number,$body);
                     }
 
-
-
                     $result = [
                         'status'=> true,
                         'message'=> 'update data successful',

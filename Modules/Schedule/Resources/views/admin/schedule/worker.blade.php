@@ -136,6 +136,7 @@
 
                                             <input type="hidden" name="input_startDate" value="" id="input_startDate" />
                                             <input type="hidden" name="input_endDate" value="" id="input_endDate" />
+                                            <input type="hidden" name="input_scheduleId" value="" id="input_scheduleId" />
 
                                             <div class="teacherForm">
                                                 <div class="form-group">

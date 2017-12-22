@@ -135,6 +135,10 @@ table.time_slot>tbody>tr>td:first-child {
 	background: #FF0000;
 }
 
+.time_slot-child>tbody>tr>.light_blue {
+	background: #FF0000;
+}
+
 .step4 {
 	display: block;
 }

@@ -431,6 +431,8 @@ var Home = {
             $('#step3').fadeIn('slow');
             $('#step4').fadeIn('slow');
 
+            $('#input_scheduleId').val($(this).data('scheduleid'));
+
             $('html, body').animate({
                 scrollTop: ($('#step3').offset().top)
             },500);
