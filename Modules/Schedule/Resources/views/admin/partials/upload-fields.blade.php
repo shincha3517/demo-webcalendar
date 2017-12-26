@@ -28,7 +28,7 @@
         <div class="bootstrap-timepicker">
             <div class="bootstrap-timepicker-widget dropdown-menu"></div>
             <div class='form-group{{ $errors->has("startTime") ? ' has-error' : '' }}'>
-                {!! Form::label("startDate", 'Start Date Old Week') !!}
+                {!! Form::label("startDate", 'Start date for odd week') !!}
                 <div class="input-group">
                     {!! Form::text("startDate", old("startDate"), ['class' => 'form-control datepicker','id'=>'startDate']) !!}
                     {!! $errors->first("startDate", '<span class="help-block">:message</span>') !!}

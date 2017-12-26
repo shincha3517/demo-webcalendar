@@ -145,83 +145,83 @@ class UpdateTeacherSubject implements ShouldQueue
                     ]
                 ];
                 try{
-                    $this->user->createWithRoles($data, ['1'], false);
+                    $this->user->createWithRoles($data, ['1'], true);
                 }catch (QueryException $e){
                     Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
                 }
 
             }elseif($isAdmin == 'no') {
-                $data = [
-                    'first_name'=> $teacherName,
-                    'last_name'=> '',
-                    'email'=> $email,
-                    'password'=> '123456',
-                    'password_confirmation'=> '123456',
-                    'roles'=>['2'],
-                    'permissions'=>[
-                        "core.sidebar.group" => true,
-                        "dashboard.index" => true,
-                        "dashboard.update" => true,
-                        "dashboard.reset" => true,
-                        "media.medias.index" => false,
-                        "media.medias.create" => false,
-                        "media.medias.edit" => false,
-                        "media.medias.destroy" => false,
-                        "menu.menus.index" => false,
-                        "menu.menus.create" => false,
-                        "menu.menus.edit" => false,
-                        "menu.menus.destroy" => false,
-                        "menu.menuitems.index" => false,
-                        "menu.menuitems.create" => false,
-                        "menu.menuitems.edit" => false,
-                        "menu.menuitems.destroy" => false,
-                        "page.pages.index" => false,
-                        "page.pages.create" => false,
-                        "page.pages.edit" => false,
-                        "page.pages.destroy" => false,
-                        "schedule.schedules.upload" => false,
-                        "schedule.schedules.index" => false,
-                        "schedule.schedules.worker" => true,
-                        "schedule.report.index" => false,
-                        "schedule.report.export" => false,
-                        "schedule.meeting.index" => false,
-                        "schedule.meeting.create" => false,
-                        "schedule.meeting.edit" => false,
-                        "setting.settings.index" => false,
-                        "setting.settings.edit" => false,
-                        "tag.tags.index" => false,
-                        "tag.tags.create" => false,
-                        "tag.tags.edit" => false,
-                        "tag.tags.destroy" => false,
-                        "translation.translations.index" => false,
-                        "translation.translations.edit" => false,
-                        "translation.translations.import" => false,
-                        "translation.translations.export" => false,
-                        "user.users.index" => false,
-                        "user.users.create" => false,
-                        "user.users.edit" => false,
-                        "user.users.destroy" => false,
-                        "user.roles.index" => false,
-                        "user.roles.create" => false,
-                        "user.roles.edit" => false,
-                        "user.roles.destroy" => false,
-                        "workshop.sidebar.group" => false,
-                        "workshop.modules.index" => false,
-                        "workshop.modules.show" => false,
-                        "workshop.modules.update" => false,
-                        "workshop.modules.disable" => false,
-                        "workshop.modules.enable" => false,
-                        "workshop.modules.publish" => false,
-                        "workshop.themes.index" => false,
-                        "workshop.themes.show" => false,
-                        "workshop.themes.publish" => false,
-                    ]
-                ];
-                try{
-                    $this->user->createWithRoles($data, ['2'], true);
-                }catch (QueryException $e){
-                    Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
-                }
+//                $data = [
+//                    'first_name'=> $teacherName,
+//                    'last_name'=> '',
+//                    'email'=> $email,
+//                    'password'=> '123456',
+//                    'password_confirmation'=> '123456',
+//                    'roles'=>['2'],
+//                    'permissions'=>[
+//                        "core.sidebar.group" => true,
+//                        "dashboard.index" => true,
+//                        "dashboard.update" => true,
+//                        "dashboard.reset" => true,
+//                        "media.medias.index" => false,
+//                        "media.medias.create" => false,
+//                        "media.medias.edit" => false,
+//                        "media.medias.destroy" => false,
+//                        "menu.menus.index" => false,
+//                        "menu.menus.create" => false,
+//                        "menu.menus.edit" => false,
+//                        "menu.menus.destroy" => false,
+//                        "menu.menuitems.index" => false,
+//                        "menu.menuitems.create" => false,
+//                        "menu.menuitems.edit" => false,
+//                        "menu.menuitems.destroy" => false,
+//                        "page.pages.index" => false,
+//                        "page.pages.create" => false,
+//                        "page.pages.edit" => false,
+//                        "page.pages.destroy" => false,
+//                        "schedule.schedules.upload" => false,
+//                        "schedule.schedules.index" => false,
+//                        "schedule.schedules.worker" => true,
+//                        "schedule.report.index" => false,
+//                        "schedule.report.export" => false,
+//                        "schedule.meeting.index" => false,
+//                        "schedule.meeting.create" => false,
+//                        "schedule.meeting.edit" => false,
+//                        "setting.settings.index" => false,
+//                        "setting.settings.edit" => false,
+//                        "tag.tags.index" => false,
+//                        "tag.tags.create" => false,
+//                        "tag.tags.edit" => false,
+//                        "tag.tags.destroy" => false,
+//                        "translation.translations.index" => false,
+//                        "translation.translations.edit" => false,
+//                        "translation.translations.import" => false,
+//                        "translation.translations.export" => false,
+//                        "user.users.index" => false,
+//                        "user.users.create" => false,
+//                        "user.users.edit" => false,
+//                        "user.users.destroy" => false,
+//                        "user.roles.index" => false,
+//                        "user.roles.create" => false,
+//                        "user.roles.edit" => false,
+//                        "user.roles.destroy" => false,
+//                        "workshop.sidebar.group" => false,
+//                        "workshop.modules.index" => false,
+//                        "workshop.modules.show" => false,
+//                        "workshop.modules.update" => false,
+//                        "workshop.modules.disable" => false,
+//                        "workshop.modules.enable" => false,
+//                        "workshop.modules.publish" => false,
+//                        "workshop.themes.index" => false,
+//                        "workshop.themes.show" => false,
+//                        "workshop.themes.publish" => false,
+//                    ]
+//                ];
+//                try{
+//                    $this->user->createWithRoles($data, ['2'], true);
+//                }catch (QueryException $e){
+//                    Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
+//                }
             }
 
             Log::info('====================================== END UPDATE TEACHER' . $teacherName.'==========================');

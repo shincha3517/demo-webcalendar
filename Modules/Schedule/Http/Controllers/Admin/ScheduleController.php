@@ -534,9 +534,23 @@ class ScheduleController extends AdminBaseController
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
+        $job = Assignment::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->get()->first();
+        if(!$job){
+            $job = Assignment::where('schedule_event_id',$scheduleId)->where('selected_date',$selectedDate)->get()->first();
+        }
+
         //new activity log
 //        $activity = Activity::where('schedule_id',$request->get('scheduleid'))->where('selected_date',$selectedDate)->get()->first();
         $this->repository->userCancelAssignSchedule($scheduleId,$date);
+
+        if($job){
+            $body = 'Cancel Job: subject '.$job->subject .' with lesson '.$job->lesson .' \n '. $job->start_date .' \n '.$job->end_date;
+            //send notify to sender
+            $this->_sendSMS($job->teacher->phone_number,$body);
+            //send notify to replace teacher
+            $this->_sendSMS($job->replaceTeacher->phone_number,$body);
+
+        }
 
         $request->session()->flash('success','Cancel replace teacher successfully');
 

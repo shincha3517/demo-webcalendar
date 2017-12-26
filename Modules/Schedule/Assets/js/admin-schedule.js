@@ -683,6 +683,7 @@ var Home = {
         // $('select').select2();
         $('#datepicker').datepicker({
             todayBtn: "linked",
+            calendarWeeks: true,
             daysOfWeekHighlighted:[1,2,3,4,5],
             beforeShowDay: function(date){
                 var d = date;
@@ -690,6 +691,12 @@ var Home = {
                 var curr_month = d.getMonth() + 1; //Months are zero based
                 var curr_year = d.getFullYear();
                 var formattedDate = curr_date + "/" + curr_month + "/" + curr_year;
+                var curr_week = moment(d, "MM-DD-YYYY").week();
+
+                if(curr_week == 11){
+                    return false;
+                }
+
 
                 if ($.inArray(formattedDate, Home.active_assignment_dates) != -1){
                     return {
