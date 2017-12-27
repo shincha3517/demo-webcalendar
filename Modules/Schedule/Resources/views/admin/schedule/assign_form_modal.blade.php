@@ -24,11 +24,9 @@
 
                 <div class="form-group">
 								<textarea name="msg_body" class="form-control step5-textarea txt-sms" rows="10">Dear {{$teacher->name}},
-Please substitute for {{$schedules[0]->teacher->name}} for:
-{{$selectedDate}}
-
+Please substitute for {{$schedules[0]->teacher->name}} for: {{$selectedDate}}
 @foreach($schedules as $key => $schedule)
- {{$key++}}, ({{$schedule->start_time}}) - {{$schedule->end_time}}){{$schedule->subject_code}}
+{{$key+1}} Lesson {{$schedule->class_name}}, ({{$schedule->start_time}}) - {{$schedule->end_time}}){{$schedule->subject_code}}
 @endforeach
 
 Thank you.</textarea>

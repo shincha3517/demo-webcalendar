@@ -561,7 +561,7 @@ class ScheduleController extends AdminBaseController
         $username = env('TAR_USERNAME');
         $pwd = env('TAR_PASSWORD');
         $tarNumber = '65'.$toNumber;
-        $tarBody = $body;
+        $tarBody = urlencode($body);
         $messageId = Carbon::today()->timestamp;
 
         try {
