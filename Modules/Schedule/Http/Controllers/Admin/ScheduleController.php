@@ -246,19 +246,31 @@ class ScheduleController extends AdminBaseController
         $selectedDate = Carbon::parse($selectedDate);
 
         $weekOfMonth = $selectedDate->weekOfMonth;
+        $weekOfYear = $selectedDate->weekOfYear;
 
-        $uploadedDate = $this->_getDateUploadExcelFile();
-        $uploadedDate = Carbon::parse($uploadedDate);
+        $oddWeek = [1,12,26,37];
 
-        $weekOfMonthUploaded = $uploadedDate->weekOfMonth;
-
-        $totalWeekOfMonth = $weekOfMonth + $weekOfMonthUploaded;
-        if($totalWeekOfMonth % 2 == 0){
-            $tableName = 'event';
-        }else{
+        if(in_array($weekOfYear,$oddWeek)){
             $tableName = 'old';
+        }else{
+            $tableName = 'event';
         }
         return $tableName;
+
+//        $uploadedDate = $this->_getDateUploadExcelFile();
+//        $uploadedDate = Carbon::parse($uploadedDate);
+//
+//        $weekOfMonthUploaded = $uploadedDate->weekOfMonth;
+//
+//
+//
+//        $totalWeekOfMonth = $weekOfMonth + $weekOfMonthUploaded;
+//        if($totalWeekOfMonth % 2 == 0){
+//            $tableName = 'event';
+//        }else{
+//            $tableName = 'old';
+//        }
+//        return $tableName;
     }
     private function _getDateUploadExcelFile(){
         $item = ScheduleDate::first();
