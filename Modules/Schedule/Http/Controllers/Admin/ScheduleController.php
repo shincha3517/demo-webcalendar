@@ -249,7 +249,7 @@ class ScheduleController extends AdminBaseController
         $weekOfYear = $selectedDate->weekOfYear;
 
         $oddWeek = [1,2,5,6,9,10,12,13,16,17,20,21,26,27,30,31,34,35,37,38,41,42,45,46];
-        $evenWeek = [3,46,7,8,11,14,15,18,19,28,29,32,33,39,40,43,44];
+        $evenWeek = [3,4,7,8,11,14,15,18,19,28,29,32,33,39,40,43,44];
 
         if(in_array($weekOfYear,$oddWeek)){
             $tableName = 'old';
