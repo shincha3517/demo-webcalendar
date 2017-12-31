@@ -25,6 +25,7 @@
             </div>
         </div>
 
+        <!--
         <div class="bootstrap-timepicker">
             <div class="bootstrap-timepicker-widget dropdown-menu"></div>
             <div class='form-group{{ $errors->has("startTime") ? ' has-error' : '' }}'>
@@ -38,7 +39,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <?php if (config('asgard.page.config.partials.translatable.create') !== []): ?>
             <?php foreach (config('asgard.page.config.partials.translatable.create') as $partial): ?>
