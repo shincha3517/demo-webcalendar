@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="well">
                                     <div class="row">
-                                        <div class="col-xs-6">
+                                        <div class="col-md-6 col-xs-12">
                                             <div class="row">
                                                 <div class="col-xs-12">
                                                     <div id="datepicker"></div>
@@ -47,7 +47,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-6">
+                                        <div class="col-md-6 col-xs-12">
                                             <select class="form-control" id="ddUser">
                                                 <option>--Please select date first</option>
                                             </select>
