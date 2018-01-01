@@ -154,6 +154,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
 //        $result['data']['time_data'][0]['paired'] =[];
         $pairs = [];
         $beAssigned = [];
+        $substituted = [];
 
         $assignedSchedules = Assignment::where('teacher_id',$teacher->id)
             ->whereDate('selected_date',$dayName->toDateString())
@@ -175,6 +176,10 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
         if($rows){
 
             foreach($rows as $row){
+
+                $sameClass = $this->getByAttributes(['class_name' => $row->class_name,'date_id'=>$row->date_id])->toArray();
+//                print_r($sameClass);exit;
+
                 $data = [
                     'id'=>$row->id,
                     'class' => $row->class_name,
@@ -189,6 +194,9 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
                 if(in_array($row->id, $collectionSchedule) ){
                     array_push($pairs,$data);
 //                    array_push($classes,$data);//need custom script js
+                }
+                elseif(count($sameClass) > 1){
+                    array_push($substituted,$data);
                 }
                 else{
                     array_push($classes,$data);
@@ -214,8 +222,9 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
             }
             $result['data']['time_data'][0]['required']['classes'] = $classes;
             $result['data']['time_data'][0]['required']['paired'] = $pairs;
-            $result['data']['time_data'][0]['required']["substituted"] = [];
+            $result['data']['time_data'][0]['required']['substituted'] = $substituted;
             $result['data']['time_data'][0]['required']['red'] = $beAssigned;
+//            $result['data']['time_data'][0]['required']['light_blue'] = $beAssigned;
 
         }
         return $result;
