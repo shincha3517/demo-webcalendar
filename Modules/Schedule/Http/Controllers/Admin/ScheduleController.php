@@ -88,7 +88,7 @@ class ScheduleController extends AdminBaseController
             $collection = collect($assignmentList);
 
             $assignmentArray = $collection->map(function ($item, $key) {
-                return Carbon::parse($item->selected_date)->format('d/m/Y');
+                return Carbon::parse($item->selected_date)->format('d/n/Y');
             });
 
 
