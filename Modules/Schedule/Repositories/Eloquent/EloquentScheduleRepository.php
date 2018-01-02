@@ -132,6 +132,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
             $dayNameData = '';
         }
 
+        $query->orderBy('slot_id', 'asc');
         $query->groupBy('date_id');
         $rows= $query->get();
 
@@ -160,6 +161,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
         $assignedSchedules = Assignment::where('teacher_id',$teacher->id)
             ->where('selected_date',$dayName->toDateString())
             ->where('is_past',0)
+            ->orderBy('slot_id', 'asc')
             ->get();
         $collectionSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_id;
@@ -169,6 +171,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
             ->where('selected_date',$dayName->toDateString())
             ->where('is_past',0)
             ->where('schedule_type','old')
+            ->orderBy('slot_id', 'asc')
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_id;

@@ -132,6 +132,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
             $dayNameData = '';
         }
 
+        $query->orderBy('slot_id', 'asc');
         $query->groupBy('date_id');
         $rows= $query->get();
 
@@ -168,6 +169,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
             ->whereDate('selected_date',$dayName->toDateString())
             ->where('is_past',0)
             ->where('schedule_type','event')
+            ->orderBy('slot_id', 'asc')
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
             return $schedule->schedule_event_id;
