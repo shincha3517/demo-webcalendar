@@ -110,7 +110,7 @@ table.time_slot>tbody>tr>td:first-child {
 	border-right: 1px solid #fff;
 }
 
-.time_slot-child>tbody>tr>.action {
+.time_slot-child>tbody>tr>.classes {
 	background: #6a6d75;
 }
 
@@ -118,7 +118,7 @@ table.time_slot>tbody>tr>td:first-child {
 	background: rgba(0, 0, 0, 0.3);
 }
 
-.time_slot-child>tbody>tr>.action.active,
+.time_slot-child>tbody>tr>.classes.active,
 .time_slot-selected>tbody>tr>td.active {
 	background: #ff6600;
 }

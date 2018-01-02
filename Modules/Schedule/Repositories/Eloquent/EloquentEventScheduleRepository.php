@@ -189,18 +189,22 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
                     'end'=> substr($row->end_time,0,-3),
                     'status'=>'unavaliable',
                     'content'=>'relif made',
-                    'number'=> '99'
+                    'number'=> '99',
+                    'flag' => 'classes'
                 ];
                 if(in_array($row->id, $collectionSchedule) ){
-                    array_push($pairs,$data);
+                    $data['flag'] = 'paired';
+//                    array_push($pairs,$data);
 //                    array_push($classes,$data);//need custom script js
                 }
                 elseif(count($sameClass) > 1){
-                    array_push($substituted,$data);
+                    $data['flag'] = 'substituted';
+//                    array_push($substituted,$data);
                 }
                 else{
-                    array_push($classes,$data);
+//                    array_push($classes,$data);
                 }
+                array_push($classes,$data);
 
             }
             if(count($beAssignedSchedules) > 0){
@@ -216,14 +220,14 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
                         'content'=>'relif made',
                         'number'=> '99'
                     ];
-                    array_push($beAssigned,$data);
-//                    array_push($classes,$data);
+                    $data['flag'] = 'red';
+                    array_push($classes,$data);
                 }
             }
             $result['data']['time_data'][0]['required']['classes'] = $classes;
-            $result['data']['time_data'][0]['required']['paired'] = $pairs;
-            $result['data']['time_data'][0]['required']['substituted'] = $substituted;
-            $result['data']['time_data'][0]['required']['red'] = $beAssigned;
+//            $result['data']['time_data'][0]['required']['paired'] = $pairs;
+//            $result['data']['time_data'][0]['required']['substituted'] = $substituted;
+//            $result['data']['time_data'][0]['required']['red'] = $beAssigned;
 //            $result['data']['time_data'][0]['required']['light_blue'] = $beAssigned;
 
         }
