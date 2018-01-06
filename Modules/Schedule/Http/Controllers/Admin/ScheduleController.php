@@ -395,6 +395,11 @@ class ScheduleController extends AdminBaseController
                 }
 
                 array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
+            }elseif($sortingType == 1){
+                foreach($result['data']['time_data'] as $key => $item){
+
+                    $result['data']['time_data'][$key]['required']['number'] = '';
+                }
             }
         }
         return $result;
