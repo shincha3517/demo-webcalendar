@@ -350,7 +350,7 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
                     $result['data']['time_data'][$i]['required']['teacher_id'] = $teacherId;
                     $result['data']['time_data'][$i]['required']['status'] = '';
                     $result['data']['time_data'][$i]['required']['number'] = $totalLesson;
-                    $result['data']['time_data'][$i]['required']['content'] = '';
+                    $result['data']['time_data'][$i]['required']['content'] = $items->subject;
 
 
                     $i++;
