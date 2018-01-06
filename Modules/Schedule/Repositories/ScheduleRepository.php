@@ -12,7 +12,7 @@ interface ScheduleRepository extends BaseRepository
 
     public function getUserSchedules($userId,$selectedDate);
 
-    public function getFreeUserWithSchedules($date, $eventIds, $type);
+    public function getFreeUserWithSchedules($date, $eventIds, $type, $sortingType);
 
     public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark);
 

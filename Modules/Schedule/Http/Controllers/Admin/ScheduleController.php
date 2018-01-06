@@ -29,6 +29,7 @@ use Modules\Schedule\Repositories\AssignmentRepository;
 use Modules\Schedule\Repositories\EventScheduleRepository;
 use Modules\Schedule\Repositories\ScheduleRepository;
 use Modules\Schedule\Repositories\TeacherRepository;
+use Modules\Setting\Contracts\Setting;
 use Modules\User\Contracts\Authentication;
 use Modules\User\Entities\Sentinel\User;
 use Modules\User\Permissions\PermissionManager;
@@ -49,6 +50,7 @@ class ScheduleController extends AdminBaseController
     protected $eventScheduleRepository;
     protected $assignmentRepository;
     protected $repository;
+    protected $setting;
 
     /**
      * @param PermissionManager $permissions
@@ -61,7 +63,8 @@ class ScheduleController extends AdminBaseController
         TeacherRepository $teacherRepository,
         ScheduleRepository $scheduleRepository,
         EventScheduleRepository $eventScheduleRepository,
-        AssignmentRepository $assignmentRepository
+        AssignmentRepository $assignmentRepository,
+        Setting $setting
     ) {
         parent::__construct();
 
@@ -70,6 +73,7 @@ class ScheduleController extends AdminBaseController
         $this->scheduleRepository = $scheduleRepository;
         $this->eventScheduleRepository = $eventScheduleRepository;
         $this->assignmentRepository = $assignmentRepository;
+        $this->setting = $setting;
     }
 
     /**
@@ -248,8 +252,8 @@ class ScheduleController extends AdminBaseController
         $weekOfMonth = $selectedDate->weekOfMonth;
         $weekOfYear = $selectedDate->weekOfYear;
 
-        $oddWeek = [1,2,5,6,9,10,12,13,16,17,20,21,26,27,30,31,34,35,37,38,41,42,45,46];
-        $evenWeek = [3,4,7,8,11,14,15,18,19,28,29,32,33,39,40,43,44];
+        $oddWeek = [1,3,5,7,9,12,14,16,18,20,26,28,31,33,35,37,39,41,43,45];
+        $evenWeek = [2,4,6,8,10,13,15,17,19,21,27,29,30,32,34,38,40,42,44,46];
 
         if(in_array($weekOfYear,$oddWeek)){
             $tableName = 'old';
@@ -341,14 +345,59 @@ class ScheduleController extends AdminBaseController
         $date = $request->get('date');
         $eventIds = $request->get('eventIds');
         $type = $request->get('type');
+        $sortingType = $this->setting->get('schedule::sorting');
 
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
-        $result = $this->repository->getFreeUserWithSchedules($date, $eventIds, $type);
+        $result = $this->repository->getFreeUserWithSchedules($date, $eventIds, $type, $sortingType);
+
+        $result = $this->_sortingAvailableTeacher($result,$sortingType,$date);
 
         return response()->json(['result'=>$result,'status'=>1]);
 
+    }
+
+    private function _sortingAvailableTeacher($result, $sortingType = 1, $selectedDate){
+        //sorting
+        if(count($result['data']['time_data']) > 0){
+            if($sortingType == 3){
+                $numberLesson = array();
+                foreach($result['data']['time_data'] as $key => $item){
+                    $numberLesson[$key] = $item['required']['number'];
+
+                    $result['data']['time_data'][$key]['required']['content'] = 'total lesson';
+                }
+                array_multisort($numberLesson, SORT_ASC, $result['data']['time_data']);
+            }elseif($sortingType == 2){
+                $sort = [];
+                foreach($result['data']['time_data'] as $key => $item){
+                    $teacherId = $item['required']['teacher_id'];
+                    $numberAssignmentInSelectedDate = $this->assignmentRepository->getReliefNumber('date',$selectedDate,$teacherId);
+                    $numberAssignmentInWeek = $this->assignmentRepository->getReliefNumber('week',$selectedDate,$teacherId);
+                    $numberAssignmentInTerm = $this->assignmentRepository->getReliefNumber('term',$selectedDate,$teacherId);
+                    $numberAssignmentInYear = $this->assignmentRepository->getReliefNumber('year',$selectedDate,$teacherId);
+
+                    $result['data']['time_data'][$key]['required']['total_relief_week'] = $numberAssignmentInWeek;
+                    $result['data']['time_data'][$key]['required']['total_relief_term'] = $numberAssignmentInTerm;
+                    $result['data']['time_data'][$key]['required']['total_relief_year'] = $numberAssignmentInYear;
+                    $result['data']['time_data'][$key]['required']['total_relief_date'] = $numberAssignmentInSelectedDate;
+
+                    $result['data']['time_data'][$key]['required']['number'] = $numberAssignmentInYear;
+                    $result['data']['time_data'][$key]['required']['content'] = 'relief made';
+                }
+
+                foreach($result['data']['time_data'] as $key => $item){
+                    $sort['total_relief_week'][$key] = $item['required']['total_relief_week'];
+                    $sort['total_relief_term'][$key] = $item['required']['total_relief_term'];
+                    $sort['total_relief_year'][$key] = $item['required']['total_relief_year'];
+                    $sort['total_relief_date'][$key] = $item['required']['total_relief_date'];
+                }
+
+                array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
+            }
+        }
+        return $result;
     }
 
     public function sendNotification(Request $request){

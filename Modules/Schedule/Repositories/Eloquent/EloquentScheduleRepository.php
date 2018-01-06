@@ -237,7 +237,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
         return $result;
     }
 
-    public function getFreeUserWithSchedules($date, $eventIds, $type){
+    public function getFreeUserWithSchedules($date, $eventIds, $type, $sortingType){
         $events = $eventIds;
         $optionRead = $type;
         $dayName = Carbon::parse($date);

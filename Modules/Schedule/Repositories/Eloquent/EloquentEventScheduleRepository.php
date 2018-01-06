@@ -236,7 +236,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
         return $result;
     }
 
-    public function getFreeUserWithSchedules($date, $eventIds, $type){
+    public function getFreeUserWithSchedules($date, $eventIds, $type, $sortingType){
         $events = $eventIds;
         $optionRead = $type;
         $dayName = Carbon::parse($date);
@@ -339,10 +339,12 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
                         $result['data']['time_data'][$i]['required']['classes'] =[];
                     }
 
+                    $totalLesson = ScheduleEvent::where('teacher_id',$teacherId)->count();
+
                     $result['data']['time_data'][$i]['required']['teacher'] = $teacherName;
                     $result['data']['time_data'][$i]['required']['teacher_id'] = $teacherId;
                     $result['data']['time_data'][$i]['required']['status'] = '';
-                    $result['data']['time_data'][$i]['required']['number'] = '';
+                    $result['data']['time_data'][$i]['required']['number'] = $totalLesson;
                     $result['data']['time_data'][$i]['required']['content'] = '';
 
 
@@ -357,6 +359,7 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
         else{
             //empty events
         }
+
         return $result;
     }
 

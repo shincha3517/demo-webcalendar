@@ -7,9 +7,10 @@ return [
 //        'view' => 'schedule::fields.select-theme',
 //        'translatable' => false,
 //    ],
-//    'startTime' => [
-//        'description' => 'Start time',
-//        'view' => 'text',
-//        'translatable' => false,
-//    ],
+    'sorting' => [
+        'description' => 'Sorting Options',
+        'view' => 'schedule::fields.select-sorting',
+        'translatable' => false,
+        'default'=> 1
+    ],
 ];
