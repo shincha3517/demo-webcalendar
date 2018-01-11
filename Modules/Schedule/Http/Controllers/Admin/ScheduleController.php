@@ -388,7 +388,7 @@ class ScheduleController extends AdminBaseController
                 foreach($result['data']['time_data'] as $key => $item){
                     $numberLesson[$key] = $item['required']['number'];
 
-                    $result['data']['time_data'][$key]['required']['content'] = 'total lesson';
+//                    $result['data']['time_data'][$key]['required']['content'] = 'total lesson';
                 }
                 array_multisort($numberLesson, SORT_ASC, $result['data']['time_data']);
             }
@@ -406,8 +406,8 @@ class ScheduleController extends AdminBaseController
                     $result['data']['time_data'][$key]['required']['total_relief_year'] = $numberAssignmentInYear;
                     $result['data']['time_data'][$key]['required']['total_relief_date'] = $numberAssignmentInSelectedDate;
 
-                    $result['data']['time_data'][$key]['required']['number'] = $numberAssignmentInYear;
-                    $result['data']['time_data'][$key]['required']['content'] = 'relief made';
+//                    $result['data']['time_data'][$key]['required']['number'] = $numberAssignmentInYear;
+//                    $result['data']['time_data'][$key]['required']['content'] = 'relief made';
                 }
 
                 foreach($result['data']['time_data'] as $key => $item){
