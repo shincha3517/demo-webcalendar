@@ -365,11 +365,11 @@ class ScheduleController extends AdminBaseController
         $sortingRelief = $this->setting->get('schedule::sorting_number_relief');
 
         if(count($result['data']['time_data']) > 0){
+            $subject = $result['subject'];
             if($sortingSubject){
                 $collection1 = collect($result['data']['time_data']);
                 $collection2 = collect($result['data']['time_data']);
 
-                $subject = $result['subject'];
                 $itemsWithSubject = collect($result['data']['time_data'])->filter(function($item) use ($subject) {
                     return $item['required']['content'] == $subject;
                 });
@@ -384,48 +384,11 @@ class ScheduleController extends AdminBaseController
                 $result['data']['time_data'] = $sorted->values()->all();
             }
             if($sortingLesson){
-                $numberLesson = array();
-                foreach($result['data']['time_data'] as $key => $item){
-                    $numberLesson[$key] = $item['required']['number'];
-
-//                    $result['data']['time_data'][$key]['required']['content'] = 'total lesson';
-                }
-                array_multisort($numberLesson, SORT_ASC, $result['data']['time_data']);
+                $collection1 = collect($result['data']['time_data'])->sortBy(function($item) use ($sortingSubject, $subject){
+                    return $item['required']['number'];
+                });
             }
-            if($sortingRelief){
-                $sort = [];
-                foreach($result['data']['time_data'] as $key => $item){
-                    $teacherId = $item['required']['teacher_id'];
-                    $numberAssignmentInSelectedDate = $this->assignmentRepository->getReliefNumber('date',$selectedDate,$teacherId);
-                    $numberAssignmentInWeek = $this->assignmentRepository->getReliefNumber('week',$selectedDate,$teacherId);
-                    $numberAssignmentInTerm = $this->assignmentRepository->getReliefNumber('term',$selectedDate,$teacherId);
-                    $numberAssignmentInYear = $this->assignmentRepository->getReliefNumber('year',$selectedDate,$teacherId);
-
-                    $result['data']['time_data'][$key]['required']['total_relief_week'] = $numberAssignmentInWeek;
-                    $result['data']['time_data'][$key]['required']['total_relief_term'] = $numberAssignmentInTerm;
-                    $result['data']['time_data'][$key]['required']['total_relief_year'] = $numberAssignmentInYear;
-                    $result['data']['time_data'][$key]['required']['total_relief_date'] = $numberAssignmentInSelectedDate;
-
-//                    $result['data']['time_data'][$key]['required']['number'] = $numberAssignmentInYear;
-//                    $result['data']['time_data'][$key]['required']['content'] = 'relief made';
-                }
-
-                foreach($result['data']['time_data'] as $key => $item){
-                    $sort['lesson'][$key] = $item['required']['number'];
-                    $sort['total_relief_week'][$key] = $item['required']['total_relief_week'];
-                    $sort['total_relief_term'][$key] = $item['required']['total_relief_term'];
-                    $sort['total_relief_year'][$key] = $item['required']['total_relief_year'];
-                    $sort['total_relief_date'][$key] = $item['required']['total_relief_date'];
-                }
-                if($sortingLesson){
-                    array_multisort($sort['lesson'], SORT_ASC, $sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
-                }
-                else{
-                    array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
-                }
-
-            }
-
+            
 
 //            if($sortingLesson){
 //                $numberLesson = array();
