@@ -134,7 +134,7 @@ class ScheduleController extends AdminBaseController
 
         ScheduleDate::create([
            'date'=>$scheduleDate,
-//            'start_date'=>$scheduleDate,
+            'start_date'=>$scheduleDate,
             'day_name'=> Carbon::today()->format('D'),
             'interval'=> $interval
         ]);
