@@ -387,8 +387,37 @@ class ScheduleController extends AdminBaseController
                 $collection1 = collect($result['data']['time_data'])->sortBy(function($item) use ($sortingSubject, $subject){
                     return $item['required']['number'];
                 });
+                foreach($result['data']['time_data'] as $key => $item){
+                    $result['data']['time_data'][$key]['required']['content'] = 'total lesson';
+                }
             }
-            
+            if($sortingRelief){
+                foreach($result['data']['time_data'] as $key => $item){
+                    $teacherId = $item['required']['teacher_id'];
+                    $numberAssignmentInSelectedDate = $this->assignmentRepository->getReliefNumber('date',$selectedDate,$teacherId);
+                    $numberAssignmentInWeek = $this->assignmentRepository->getReliefNumber('week',$selectedDate,$teacherId);
+                    $numberAssignmentInTerm = $this->assignmentRepository->getReliefNumber('term',$selectedDate,$teacherId);
+                    $numberAssignmentInYear = $this->assignmentRepository->getReliefNumber('year',$selectedDate,$teacherId);
+
+                    $result['data']['time_data'][$key]['required']['total_relief_week'] = $numberAssignmentInWeek;
+                    $result['data']['time_data'][$key]['required']['total_relief_term'] = $numberAssignmentInTerm;
+                    $result['data']['time_data'][$key]['required']['total_relief_year'] = $numberAssignmentInYear;
+                    $result['data']['time_data'][$key]['required']['total_relief_date'] = $numberAssignmentInSelectedDate;
+
+                    $result['data']['time_data'][$key]['required']['number'] = $numberAssignmentInYear;
+                    $result['data']['time_data'][$key]['required']['content'] = 'relief made';
+                }
+
+
+                $collection1 = collect($result['data']['time_data'])->sortBy(function($item) use ($sortingSubject, $subject){
+                    return $item['required']['total_relief_week'];
+                })->sortBy(function($item) use ($sortingSubject, $subject){
+                    return $item['required']['total_relief_term'];
+                })->sortBy(function($item) use ($sortingSubject, $subject){
+                    return $item['required']['total_relief_year'];
+                });
+            }
+
 
 //            if($sortingLesson){
 //                $numberLesson = array();
