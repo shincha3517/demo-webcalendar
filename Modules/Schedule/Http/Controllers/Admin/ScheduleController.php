@@ -411,13 +411,14 @@ class ScheduleController extends AdminBaseController
                 }
 
                 foreach($result['data']['time_data'] as $key => $item){
+                    $sort['lesson'][$key] = $item['required']['number'];
                     $sort['total_relief_week'][$key] = $item['required']['total_relief_week'];
                     $sort['total_relief_term'][$key] = $item['required']['total_relief_term'];
                     $sort['total_relief_year'][$key] = $item['required']['total_relief_year'];
                     $sort['total_relief_date'][$key] = $item['required']['total_relief_date'];
                 }
                 if($sortingLesson){
-                    array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
+                    array_multisort($sort['lesson'], SORT_ASC, $sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
                 }
                 else{
                     array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
