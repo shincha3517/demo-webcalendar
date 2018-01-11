@@ -6,3 +6,7 @@ Homestead.json
 .env
 .php_cs.cache
 .idea/workspace.xml
+composer.lock
+.idea/encodings.xml
+.idea/inspectionProfiles/profiles_settings.xml
+storage/imports/import.xlsx

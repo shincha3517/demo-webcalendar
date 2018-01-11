@@ -345,23 +345,45 @@ class ScheduleController extends AdminBaseController
         $date = $request->get('date');
         $eventIds = $request->get('eventIds');
         $type = $request->get('type');
-        $sortingType = $this->setting->get('schedule::sorting');
+        $sortingType = $this->setting->get('schedule::sorting_subject');
 
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
         $result = $this->repository->getFreeUserWithSchedules($date, $eventIds, $type, $sortingType);
 
-        $result = $this->_sortingAvailableTeacher($result,$sortingType,$date);
+        $result = $this->_sortingAvailableTeacher($result,$date);
 
         return response()->json(['result'=>$result,'status'=>1]);
 
     }
 
-    private function _sortingAvailableTeacher($result, $sortingType = 1, $selectedDate){
-        //sorting
+    public function _sortingAvailableTeacher($result, $selectedDate){
+        //sorting config
+        $sortingSubject = $this->setting->get('schedule::sorting_subject');
+        $sortingLesson = $this->setting->get('schedule::sorting_lesson');
+        $sortingRelief = $this->setting->get('schedule::sorting_number_relief');
+
         if(count($result['data']['time_data']) > 0){
-            if($sortingType == 3){
+            if($sortingSubject){
+                $collection1 = collect($result['data']['time_data']);
+                $collection2 = collect($result['data']['time_data']);
+
+                $subject = $result['subject'];
+                $itemsWithSubject = collect($result['data']['time_data'])->filter(function($item) use ($subject) {
+                    return $item['required']['content'] == $subject;
+                });
+
+                $itemsWithOutSubject = collect($result['data']['time_data'])->filter(function($item) use ($subject) {
+                    return $item['required']['content'] != $subject;
+                });
+
+                $sorted = $itemsWithSubject->merge($itemsWithOutSubject);
+
+
+                $result['data']['time_data'] = $sorted->values()->all();
+            }
+            if($sortingLesson){
                 $numberLesson = array();
                 foreach($result['data']['time_data'] as $key => $item){
                     $numberLesson[$key] = $item['required']['number'];
@@ -369,7 +391,8 @@ class ScheduleController extends AdminBaseController
                     $result['data']['time_data'][$key]['required']['content'] = 'total lesson';
                 }
                 array_multisort($numberLesson, SORT_ASC, $result['data']['time_data']);
-            }elseif($sortingType == 2){
+            }
+            if($sortingRelief){
                 $sort = [];
                 foreach($result['data']['time_data'] as $key => $item){
                     $teacherId = $item['required']['teacher_id'];
@@ -393,14 +416,56 @@ class ScheduleController extends AdminBaseController
                     $sort['total_relief_year'][$key] = $item['required']['total_relief_year'];
                     $sort['total_relief_date'][$key] = $item['required']['total_relief_date'];
                 }
-
-                array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
-            }elseif($sortingType == 1){
-                foreach($result['data']['time_data'] as $key => $item){
-
-                    $result['data']['time_data'][$key]['required']['number'] = '';
+                if($sortingLesson){
+                    array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
                 }
+                else{
+                    array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
+                }
+
             }
+
+
+//            if($sortingLesson){
+//                $numberLesson = array();
+//                foreach($result['data']['time_data'] as $key => $item){
+//                    $numberLesson[$key] = $item['required']['number'];
+//
+//                    $result['data']['time_data'][$key]['required']['content'] = 'total lesson';
+//                }
+//                array_multisort($numberLesson, SORT_ASC, $result['data']['time_data']);
+//            }elseif($sortingRelief){
+//                $sort = [];
+//                foreach($result['data']['time_data'] as $key => $item){
+//                    $teacherId = $item['required']['teacher_id'];
+//                    $numberAssignmentInSelectedDate = $this->assignmentRepository->getReliefNumber('date',$selectedDate,$teacherId);
+//                    $numberAssignmentInWeek = $this->assignmentRepository->getReliefNumber('week',$selectedDate,$teacherId);
+//                    $numberAssignmentInTerm = $this->assignmentRepository->getReliefNumber('term',$selectedDate,$teacherId);
+//                    $numberAssignmentInYear = $this->assignmentRepository->getReliefNumber('year',$selectedDate,$teacherId);
+//
+//                    $result['data']['time_data'][$key]['required']['total_relief_week'] = $numberAssignmentInWeek;
+//                    $result['data']['time_data'][$key]['required']['total_relief_term'] = $numberAssignmentInTerm;
+//                    $result['data']['time_data'][$key]['required']['total_relief_year'] = $numberAssignmentInYear;
+//                    $result['data']['time_data'][$key]['required']['total_relief_date'] = $numberAssignmentInSelectedDate;
+//
+//                    $result['data']['time_data'][$key]['required']['number'] = $numberAssignmentInYear;
+//                    $result['data']['time_data'][$key]['required']['content'] = 'relief made';
+//                }
+//
+//                foreach($result['data']['time_data'] as $key => $item){
+//                    $sort['total_relief_week'][$key] = $item['required']['total_relief_week'];
+//                    $sort['total_relief_term'][$key] = $item['required']['total_relief_term'];
+//                    $sort['total_relief_year'][$key] = $item['required']['total_relief_year'];
+//                    $sort['total_relief_date'][$key] = $item['required']['total_relief_date'];
+//                }
+//
+//                array_multisort($sort['total_relief_date'], SORT_ASC,$sort['total_relief_week'], SORT_ASC, $sort['total_relief_term'], SORT_ASC, $sort['total_relief_year'], SORT_ASC,$result['data']['time_data']);
+//            }elseif($sortingType == 1){
+//                foreach($result['data']['time_data'] as $key => $item){
+//
+//                    $result['data']['time_data'][$key]['required']['number'] = '';
+//                }
+//            }
         }
         return $result;
     }

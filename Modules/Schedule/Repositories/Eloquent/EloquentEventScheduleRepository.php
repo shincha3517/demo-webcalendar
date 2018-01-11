@@ -258,7 +258,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
                 $subQuery .= 's.slot_id=?';
                 $whereData[]= $slot->day_name;
                 $whereData[]= $slot->teacher_id;
-                $whereData[]= $slot->teacher->subject;
+//                $whereData[]= $slot->teacher->subject;
             }elseif(count($events) > 1){
                 foreach($events as $k => $event){
                     $slot = $this->model->find($event);
@@ -274,7 +274,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
 
                             $whereData[]= $slot->day_name;
                             $whereData[]= $slot->teacher_id;
-                            $whereData[]= $slot->teacher->subject;
+//                            $whereData[]= $slot->teacher->subject;
                         }else{
                             $subQuery .= 's.slot_id=? OR ';
                         }
@@ -286,12 +286,18 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
 //            DB::enableQueryLog();
             $userTimelines = DB::select('SELECT t.name,t.id as teacher_id,t.subject  FROM 
 	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules_event s WHERE t.id = s.teacher_id AND ( '.$subQuery.') AND s.day_name=? ) ) t	
-WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
+WHERE t.id != ?',$whereData);
 //            dd(DB::getQueryLog());
 
             if(!empty($userTimelines)){
                 $status = 1;
                 $i = 0;
+
+
+                $scheduleRelief = ScheduleEvent::find($events[0]);
+                $subject = $scheduleRelief->teacher->subject;
+
+                $result['subject'] = $subject;
 
                 $query = Assignment::where('selected_date',$dayName->toDateString())->where('is_past',0);
                 if(count($events) > 1){
@@ -339,12 +345,15 @@ WHERE t.id != ? ORDER BY FIELD (t.subject,?) DESC, teacher_id',$whereData);
                         $result['data']['time_data'][$i]['required']['classes'] =[];
                     }
 
-                    $totalLesson = ScheduleEvent::where('teacher_id',$teacherId)->count();
+                    $lessons = ScheduleEvent::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->count();
+                    $assignLessons = Assignment::where('replaced_teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->count();
+
+                    $totalLessons = $lessons + $assignLessons;
 
                     $result['data']['time_data'][$i]['required']['teacher'] = $teacherName;
                     $result['data']['time_data'][$i]['required']['teacher_id'] = $teacherId;
                     $result['data']['time_data'][$i]['required']['status'] = '';
-                    $result['data']['time_data'][$i]['required']['number'] = $totalLesson;
+                    $result['data']['time_data'][$i]['required']['number'] = $totalLessons;
                     $result['data']['time_data'][$i]['required']['content'] = $items->subject;
 
 
