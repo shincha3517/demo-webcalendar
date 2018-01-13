@@ -144,11 +144,19 @@ class UpdateTeacherSubject implements ShouldQueue
                         "workshop.themes.publish" => false,
                     ]
                 ];
-                try{
-                    $this->user->createWithRoles($data, ['1'], true);
-                }catch (QueryException $e){
-                    Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
+
+                $checkTeacher = $this->user->findByCredentials(['email'=> $email]);
+                if(!$checkTeacher){
+                    try{
+                        $this->user->createWithRoles($data, ['1'], true);
+                    }catch (QueryException $e){
+                        Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
+                    }
+                }else{
+                    Log::error('Teacher with email:'.$email .' already exist');
                 }
+
+
 
             }elseif($isAdmin == 'no') {
                 $data = [
@@ -217,10 +225,16 @@ class UpdateTeacherSubject implements ShouldQueue
                         "workshop.themes.publish" => false,
                     ]
                 ];
-                try{
-                    $this->user->createWithRoles($data, ['2'], true);
-                }catch (QueryException $e){
-                    Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
+
+                $checkTeacher = $this->user->findByCredentials(['email'=> $email]);
+                if(!$checkTeacher){
+                    try{
+                        $this->user->createWithRoles($data, ['2'], true);
+                    }catch (QueryException $e){
+                        Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
+                    }
+                }else{
+                    Log::error('Teacher with email:'.$email .' already exist');
                 }
             }
 
