@@ -67,7 +67,7 @@ class InsertTeacherExcelSchedule implements ShouldQueue
         $startRow = 2;
         $row = $rowNumber+$startRow;
 
-        $teacherName = $objWorksheet->getCellByColumnAndRow(0 , $row)->getValue();
+        $teacherName = $objWorksheet->getCellByColumnAndRow(0 , $row)->getFormattedValue();
         Log::info('====================================== START INSERT TEACHER' . $teacherName.'==========================');
 //        $scheduleRow = [];
         if(!empty($teacherName)){
