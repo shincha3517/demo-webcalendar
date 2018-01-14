@@ -77,7 +77,7 @@ class UpdateTeacherSubject implements ShouldQueue
                 $teacher->save();
             }
 
-            if($isAdmin == 'yes'){
+            if(strtolower($isAdmin) == 'yes'){
                 $data = [
                     'first_name'=> $teacherName,
                     'last_name'=> '',
@@ -158,7 +158,7 @@ class UpdateTeacherSubject implements ShouldQueue
 
 
 
-            }elseif($isAdmin == 'no') {
+            }elseif(strtolower($isAdmin) == 'no') {
                 $data = [
                     'first_name'=> $teacherName,
                     'last_name'=> '',
