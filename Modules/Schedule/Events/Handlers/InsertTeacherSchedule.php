@@ -116,7 +116,14 @@ class InsertTeacherSchedule implements ShouldQueue
                             else{
                                 $values = explode('\n',$value);
                                 $startDate = $dateSchedules[$key];
-                                $endDate = Carbon::parse($startDate)->addMinutes($interval);
+                                if($e == 30 || $e == 31){
+                                    //hardcode
+                                    $interval = 90;
+                                    $endDate = Carbon::parse($startDate)->addMinutes($interval);
+                                }
+                                else{
+                                    $endDate = Carbon::parse($startDate)->addMinutes($interval);
+                                }
 
                                 $scheduleStartTime = Carbon::parse($startDate)->toTimeString();
                                 $scheduleEndTime = Carbon::parse($endDate)->toTimeString();
