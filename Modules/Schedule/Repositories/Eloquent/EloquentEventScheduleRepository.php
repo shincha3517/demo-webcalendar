@@ -25,14 +25,20 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
 
         $result = [];
 
-        for($i=1; $i<=$scheduleDate->old_total_timeslots; $i++){
+        for($i=1; $i<=$scheduleDate->event_total_timeslots; $i++){
             $startDate = Carbon::createFromFormat('m/d/Y',$paramDate)->setTimeFromTimeString($syStartTime);
             if($i>1){
                 $pushMinute = $i*$interval - $interval;
                 $startDate = $startDate->addMinutes($pushMinute);
             }
             $startTime = substr($startDate->toTimeString(),0,-3);
-            $endTime   = substr($startDate->addMinutes($interval)->toTimeString('h:m'),0,-3);
+            if($i== 30 || $i == 31){
+                //hardcode
+                $endTime   = substr($startDate->addMinutes(90)->toTimeString('h:m'),0,-3);
+            }else{
+                $endTime   = substr($startDate->addMinutes($interval)->toTimeString('h:m'),0,-3);
+            }
+
 
             $timeSlot = [
                 'slot' => "$i",
