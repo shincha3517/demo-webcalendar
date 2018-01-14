@@ -343,7 +343,7 @@ class ScheduleController extends AdminBaseController
             $collection1 = collect($schedules['data']['time_data'][0]['required']['classes'])->sortBy(function($item){
                 return $item['slot'];
             });
-            $schedules = $collection1;
+            $schedules['data']['time_data'][0] = $collection1;
         }
 
         return response()->json(['result'=>$schedules,'status'=>1]);
