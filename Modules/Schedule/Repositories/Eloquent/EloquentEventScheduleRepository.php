@@ -31,6 +31,10 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
                 $pushMinute = $i*$interval - $interval;
                 $startDate = $startDate->addMinutes($pushMinute);
             }
+            if($i== 31){
+                $startDate = $startDate->addMinutes(75);
+            }
+
             $startTime = substr($startDate->toTimeString(),0,-3);
             if($i== 30 || $i == 31){
                 //hardcode
