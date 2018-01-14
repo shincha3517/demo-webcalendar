@@ -125,8 +125,6 @@ class InsertEventSchedule implements ShouldQueue
                             $endDate = Carbon::parse($startDate)->addMinutes($interval);
                         }
 
-                        $endDate = Carbon::parse($startDate)->addMinutes($interval);
-
                         $scheduleStartTime = Carbon::parse($startDate)->toTimeString();
                         $scheduleEndTime = Carbon::parse($endDate)->toTimeString();
 
