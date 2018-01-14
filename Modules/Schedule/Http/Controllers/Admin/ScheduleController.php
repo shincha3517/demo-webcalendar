@@ -339,12 +339,12 @@ class ScheduleController extends AdminBaseController
         $termNumber = $this->assignmentRepository->getReliefNumber('term',$date,$userId);
         $schedules['data']['time_data'][0]['required']['term_done'] = $termNumber;
 
-        if(isset($schedules['data']['time_data'][0])){
-            $collection1 = collect($schedules['data']['time_data'][0]['required']['classes'])->sortBy(function($item){
-                return $item['slot'];
-            });
-            $schedules['data']['time_data'][0]['required']['classes'] = $collection1;
-        }
+//        if(isset($schedules['data']['time_data'][0])){
+//            $collection1 = collect($schedules['data']['time_data'][0]['required']['classes'])->sortBy(function($item){
+//                return $item['slot'];
+//            });
+//            $schedules['data']['time_data'][0]['required']['classes'] = $collection1;
+//        }
 
         return response()->json(['result'=>$schedules,'status'=>1]);
     }
