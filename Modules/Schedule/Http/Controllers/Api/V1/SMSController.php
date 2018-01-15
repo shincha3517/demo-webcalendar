@@ -48,7 +48,7 @@ class SMSController extends Controller
                     $job = Assignment::where('code',$jobCode)->get()->first();
                     if($job){
                         //send confirm SMS
-                        $body = $job->replaced_teacher_name.' has '.$reply;
+                        $body = $job->replaced_teacher_name.' has '.$reply .' #'.$jobCode;
                         $this->_sendSMS($job->teacher->phone_number,$body);
                     }
 
