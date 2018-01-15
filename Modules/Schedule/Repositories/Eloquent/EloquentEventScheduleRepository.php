@@ -303,7 +303,6 @@ WHERE t.id != ?',$whereData);
                 $status = 1;
                 $i = 0;
 
-
                 $scheduleRelief = ScheduleEvent::find($events[0]);
                 $subject = $scheduleRelief->teacher->subject;
 
@@ -354,6 +353,17 @@ WHERE t.id != ?',$whereData);
                     else{
                         $result['data']['time_data'][$i]['required']['classes'] =[];
                     }
+
+                    $reliefSchedule = Assignment::where('replaced_teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->where('status',1)->get();
+                    if(count($reliefSchedule)){
+                        foreach($reliefSchedule as $item){
+                            array_push($result['data']['time_data'][$i]['required']['classes'],[
+                                'slot'=>[$item->slot_id],
+                                'lesson'=>str_replace('/',',',trim(preg_replace('/\r\n|\r|\n/', ',', $item->subject)))
+                            ]);
+                        }
+                    }
+
 
                     $lessons = ScheduleEvent::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->count();
                     $assignLessons = Assignment::where('replaced_teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->count();
