@@ -684,7 +684,6 @@ class ScheduleController extends AdminBaseController
             $this->_sendSMS($job->teacher->phone_number,$body);
             //send notify to replace teacher
             $this->_sendSMS($job->replaceTeacher->phone_number,$body);
-
         }
 
         $request->session()->flash('success','Cancel replace teacher successfully');
@@ -721,6 +720,7 @@ class ScheduleController extends AdminBaseController
         $pwd = env('TAR_PASSWORD');
         $tarNumber = '84986981718';
         $tarBody = 'Test';
+        $tarBody = 'Cancel Job: subject TEST \n with lesson : TEST \n  2018-01-12';
         $messageId = Carbon::today()->timestamp;
 
         try {
@@ -737,7 +737,8 @@ class ScheduleController extends AdminBaseController
             }
 
 
-        }catch (GuzzleException $error) {
+        }
+        catch (GuzzleException $error) {
             echo $error->getMessage();exit;
             return $this->respondInternalError();
         }
