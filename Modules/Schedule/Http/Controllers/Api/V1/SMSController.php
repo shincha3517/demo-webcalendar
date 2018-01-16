@@ -48,7 +48,7 @@ class SMSController extends Controller
                     $job = Assignment::where('code',$jobCode)->get()->first();
                     if($job){
                         //send confirm SMS
-                        $body = $job->replaced_teacher_name.' has '.$reply .' #'.$jobCode;
+                        $body = $job->replaced_teacher_name.' has '.$reply .' #'.$text[1];
                         $this->_sendSMS($job->teacher->phone_number,$body);
                     }
 
@@ -85,7 +85,7 @@ class SMSController extends Controller
         $username = env('TAR_USERNAME');
         $pwd = env('TAR_PASSWORD');
         $tarNumber = '65'.$toNumber;
-        $tarBody = $body;
+        $tarBody = urlencode($body);
         $messageId = Carbon::today()->timestamp;
 
         try {
@@ -96,11 +96,13 @@ class SMSController extends Controller
             $sendSMSRequest = $client->get($request);
             $sendSMSResut = $sendSMSRequest->getBody()->getContents();
             if(strpos($sendSMSResut,'sent')){
+                dd($sendSMSResut);
                 return true;
             }else{
                 return false;
             }
-        }catch (GuzzleException $error) {
+        }
+        catch (GuzzleException $error) {
             echo $error->getMessage();exit;
         }
     }
