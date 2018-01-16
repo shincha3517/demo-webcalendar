@@ -77,7 +77,7 @@ class UpdateTeacherSubject implements ShouldQueue
                 $teacher->save();
             }
 
-            if(strtolower($isAdmin) == 'yes'){
+            if(strtolower($isAdmin) == 'admin'){
                 $data = [
                     'first_name'=> $teacherName,
                     'last_name'=> '',
@@ -159,7 +159,89 @@ class UpdateTeacherSubject implements ShouldQueue
 
 
 
-            }elseif(strtolower($isAdmin) == 'no') {
+            }elseif(strtolower($isAdmin) == 'sysadmin'){
+                $data = [
+                    'first_name'=> $teacherName,
+                    'last_name'=> '',
+                    'email'=> $email,
+                    'password'=> '123@abc',
+                    'password_confirmation'=> '123@abc',
+                    'roles'=>['1'],
+                    'permissions'=>[
+                        "core.sidebar.group" => true,
+                        "dashboard.index" => true,
+                        "dashboard.update" => true,
+                        "dashboard.reset" => true,
+                        "media.medias.index" => false,
+                        "media.medias.create" => false,
+                        "media.medias.edit" => false,
+                        "media.medias.destroy" => false,
+                        "menu.menus.index" => false,
+                        "menu.menus.create" => false,
+                        "menu.menus.edit" => false,
+                        "menu.menus.destroy" => false,
+                        "menu.menuitems.index" => false,
+                        "menu.menuitems.create" => false,
+                        "menu.menuitems.edit" => false,
+                        "menu.menuitems.destroy" => false,
+                        "page.pages.index" => false,
+                        "page.pages.create" => false,
+                        "page.pages.edit" => false,
+                        "page.pages.destroy" => false,
+                        "schedule.schedules.upload" => true,
+                        "schedule.schedules.index" => true,
+                        "schedule.schedules.worker" => false,
+                        "schedule.report.index" => true,
+                        "schedule.report.list" => true,
+                        "schedule.report.export" => true,
+                        "schedule.meeting.index" => false,
+                        "schedule.meeting.create" => false,
+                        "schedule.meeting.edit" => false,
+                        "setting.settings.index" => true,
+                        "setting.settings.edit" => true,
+                        "tag.tags.index" => false,
+                        "tag.tags.create" => false,
+                        "tag.tags.edit" => false,
+                        "tag.tags.destroy" => false,
+                        "translation.translations.index" => false,
+                        "translation.translations.edit" => false,
+                        "translation.translations.import" => false,
+                        "translation.translations.export" => false,
+                        "user.users.index" => true,
+                        "user.users.create" => true,
+                        "user.users.edit" => true,
+                        "user.users.destroy" => true,
+                        "user.roles.index" => true,
+                        "user.roles.create" => true,
+                        "user.roles.edit" => true,
+                        "user.roles.destroy" => true,
+                        "workshop.sidebar.group" => true,
+                        "workshop.modules.index" => false,
+                        "workshop.modules.show" => false,
+                        "workshop.modules.update" => false,
+                        "workshop.modules.disable" => false,
+                        "workshop.modules.enable" => false,
+                        "workshop.modules.publish" => false,
+                        "workshop.themes.index" => false,
+                        "workshop.themes.show" => false,
+                        "workshop.themes.publish" => false,
+                    ]
+                ];
+
+                $checkTeacher = $this->user->findByCredentials(['email'=> $email]);
+                if(!$checkTeacher){
+                    try{
+                        $this->user->createWithRoles($data, ['1'], true);
+                    }catch (QueryException $e){
+                        Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
+                    }
+                }else{
+                    Log::error('Teacher with email:'.$email .' already exist');
+                }
+
+
+
+            }elseif(strtolower($isAdmin) == 'user') {
                 $data = [
                     'first_name'=> $teacherName,
                     'last_name'=> '',

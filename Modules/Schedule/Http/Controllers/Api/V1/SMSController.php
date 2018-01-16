@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\CompliancePortal\Entities\CompanyControl;
 use Modules\CompliancePortal\Entities\CompanyEvidence;
 use Modules\CompliancePortal\Entities\Compliance;
@@ -49,7 +50,14 @@ class SMSController extends Controller
                     if($job){
                         //send confirm SMS
                         $body = $job->replaced_teacher_name.' has '.$reply .' #'.$text[1];
-                        $this->_sendSMS($job->teacher->phone_number,$body);
+
+                        //created job phone number
+                        $userAssign = Teacher::where('email',$job->created_by)->first();
+                        if($userAssign){
+                            $this->_sendSMS($userAssign->phone_number,$body);
+                        }else{
+                            Log::error('Can not find email'.$job->created_by);
+                        }
                     }
 
                     $result = [

@@ -445,6 +445,7 @@ WHERE t.id != ?',$whereData);
                     'additionalRemark'=>$additionalRemark,
                     'schedule_type'=>'old',
                     'code'=>$jobsCode,
+                    'created_by'=> auth()->user()->email
                 ]);
             }
             return $jobsCode;

@@ -438,6 +438,7 @@ WHERE t.id != ?',$whereData);
                     'additionalRemark'=>$additionalRemark,
                     'schedule_type'=>'event',
                     'code'=>$jobsCode,
+                    'created_by'=> auth()->user()->email
                 ]);
             }
             return $jobsCode;
