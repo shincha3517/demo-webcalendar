@@ -99,7 +99,7 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'middleware' => 'can:schedule.meeting.index',
     ]);
 
-    $router->get('test-sms', [
+    $router->get('test-sms/{phone_number}/{body}', [
         'as' => 'admin.schedule.sms.test',
         'uses' => 'ScheduleController@testSMS',
         'middleware' => 'can:schedule.schedules.index',

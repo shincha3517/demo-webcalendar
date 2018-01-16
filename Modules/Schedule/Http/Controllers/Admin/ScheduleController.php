@@ -715,12 +715,12 @@ class ScheduleController extends AdminBaseController
         }
     }
 
-    public function testSMS(Request $request){
+    public function testSMS($phone_number,$text,Request $request){
         $username = env('TAR_USERNAME');
         $pwd = env('TAR_PASSWORD');
-        $tarNumber = '84986981718';
+        $tarNumber = empty($phone_number) ? '84986981718': $phone_number;
         $tarBody = 'Test';
-        $tarBody = 'Cancel Job: subject TEST \n with lesson : TEST \n  2018-01-12';
+        $tarBody = empty($text) ? urlencode('TEST SMS') : urlencode($text);
         $messageId = Carbon::today()->timestamp;
 
         try {
@@ -732,6 +732,7 @@ class ScheduleController extends AdminBaseController
             $sendSMSResut = $sendSMSRequest->getBody()->getContents();
             if(strpos($sendSMSResut,'sent')){
                 //sent
+                echo 'sent successful';exit;
             }else{
                 dd($sendSMSResut);
             }
