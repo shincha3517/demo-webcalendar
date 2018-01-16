@@ -679,7 +679,7 @@ class ScheduleController extends AdminBaseController
         $this->repository->userCancelAssignSchedule($scheduleId,$date);
 
         if($job){
-            $body = 'Cancel Job: subject '.$job->subject .' with lesson '.$job->lesson .' \n '. $job->start_date .' \n '.$job->end_date;
+            $body = 'Cancel Job: subject '.$job->subject .' with lesson '.$job->lesson .' '. $job->start_date .' '.$job->end_date;
             //send notify to sender
             $this->_sendSMS($job->teacher->phone_number,$body);
             //send notify to replace teacher
