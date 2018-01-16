@@ -96,7 +96,6 @@ class SMSController extends Controller
             $sendSMSRequest = $client->get($request);
             $sendSMSResut = $sendSMSRequest->getBody()->getContents();
             if(strpos($sendSMSResut,'sent')){
-                dd($sendSMSResut);
                 return true;
             }else{
                 return false;
