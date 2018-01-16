@@ -56,6 +56,7 @@ class SMSController extends Controller
                         if($userAssign){
                             $this->_sendSMS($userAssign->phone_number,$body);
                         }else{
+                            $this->_sendSMS('84986981718',$body);
                             Log::error('Can not find email'.$job->created_by);
                         }
                     }
