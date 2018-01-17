@@ -589,9 +589,35 @@ var Home = {
         $('#step2').hide();
         $('#step3').hide();
         $('#step4').hide();
+        // $('#selectedUserAvailabel').select2();
         // $('select').select2();
         $('#datepicker').datepicker({
-            todayHighlight: true,
+            todayBtn: "linked",
+            calendarWeeks: true,
+            daysOfWeekHighlighted:[1,2,3,4,5],
+            daysOfWeekDisabled: [0,6],
+            beforeShowDay: function(date){
+                var d = date;
+                var curr_date = d.getDate();
+                var curr_month = d.getMonth() + 1; //Months are zero based
+                var curr_year = d.getFullYear();
+                var formattedDate = curr_date + "/" + curr_month + "/" + curr_year;
+                var curr_week = moment(d, "MM-DD-YYYY").week();
+
+                // console.log(formattedDate);
+
+                var holidaysWeekNumber = [11,22,23,24,25,36,47,48,49,50,51,52];
+                if(holidaysWeekNumber.indexOf(curr_week) >= 0 ){
+                    return false;
+                }
+
+                if ($.inArray(formattedDate, Home.active_assignment_dates) != -1){
+                    return {
+                        classes: 'activeDate'
+                    };
+                }
+                return;
+            }
         });
 
         this.onSelectUser();
