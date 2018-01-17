@@ -600,9 +600,9 @@ class ScheduleController extends AdminBaseController
     public function actionWorker(Request $request){
         $currentUser = $this->auth->user();
         $teacher = Teacher::where('email',$currentUser->email)->get()->first();
-        if(!$teacher){
-            return redirect()->back()->with('error','Your account can not using this function');
-        }
+//        if(!$teacher){
+//            return redirect()->back()->with('error','Your account can not using this function');
+//        }
         $teachers = $this->teacherRepository->all();
 
         $date = '10/18/2017';
