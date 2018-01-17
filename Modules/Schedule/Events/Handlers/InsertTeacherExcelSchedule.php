@@ -119,8 +119,8 @@ class InsertTeacherExcelSchedule implements ShouldQueue
                         }
                         if($e == 30 || $e == 31){
                             //hardcode
-                            $interval = 90;
-                            $endDate = Carbon::parse($startDate)->addMinutes($interval);
+                            $interval2 = 90;
+                            $endDate = Carbon::parse($startDate)->addMinutes($interval2);
                         }
                         else{
                             $endDate = Carbon::parse($startDate)->addMinutes($interval);
