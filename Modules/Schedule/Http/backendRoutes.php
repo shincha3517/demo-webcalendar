@@ -104,4 +104,31 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'ScheduleController@testSMS',
         'middleware' => 'can:schedule.schedules.index',
     ]);
+
+
+    $router->get('teacher', [
+        'as' => 'admin.schedule.teacher.index',
+        'uses' => 'TeacherController@index',
+        'middleware' => 'can:schedule.teacher.index',
+    ]);
+    $router->get('teacher/{id}/edit', [
+        'as' => 'admin.schedule.teacher.edit',
+        'uses' => 'TeacherController@edit',
+        'middleware' => 'can:schedule.teacher.edit',
+    ]);
+    $router->get('teacher/create', [
+        'as' => 'admin.schedule.teacher.create',
+        'uses' => 'TeacherController@create',
+        'middleware' => 'can:schedule.teacher.create',
+    ]);
+    $router->post('teacher/create', [
+        'as' => 'admin.schedule.teacher.store',
+        'uses' => 'TeacherController@store',
+        'middleware' => 'can:schedule.teacher.create',
+    ]);
+    $router->put('teacher/{id}/edit', [
+        'as' => 'admin.schedule.teacher.update',
+        'uses' => 'TeacherController@update',
+        'middleware' => 'can:schedule.teacher.edit',
+    ]);
 });

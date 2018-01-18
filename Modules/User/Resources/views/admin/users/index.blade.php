@@ -32,6 +32,8 @@
                             <th>{{ trans('user::users.table.first-name') }}</th>
                             <th>{{ trans('user::users.table.last-name') }}</th>
                             <th>{{ trans('user::users.table.email') }}</th>
+                            <th>{{ trans('user::users.table.phone') }}</th>
+                            <th>{{ trans('user::users.table.subject') }}</th>
                             <th>{{ trans('user::users.table.created-at') }}</th>
                             <th data-sortable="false">{{ trans('user::users.table.actions') }}</th>
                         </tr>
@@ -58,6 +60,16 @@
                                 <td>
                                     <a href="{{ URL::route('admin.user.user.edit', [$user->id]) }}">
                                         {{ $user->email }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ URL::route('admin.user.user.edit', [$user->id]) }}">
+                                        {{ isset($user->teacher) ? $user->teacher->phone_number : '' }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ URL::route('admin.user.user.edit', [$user->id]) }}">
+                                        {{ isset($user->teacher) ? $user->teacher->subject : '' }}
                                     </a>
                                 </td>
                                 <td>

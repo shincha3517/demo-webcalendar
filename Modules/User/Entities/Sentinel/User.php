@@ -7,6 +7,7 @@ use Illuminate\Auth\Authenticatable;
 use Cartalyst\Sentinel\Laravel\Facades\Activation;
 use Cartalyst\Sentinel\Users\EloquentUser;
 use Laracasts\Presenter\PresentableTrait;
+use Modules\Schedule\Entities\Teacher;
 use Modules\User\Entities\UserInterface;
 use Modules\User\Entities\UserToken;
 use Modules\User\Presenters\UserPresenter;
@@ -129,5 +130,9 @@ class User extends EloquentUser implements UserInterface, AuthenticatableContrac
         $permissions = $this->getPermissionsInstance();
 
         return $permissions->hasAccess($permission);
+    }
+
+    public function teacher(){
+        return $this->belongsTo(Teacher::class);
     }
 }

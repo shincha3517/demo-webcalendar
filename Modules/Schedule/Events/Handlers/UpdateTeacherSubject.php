@@ -149,7 +149,12 @@ class UpdateTeacherSubject implements ShouldQueue
                 $checkTeacher = $this->user->findByCredentials(['email'=> $email]);
                 if(!$checkTeacher){
                     try{
-                        $this->user->createWithRoles($data, ['1'], true);
+                        $user = $this->user->createWithRoles($data, ['1'], true);
+                        if($user){
+                            //update teacher id
+                            $teacher->user_id = $user->id;
+                            $teacher->save();
+                        }
                     }catch (QueryException $e){
                         Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
                     }
@@ -231,7 +236,12 @@ class UpdateTeacherSubject implements ShouldQueue
                 $checkTeacher = $this->user->findByCredentials(['email'=> $email]);
                 if(!$checkTeacher){
                     try{
-                        $this->user->createWithRoles($data, ['1'], true);
+                        $user = $this->user->createWithRoles($data, ['1'], true);
+                        if($user){
+                            //update teacher id
+                            $teacher->user_id = $user->id;
+                            $teacher->save();
+                        }
                     }catch (QueryException $e){
                         Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
                     }
@@ -246,8 +256,8 @@ class UpdateTeacherSubject implements ShouldQueue
                     'first_name'=> $teacherName,
                     'last_name'=> '',
                     'email'=> $email,
-                    'password'=> '123456',
-                    'password_confirmation'=> '123456',
+                    'password'=> 'Yhss20181',
+                    'password_confirmation'=> 'Yhss20181',
                     'roles'=>['2'],
 //                    'permissions'=>[
 //                        "core.sidebar.group" => true,
@@ -313,7 +323,12 @@ class UpdateTeacherSubject implements ShouldQueue
                 $checkTeacher = $this->user->findByCredentials(['email'=> $email]);
                 if(!$checkTeacher){
                     try{
-                        $this->user->createWithRoles($data, ['2'], true);
+                        $user = $this->user->createWithRoles($data, ['2'], true);
+                        if($user){
+                            //update teacher id
+                            $teacher->user_id = $user->id;
+                            $teacher->save();
+                        }
                     }catch (QueryException $e){
                         Log::error('Can not create teacher '.$teacherName .' because'. $e->getMessage());
                     }

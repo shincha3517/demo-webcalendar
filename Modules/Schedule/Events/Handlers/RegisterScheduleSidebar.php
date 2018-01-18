@@ -2,10 +2,13 @@
 
 namespace Modules\Schedule\Events\Handlers;
 
+use Maatwebsite\Sidebar\Badge;
 use Maatwebsite\Sidebar\Group;
 use Maatwebsite\Sidebar\Item;
 use Maatwebsite\Sidebar\Menu;
 use Modules\Core\Events\BuildingSidebar;
+use Modules\Page\Repositories\PageRepository;
+use Modules\Schedule\Repositories\TeacherRepository;
 use Modules\User\Contracts\Authentication;
 
 class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
@@ -103,6 +106,26 @@ class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
                 });
 
 
+            });
+        }
+
+
+
+        if($this->auth->hasAccess('schedule.teacher.index')){
+
+            $menu->group(trans('schedule::schedule.makeit'), function (Group $group) {
+                $group->item(trans('schedule::teacher.list'), function (Item $item) {
+                    $item->icon('fa fa-user-secret');
+                    $item->weight(16);
+                    $item->route('admin.schedule.teacher.index');
+                    $item->badge(function (Badge $badge, TeacherRepository $teacher) {
+                        $badge->setClass('bg-green');
+                        $badge->setValue($teacher->all()->count());
+                    });
+                    $item->authorize(
+                        $this->auth->hasAccess('schedule.teacher.index')
+                    );
+                });
             });
         }
 

@@ -16,4 +16,10 @@ return [
         'create' => 'schedule::meeting.create meeting',
         'edit' => 'schedule::meeting.create meeting',
     ],
+    'schedule.teacher' => [
+        'index' => 'schedule::teacher.list teachers',
+        'edit' => 'schedule::teacher.edit teacher',
+        'create' => 'schedule::teacher.create teacher',
+        'delete' => 'schedule::teacher.delete teacher',
+    ],
 ];
