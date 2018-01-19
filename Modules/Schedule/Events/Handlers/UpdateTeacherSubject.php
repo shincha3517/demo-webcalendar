@@ -149,7 +149,7 @@ class UpdateTeacherSubject implements ShouldQueue
                 $checkTeacher = $this->user->findByCredentials(['email'=> $email]);
                 if(!$checkTeacher){
                     try{
-                        $user = $this->user->createWithRoles($data, ['1'], true);
+                        $user = $this->user->createWithRoles($data, ['3'], true);
                         if($user){
                             //update teacher id
                             $teacher->user_id = $user->id;
