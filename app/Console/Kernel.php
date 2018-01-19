@@ -26,6 +26,6 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('reminders-not-reply:send')->everyMinute();
+        $schedule->command('reminders:send')->everyMinute();
     }
 }
