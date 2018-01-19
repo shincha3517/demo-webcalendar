@@ -61,7 +61,7 @@ class ReliefReminderNotResponse
                 if($notifyDate->diffInHours(Carbon::now()) == 0 &&
                     $notifyDate->diffInMinutes(Carbon::now()) == 0 ){
                     //send reminder SMS
-                    if($job->created_by!=null){
+                    if($job->created_by != null){
                         $receiver = Teacher::where('email', $job->created_by)->first();
                         if($receiver){
                             $body = 'Dear '.$receiver->name .','. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
@@ -74,7 +74,7 @@ class ReliefReminderNotResponse
                         $body = 'Dear admin,'. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
                         $this->_sendSMS(false, $body);
                     }
-                    
+
                     $job->notify_status = 1;
                     $job->save();
                 }
