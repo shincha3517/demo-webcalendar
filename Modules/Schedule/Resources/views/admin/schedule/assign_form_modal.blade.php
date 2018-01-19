@@ -39,8 +39,11 @@ Thank you.</textarea>
                         <div class="remind-me">Remind me if <b>{{$teacher->name}}</b> does not reply in</div>
                     </div>
                     <div class="col-md-3 text-right">
-                        <select class="step5-select">
+                        <select class="step5-select" name="notifyInterval">
                             <option value="15">15 mins</option>
+                            <option value="30">30 mins</option>
+                            <option value="1">1 hour</option>
+                            <option value="3">3 hours</option>
                         </select>
                     </div>
                 </div>

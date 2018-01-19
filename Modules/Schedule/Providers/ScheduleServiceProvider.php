@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Core\Traits\CanPublishConfiguration;
 use Modules\Core\Events\BuildingSidebar;
 use Modules\Schedule\Events\Handlers\RegisterScheduleSidebar;
+use Modules\Schedule\Services\ReliefReminderNotResponse;
 
 class ScheduleServiceProvider extends ServiceProvider
 {

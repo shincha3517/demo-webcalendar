@@ -480,11 +480,12 @@ class ScheduleController extends AdminBaseController
         $body = $request->get('msg_body');
         $reason = $request->get('reason_absent');
         $additionalRemark = $request->get('addition_remark');
+        $notifyInterval = $request->get('notifyInterval');
 
         $scheduleTable = $this->_getScheduleTable($replaceDate);
         $this->_getRepository($scheduleTable);
 
-        $replaceStatus = $this->repository->replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark);
+        $replaceStatus = $this->repository->replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$notifyInterval);
         if($replaceStatus){
             $replaceTeacher = $this->teacherRepository->find($replaceTeacherId);
             $body .= "\n reply Yes|No ". $replaceStatus;
@@ -694,7 +695,7 @@ class ScheduleController extends AdminBaseController
     public function _sendSMS($toNumber,$body){
         $username = env('TAR_USERNAME');
         $pwd = env('TAR_PASSWORD');
-        $tarNumber = '65'.$toNumber;
+        $tarNumber = $toNumber ? '65'.$toNumber : env('ADMIN_NUMBER');
         $tarBody = urlencode($body);
         $messageId = Carbon::today()->timestamp;
 
@@ -718,7 +719,7 @@ class ScheduleController extends AdminBaseController
     public function testSMS($phone_number,$text,Request $request){
         $username = env('TAR_USERNAME');
         $pwd = env('TAR_PASSWORD');
-        $tarNumber = empty($phone_number) ? '84986981718': $phone_number;
+        $tarNumber = empty($phone_number) ? env('ADMIN_NUMBER'): $phone_number;
         $tarBody = 'Test';
         $tarBody = empty($text) ? urlencode('TEST SMS') : urlencode($text);
         $messageId = Carbon::today()->timestamp;

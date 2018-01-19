@@ -56,7 +56,7 @@ class SMSController extends Controller
                         if($userAssign){
                             $this->_sendSMS($userAssign->phone_number,$body);
                         }else{
-                            $this->_sendSMS('94244449',$body);
+                            $this->_sendSMS(false,$body);
                             Log::error('Can not find email'.$job->created_by);
                         }
                     }
@@ -93,7 +93,7 @@ class SMSController extends Controller
     public function _sendSMS($toNumber,$body){
         $username = env('TAR_USERNAME');
         $pwd = env('TAR_PASSWORD');
-        $tarNumber = '65'.$toNumber;
+        $tarNumber = $toNumber ? '65'.$toNumber : env('ADMIN_NUMBER');
         $tarBody = urlencode($body);
         $messageId = Carbon::today()->timestamp;
 

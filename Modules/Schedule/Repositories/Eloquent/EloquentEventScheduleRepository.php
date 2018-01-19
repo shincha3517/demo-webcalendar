@@ -391,7 +391,7 @@ WHERE t.id != ?',$whereData);
         return $result;
     }
 
-    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark){
+    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$notifyInterval){
         if(is_array($schedules)){
             $selectedDate = Carbon::parse($replaceDate)->toDateString();
             $jobsCode = DB::table('makeit__assignment')->max('code');
@@ -411,6 +411,23 @@ WHERE t.id != ?',$whereData);
 //                    ->where('selected_date',Carbon::parse($replaceDate)->toDateString())
 //                    ->delete();
 
+                //notify config
+                switch ($notifyInterval){
+                    case '15':
+                        $notifyAt = Carbon::now()->addMinutes(15)->toDateTimeString();
+                        break;
+                    case '30':
+                        $notifyAt = Carbon::now()->addMinutes(30)->toDateTimeString();
+                        break;
+                    case '1':
+                        $notifyAt = Carbon::now()->addHour(1)->toDateTimeString();
+                        break;
+                    case '3':
+                        $notifyAt = Carbon::now()->addHours(3)->toDateTimeString();
+                        break;
+                    default:
+                        $notifyAt = Carbon::now()->addMinutes(15)->toDateTimeString();
+                }
 
                 Activity::create([
                     'teacher_id'=>$selectedSchedule->teacher_id,
@@ -438,7 +455,9 @@ WHERE t.id != ?',$whereData);
                     'additionalRemark'=>$additionalRemark,
                     'schedule_type'=>'event',
                     'code'=>$jobsCode,
-                    'created_by'=> auth()->user()->email
+                    'created_by'=> auth()->user()->email,
+                    'notify_at'=>$notifyAt,
+                    'notify_status'=> 0,
                 ]);
             }
             return $jobsCode;

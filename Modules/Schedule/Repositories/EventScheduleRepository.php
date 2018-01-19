@@ -14,7 +14,7 @@ interface EventScheduleRepository extends BaseRepository
 
     public function getFreeUserWithSchedules($date, $eventIds, $type, $sortingType);
 
-    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark);
+    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$notifyInterval);
 
     public function getSchedulesInArray($ids = array());
 

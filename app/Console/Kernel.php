@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        // Commands\Inspire::class,
+        '\Modules\Schedule\Console\ReminderNotReplySMS'
     ];
 
     /**
@@ -26,5 +26,6 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->command('reminders-not-reply:send')->everyMinute();
     }
 }

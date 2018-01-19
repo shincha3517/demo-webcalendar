@@ -398,7 +398,7 @@ WHERE t.id != ?',$whereData);
         return $result;
     }
 
-    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark){
+    public function replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$notifyInterval){
         if(is_array($schedules)){
             $selectedDate = Carbon::parse($replaceDate)->toDateString();
             $jobsCode = DB::table('makeit__assignment')->max('code');
@@ -407,6 +407,24 @@ WHERE t.id != ?',$whereData);
             $pad_length = 4;
             $pad_char = 0;
             $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
+
+            //notify config
+            switch ($notifyInterval){
+                case '15':
+                    $notifyAt = Carbon::now()->addMinutes(15)->toDateTimeString();
+                    break;
+                case '30':
+                    $notifyAt = Carbon::now()->addMinutes(30)->toDateTimeString();
+                    break;
+                case '1':
+                    $notifyAt = Carbon::now()->addHour(1)->toDateTimeString();
+                    break;
+                case '3':
+                    $notifyAt = Carbon::now()->addHours(3)->toDateTimeString();
+                    break;
+                default:
+                    $notifyAt = Carbon::now()->addMinutes(15)->toDateTimeString();
+            }
 
 
             foreach($schedules as $scheduleId){
@@ -445,7 +463,9 @@ WHERE t.id != ?',$whereData);
                     'additionalRemark'=>$additionalRemark,
                     'schedule_type'=>'old',
                     'code'=>$jobsCode,
-                    'created_by'=> auth()->user()->email
+                    'created_by'=> auth()->user()->email,
+                    'notify_at'=>$notifyAt,
+                    'notify_status'=> 0,
                 ]);
             }
             return $jobsCode;

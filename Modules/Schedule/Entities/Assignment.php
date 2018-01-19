@@ -8,7 +8,7 @@ class Assignment extends Model
 {
 
     protected $table = 'makeit__assignment';
-    protected $fillable = ['teacher_id','replaced_teacher_id','teacher_name','replaced_teacher_name','schedule_id','schedule_event_id','lesson','subject','start_date','end_date','slot_id','day_name','selected_date','reason','additionalRemark','schedule_type','is_past','status','code','created_by'];
+    protected $fillable = ['teacher_id','replaced_teacher_id','teacher_name','replaced_teacher_name','schedule_id','schedule_event_id','lesson','subject','start_date','end_date','slot_id','day_name','selected_date','reason','additionalRemark','schedule_type','is_past','status','code','created_by','notify_at','notify_status'];
 
     public function teacher(){
         return $this->belongsTo(Teacher::class);

@@ -131,4 +131,9 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'TeacherController@update',
         'middleware' => 'can:schedule.teacher.edit',
     ]);
+
+    $router->get('test', function(){
+        $notifyDate = \Carbon\Carbon::parse('2018-01-19 10:40:30');
+        echo $notifyDate->diffInMinutes(\Carbon\Carbon::now());
+    });
 });
