@@ -134,6 +134,7 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
 
     $router->get('test', function(){
         $notifyDate = \Carbon\Carbon::parse('2018-01-19 15:16:00');
-        echo $notifyDate->diffInMinutes(\Carbon\Carbon::now());
+        echo $notifyDate->diffInMinutes(\Carbon\Carbon::now()) .'<br/>';
+        echo \Carbon\Carbon::now()->toDateTimeString();
     });
 });
