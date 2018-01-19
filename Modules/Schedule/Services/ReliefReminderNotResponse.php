@@ -41,11 +41,9 @@ class ReliefReminderNotResponse
 
         $this->jobs = Assignment::where('is_past',0)->where('notify_status',0)->get();
 
-        $this->jobs->each(
-            function ($job) {
-                $this->_remindAbout($job);
-            }
-        );
+        foreach($this->jobs as $job){
+            $this->_remindAbout($job);
+        }
     }
 
     /**
@@ -57,24 +55,27 @@ class ReliefReminderNotResponse
      */
     private function _remindAbout($job)
     {
-        $notifyDate =  Carbon::parse($job->notify_at);
-        if($notifyDate->toDateString() == Carbon::now()->toDateString()){
-            if($notifyDate->diffInHours(Carbon::now()) == 0 &&
-                $notifyDate->diffInMinutes(Carbon::now()) == 0 ){
-                //send reminder SMS
-                $receiver = Teacher::where('email', $job->created_by)->first();
-                if($receiver){
-                    $body = 'Dear '.$receiver->name .','. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
-                    $this->_sendSMS($receiver->phone_number, $body);
-                }else{
-                    $body = 'Dear admin,'. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
-                    $this->_sendSMS(false, $body);
-                }
+        if(!empty($job->notify_at)){
+            $notifyDate =  Carbon::parse($job->notify_at);
+            if($notifyDate->toDateString() == Carbon::now()->toDateString()){
+                if($notifyDate->diffInHours(Carbon::now()) == 0 &&
+                    $notifyDate->diffInMinutes(Carbon::now()) == 0 ){
+                    //send reminder SMS
+                    $receiver = Teacher::where('email', $job->created_by)->first();
+                    if($receiver){
+                        $body = 'Dear '.$receiver->name .','. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
+                        $this->_sendSMS($receiver->phone_number, $body);
+                    }else{
+                        $body = 'Dear admin,'. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
+                        $this->_sendSMS(false, $body);
+                    }
 
-                $job->notify_status = 1;
-                $job->save();
+                    $job->notify_status = 1;
+                    $job->save();
+                }
             }
         }
+
     }
     /**
      * Sends a single message using the app's global configuration
