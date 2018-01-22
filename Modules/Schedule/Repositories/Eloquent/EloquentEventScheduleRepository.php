@@ -517,6 +517,9 @@ WHERE t.id != ?',$whereData);
             'schedule_type'=>'absent',
             'schedule_type'=>'event',
             'code'=>$jobsCode,
+            'created_by'=> auth()->user()->email,
+            'notify_at'=>null,
+            'notify_status'=> 1,
         ]);
 
         return $jobsCode;

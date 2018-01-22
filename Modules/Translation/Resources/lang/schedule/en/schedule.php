@@ -6,4 +6,5 @@ return [
     'upload-excel' => 'Upload Excel',
     'assign-user' => 'Assign user',
     'worker'=> 'Worker',
+    'leave-system' => 'Leave system'
 ];

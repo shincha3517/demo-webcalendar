@@ -65,7 +65,7 @@ class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
                         $this->auth->hasAccess('schedule.schedules.index')
                     );
                 });
-                $item->item(trans('schedule::schedule.worker'), function (Item $item) {
+                $item->item(trans('schedule::schedule.leave-system'), function (Item $item) {
                     $item->weight(13);
                     $item->icon('fa fa-clock-o');
                     $item->route('admin.schedule.worker');
