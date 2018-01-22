@@ -19,6 +19,7 @@ use Modules\CompliancePortal\Entities\CrossCompliance;
 use Modules\CompliancePortal\Entities\Project;
 use Modules\Schedule\Entities\Assignment;
 use Modules\Schedule\Entities\Teacher;
+use Modules\Schedule\Helpers\SendSMS;
 
 class SMSController extends Controller
 {
@@ -54,9 +55,9 @@ class SMSController extends Controller
                         //created job phone number
                         $userAssign = Teacher::where('email',$job->created_by)->first();
                         if($userAssign){
-                            $this->_sendSMS($userAssign->phone_number,$body);
+                            SendSMS::send($userAssign->phone_number,$body);
                         }else{
-                            $this->_sendSMS(false,$body);
+                            SendSMS::send(false,$body);
                             Log::error('Can not find email'.$job->created_by);
                         }
                     }
@@ -88,30 +89,5 @@ class SMSController extends Controller
             'request_header'=> $request->headers,
         ]);
         return response()->json($result);
-    }
-
-    public function _sendSMS($toNumber,$body){
-        $username = env('TAR_USERNAME');
-        $pwd = env('TAR_PASSWORD');
-        $tarNumber = $toNumber ? '65'.$toNumber : env('ADMIN_NUMBER');
-        $tarBody = urlencode($body);
-        $messageId = Carbon::today()->timestamp;
-
-        try {
-            $client = new Client(); //GuzzleHttp\Client
-//            $request = 'http://www.sendquickasp.com/client_api/index.php?username=yuhuasec&passwd=pass1234&tar_num=84986981718&tar_msg=Test&callerid=6584376346&route_to=api_send_sms';
-            $request = 'http://www.sendquickasp.com/client_api/index.php?username='.$username.'&passwd='.$pwd.'&tar_num='.$tarNumber.'&tar_msg='.$tarBody.'&callerid=6584376346&route_to=api_send_sms';
-
-            $sendSMSRequest = $client->get($request);
-            $sendSMSResut = $sendSMSRequest->getBody()->getContents();
-            if(strpos($sendSMSResut,'sent')){
-                return true;
-            }else{
-                return false;
-            }
-        }
-        catch (GuzzleException $error) {
-            echo $error->getMessage();exit;
-        }
     }
 }

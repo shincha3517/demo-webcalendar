@@ -12,8 +12,10 @@ namespace Modules\Schedule\Services;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\DB;
 use Modules\Schedule\Entities\Assignment;
 use Modules\Schedule\Entities\Teacher;
+use Modules\Schedule\Helpers\SendSMS;
 use Modules\Schedule\Repositories\AssignmentRepository;
 
 class ReliefReminderNotResponse
@@ -39,7 +41,7 @@ class ReliefReminderNotResponse
     {
 //        $this->jobs = Assign ();
 
-        $this->jobs = Assignment::where('is_past',0)->where('notify_status',0)->get();
+        $this->jobs = Assignment::where('is_past',0)->where('notify_status',0)->groupBy('code')->get();
 
         foreach($this->jobs as $job){
             $this->_remindAbout($job);
@@ -65,53 +67,20 @@ class ReliefReminderNotResponse
                         $receiver = Teacher::where('email', $job->created_by)->first();
                         if($receiver){
                             $body = 'Dear '.$receiver->name .','. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
-                            $this->_sendSMS($receiver->phone_number, $body);
+                            SendSMS::send($receiver->phone_number, $body);
                         }else{
                             $body = 'Dear admin,'. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
-                            $this->_sendSMS(false, $body);
+                            SendSMS::send(false, $body);
                         }
                     }else{
                         $body = 'Dear admin,'. $job->replaced_teacher_name .' has not replied job #' . $job->code.'';
-                        $this->_sendSMS(false, $body);
+                        SendSMS::send(false, $body);
                     }
 
-                    $job->notify_status = 1;
-                    $job->save();
+                    DB::table('makeit__assignment')->where('code',$job->code)->update(['notify_status'=>1]);
                 }
             }
         }
 
-    }
-    /**
-     * Sends a single message using the app's global configuration
-     *
-     * @param string $number  The number to message
-     * @param string $content The content of the message
-     *
-     * @return void
-     */
-    private function _sendSMS($toNumber, $body)
-    {
-        $username = env('TAR_USERNAME');
-        $pwd = env('TAR_PASSWORD');
-        $tarNumber = $toNumber ? '65'.$toNumber : env('ADMIN_NUMBER');
-        $tarBody = urlencode($body);
-        $messageId = Carbon::today()->timestamp;
-
-        try {
-            $client = new Client(); //GuzzleHttp\Client
-//            $request = 'http://www.sendquickasp.com/client_api/index.php?username=yuhuasec&passwd=pass1234&tar_num=84986981718&tar_msg=Test&callerid=6584376346&route_to=api_send_sms';
-            $request = 'http://www.sendquickasp.com/client_api/index.php?username='.$username.'&passwd='.$pwd.'&tar_num='.$tarNumber.'&tar_msg='.$tarBody.'&callerid=6584376346&route_to=api_send_sms';
-
-            $sendSMSRequest = $client->get($request);
-            $sendSMSResut = $sendSMSRequest->getBody()->getContents();
-            if(strpos($sendSMSResut,'sent')){
-                return true;
-            }else{
-                return false;
-            }
-        }catch (GuzzleException $error) {
-            echo $error->getMessage();exit;
-        }
     }
 }

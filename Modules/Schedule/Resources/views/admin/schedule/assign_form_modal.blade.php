@@ -59,7 +59,7 @@ Thank you.</textarea>
                         </label>
                     </div>
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-md-3">
                         <p>Reason Absent</p>
                     </div>
@@ -82,7 +82,7 @@ Thank you.</textarea>
                             <option value="others">others</option>
                         </select>
                     </div>
-                </div>
+                </div>-->
                 <div class="row">
                     <div class="col-md-3">
                         <p>Additional remarks</p>

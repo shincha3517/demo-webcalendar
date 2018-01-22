@@ -23,6 +23,7 @@ use Modules\Schedule\Events\ImportExcelSchedule;
 use Modules\Schedule\Events\ReadEventSchedule;
 use Modules\Schedule\Events\ReadSubjectSheet;
 use Modules\Schedule\Events\ReadTeacherExcelFile;
+use Modules\Schedule\Helpers\SendSMS;
 use Modules\Schedule\Http\Requests\UploadExcelRequest;
 use Modules\Schedule\Jobs\SendNotificationMail;
 use Modules\Schedule\Repositories\AssignmentRepository;
@@ -51,6 +52,7 @@ class ScheduleController extends AdminBaseController
     protected $assignmentRepository;
     protected $repository;
     protected $setting;
+    public $sendSMS;
 
     /**
      * @param PermissionManager $permissions
@@ -119,7 +121,7 @@ class ScheduleController extends AdminBaseController
 
         DB::table('makeit__schedules')->delete();
         DB::table('makeit__schedules_event')->delete();
-        DB::table('makeit__teachers')->delete();
+//        DB::table('makeit__teachers')->delete();
         DB::table('makeit__schedule_dates')->delete();
 
         //remove all users
@@ -488,12 +490,12 @@ class ScheduleController extends AdminBaseController
         $replaceStatus = $this->repository->replaceTeacher($schedules,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$notifyInterval);
         if($replaceStatus){
             $replaceTeacher = $this->teacherRepository->find($replaceTeacherId);
-            $body .= "\n reply Yes|No ". $replaceStatus;
+            $body .= "\n Reply Yes/No ". $replaceStatus;
 
             if($request->has('send_sms')){
                 if($replaceTeacher){
                     $phoneNumber = $replaceTeacher->phone_number;
-                    $smsStatus = $this->_sendSMS($phoneNumber,$body);
+                    $smsStatus = SendSMS::send($phoneNumber,$body);
                     if($smsStatus){
                         $request->session()->flash('success','Send SMS successfully');
                     }
@@ -559,13 +561,16 @@ class ScheduleController extends AdminBaseController
             $teacher = Teacher::find($teacherId);
             $replaceTeacher = Teacher::find($replaceTeacherId);
 
-            $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name."\n From: $startDate To: $endDate \n Reason: $reason";
-            $body .= "\n reply Yes|No ". $replaceStatus;
+//            $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name." From: $startDate To: $endDate Reason: $reason";
+//            $body .= "reply Yes|No ". $replaceStatus;
+
+            $body = $teacher->name.' is on leave on '.$startDate.' due to '.$endDate.', '.$reason.'. ';
+            $body .= "Reply Yes|No ". $replaceStatus;
 
 
             if($replaceTeacher){
                 $phoneNumber = $replaceTeacher->phone_number;
-                $smsStatus = $this->_sendSMS($phoneNumber,$body);
+                $smsStatus = SendSMS::send($phoneNumber,$body);
                 if($smsStatus){
                     $request->session()->flash('success','Send SMS successfully');
                 }
@@ -682,38 +687,14 @@ class ScheduleController extends AdminBaseController
         if($job){
             $body = 'Cancel Job: subject '.$job->subject .' with lesson '.$job->lesson .' '. $job->start_date .' '.$job->end_date;
             //send notify to sender
-            $this->_sendSMS($job->teacher->phone_number,$body);
+            SendSMS::send($job->teacher->phone_number,$body);
             //send notify to replace teacher
-            $this->_sendSMS($job->replaceTeacher->phone_number,$body);
+            SendSMS::send($job->replaceTeacher->phone_number,$body);
         }
 
         $request->session()->flash('success','Cancel replace teacher successfully');
 
         return redirect()->to('backend/schedule');
-    }
-
-    public function _sendSMS($toNumber,$body){
-        $username = env('TAR_USERNAME');
-        $pwd = env('TAR_PASSWORD');
-        $tarNumber = $toNumber ? '65'.$toNumber : env('ADMIN_NUMBER');
-        $tarBody = urlencode($body);
-        $messageId = Carbon::today()->timestamp;
-
-        try {
-            $client = new Client(); //GuzzleHttp\Client
-//            $request = 'http://www.sendquickasp.com/client_api/index.php?username=yuhuasec&passwd=pass1234&tar_num=84986981718&tar_msg=Test&callerid=6584376346&route_to=api_send_sms';
-            $request = 'http://www.sendquickasp.com/client_api/index.php?username='.$username.'&passwd='.$pwd.'&tar_num='.$tarNumber.'&tar_msg='.$tarBody.'&callerid=6584376346&route_to=api_send_sms';
-
-            $sendSMSRequest = $client->get($request);
-            $sendSMSResut = $sendSMSRequest->getBody()->getContents();
-            if(strpos($sendSMSResut,'sent')){
-                return true;
-            }else{
-                return false;
-            }
-        }catch (GuzzleException $error) {
-            echo $error->getMessage();exit;
-        }
     }
 
     public function testSMS($phone_number,$text,Request $request){
