@@ -124,7 +124,7 @@ table.time_slot>tbody>tr>td:first-child {
 }
 
 .time_slot-child>tbody>tr>.paired {
-	background: #00ccff;
+	background: green;
 }
 
 .time_slot-child>tbody>tr>.substituted {

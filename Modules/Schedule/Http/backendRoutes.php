@@ -39,6 +39,11 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'ScheduleController@getUserSchedules',
 //        'middleware' => 'can:schedule.schedules.index',
     ]);
+    $router->get('/getLeaveUserTimeline', [
+        'as' => 'admin.schedule.getLeaveUserTimeline',
+        'uses' => 'ScheduleController@getLeaveUserSchedules',
+//        'middleware' => 'can:schedule.schedules.index',
+    ]);
 
     $router->get('/getAvailableUser', [
         'as' => 'admin.schedule.getAvailableUser',

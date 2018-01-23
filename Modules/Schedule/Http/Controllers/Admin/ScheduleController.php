@@ -351,6 +351,27 @@ class ScheduleController extends AdminBaseController
         return response()->json(['result'=>$schedules,'status'=>1]);
     }
 
+    public function getLeaveUserSchedules(Request $request){
+        $userId = $request->get('teacher_id');
+        $date = $request->get('date');
+
+        $scheduleTable = $this->_getScheduleTable($date);
+        $this->_getRepository($scheduleTable);
+
+        $schedules = $this->repository->getLeaveUserSchedules($userId , $date);
+        $termNumber = $this->assignmentRepository->getReliefNumber('term',$date,$userId);
+        $schedules['data']['time_data'][0]['required']['term_done'] = $termNumber;
+
+        if(isset($schedules['data']['time_data'][0])){
+            $collection1 = collect($schedules['data']['time_data'][0]['required']['classes'])->sortBy(function($item){
+                return $item['slot'][0];
+            })->values()->all();
+            $schedules['data']['time_data'][0]['required']['classes'] = $collection1;
+        }
+
+        return response()->json(['result'=>$schedules,'status'=>1]);
+    }
+
     public function getFreeUsersWithSchedule(Request $request){
         $date = $request->get('date');
         $eventIds = $request->get('eventIds');
@@ -571,8 +592,12 @@ class ScheduleController extends AdminBaseController
             if($replaceTeacher){
                 $phoneNumber = $replaceTeacher->phone_number;
                 $smsStatus = SendSMS::send($phoneNumber,$body);
+
+                //hardcode
+                $smsStatus = SendSMS::send('96162726',$body);
+
                 if($smsStatus){
-                    $request->session()->flash('success','Send SMS successfully');
+                    $request->session()->flash('success','Send absent request successfully');
                 }
                 else{
                     $request->session()->flash('error','Can not send SMS to teacher');
@@ -586,7 +611,7 @@ class ScheduleController extends AdminBaseController
         else{
             $request->session()->flash('error','Send SMS error');
         };
-        return redirect()->back();
+        return redirect()->to('backend/schedule/worker');;
     }
 
     public function getUserByEvent(Request $request){

@@ -179,6 +179,7 @@ class EloquentEventScheduleRepository extends EloquentBaseRepository implements 
             ->whereDate('selected_date',$dayName->toDateString())
             ->where('is_past',0)
             ->where('schedule_type','event')
+            ->whereNotNull('slot_id')
             ->orderBy('slot_id', 'asc')
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
@@ -523,5 +524,129 @@ WHERE t.id != ?',$whereData);
         ]);
 
         return $jobsCode;
+    }
+
+    public function getLeaveUserSchedules($userId, $date)
+    {
+        $teacherId = $userId;
+        $teacher = Teacher::find($teacherId);
+
+        $dayName = Carbon::parse($date);
+        $query = ScheduleEvent::where('teacher_id',$teacherId);
+
+        $dayNameData = '';
+        if($dayName->isMonday()){
+            $query->where('day_name','Monday');
+            $dayNameData = 'Monday';
+        }elseif($dayName->isTuesday()){
+            $query->where('day_name','Tuesday');
+            $dayNameData = 'Tuesday';
+        }elseif($dayName->isWednesday()){
+            $query->where('day_name','Wednesday');
+            $dayNameData = 'Wednesday';
+        }elseif($dayName->isThursday()){
+            $query->where('day_name','Thursday');
+            $dayNameData = 'Thursday';
+        }elseif($dayName->isFriday()){
+            $query->where('day_name','Friday');
+            $dayNameData = 'Friday';
+        }else{
+            $query->whereNull('day_name');
+            $dayNameData = '';
+        }
+
+        $query->orderBy('slot_id', 'asc');
+        $query->groupBy('date_id');
+        $rows= $query->get();
+
+        $result = [];
+        $group[] = [
+            'id'=>$teacherId,
+            'content'=> $teacher->name.'&nbsp;&nbsp;&nbsp;',
+            'value'=>$teacherId
+        ];
+
+        //GET OLD TIME SLOT
+        $timeData = $this->getOldTimeSlot($date);
+        $result['data']['time_slot'] = $timeData;
+
+
+        $result['data']['time_data'][0] = [];
+        $result['data']['time_data'][0]['required']['teacher'] = $teacher->name;
+        $classes = $result['data']['time_data'][0]['required']['classes'] = [];
+
+        $pairs = [];
+        $beAssigned = [];
+        $substituted = [];
+
+        $assignedSchedules = Assignment::where('teacher_id',$teacher->id)
+            ->whereDate('selected_date',$dayName->toDateString())
+            ->where('is_past',0)
+            ->get();
+        $collectionSchedule = collect($assignedSchedules)->map(function($schedule){
+            return $schedule->schedule_event_id;
+        })->toArray();
+
+        $beAssignedSchedules = Assignment::where('replaced_teacher_id',$teacher->id)
+            ->whereDate('selected_date',$dayName->toDateString())
+            ->where('is_past',0)
+            ->where('schedule_type','event')
+            ->orderBy('slot_id', 'asc')
+            ->get();
+        $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
+            return $schedule->schedule_event_id;
+        })->toArray();
+
+        if($rows){
+
+            foreach($rows as $row){
+
+                $sameClass = $this->getByAttributes(['class_name' => $row->class_name,'date_id'=>$row->date_id])->toArray();
+                $data = [
+                    'id'=>$row->id,
+                    'class' => $row->class_name,
+                    'lesson'=> str_replace('\n','/',$row->subject_code),
+                    'slot'=> [$row->slot_id],
+                    'start'=> substr($row->start_time,0,-3),
+                    'end'=> substr($row->end_time,0,-3),
+                    'status'=>'unavaliable',
+                    'content'=>'relif made',
+                    'number'=> '99',
+                    'flag' => 'classes'
+                ];
+
+                //Disable flag on leave module
+//                if(in_array($row->id, $collectionSchedule) ){
+//                    $data['flag'] = 'paired';
+//                }
+//                elseif(count($sameClass) > 1){
+//                    $data['flag'] = 'substituted';
+//                }
+//                else{
+////                    array_push($classes,$data);
+//                }
+                array_push($classes,$data);
+
+            }
+            if(count($beAssignedSchedules) > 0){
+                foreach($beAssignedSchedules as $beAssignedSchedule){
+                    $data = [
+                        'id'=>$beAssignedSchedule->scheduleEvent->id,
+                        'class' => $beAssignedSchedule->scheduleEvent->class_name,
+                        'lesson'=> str_replace('\n','/',$beAssignedSchedule->scheduleEvent->subject_code),
+                        'slot'=> [$beAssignedSchedule->scheduleEvent->slot_id],
+                        'start'=> substr($beAssignedSchedule->scheduleEvent->start_time,0,-3),
+                        'end'=> substr($beAssignedSchedule->scheduleEvent->end_time,0,-3),
+                        'status'=>'unavaliable',
+                        'content'=>'relif made',
+                        'number'=> '99'
+                    ];
+                    $data['flag'] = 'red';
+                    array_push($classes,$data);
+                }
+            }
+            $result['data']['time_data'][0]['required']['classes'] = $classes;
+        }
+        return $result;
     }
 }

@@ -43,7 +43,7 @@ var Home = {
 
         $.ajax({
             type: "GET",
-            url: "/backend/schedule/getUserTimeline?teacher_id="+teacherId+'&date='+dateSelected,
+            url: "/backend/schedule/getLeaveUserTimeline?teacher_id="+teacherId+'&date='+dateSelected,
             success: function(result)
             {
                 if(result.status==1){
@@ -57,7 +57,7 @@ var Home = {
                     var html = '<div class="step3">';
                     html += '<div class="title clearfix">';
                     html += '<div class="number">2</div>';
-                    html += '<div class="title_text">Select the lesson to be replace</div>';
+                    html += '<div class="title_text">Lesson on day</div>';
                     html += '</div>';
                     html += '<table class="time_slot">';
                     html += '<thead>';
@@ -481,17 +481,17 @@ var Home = {
     },
     onSelectTimeline: function(){
 
-        $(".container-step3").on("click", "td.show-step4",function(event) {
-            event.stopPropagation();
-            $('#step3').fadeIn('slow');
-            $('#step4').fadeIn('slow');
-
-            $('#input_scheduleId').val($(this).data('scheduleid'));
-
-            $('html, body').animate({
-                scrollTop: ($('#step3').offset().top)
-            },500);
-        });
+        // $(".container-step3").on("click", "td.show-step4",function(event) {
+        //     event.stopPropagation();
+        //     $('#step3').fadeIn('slow');
+        //     $('#step4').fadeIn('slow');
+        //
+        //     $('#input_scheduleId').val($(this).data('scheduleid'));
+        //
+        //     $('html, body').animate({
+        //         scrollTop: ($('#step3').offset().top)
+        //     },500);
+        // });
 
         // $(".btn-pref .btn").click(function () {
         //     $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
