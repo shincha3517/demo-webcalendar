@@ -588,7 +588,7 @@ class ScheduleController extends AdminBaseController
 //            $body .= "reply Yes|No ". $replaceStatus;
 
                     $body = $teacher->name.' is on leave on '.$startDate.' due to '.$endDate.', '.$reason.'. '.$additionalRemark.'. ';
-                    $body .= "Reply Yes ".$replaceStatus." to acknowledge.";
+                    $body .= "To acknowledge, Reply Yes ".$replaceStatus.".";
 
 
                     if($replaceTeacher){
