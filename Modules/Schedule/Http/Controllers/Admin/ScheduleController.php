@@ -587,7 +587,7 @@ class ScheduleController extends AdminBaseController
 //            $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name." From: $startDate To: $endDate Reason: $reason";
 //            $body .= "reply Yes|No ". $replaceStatus;
 
-                    $body = $teacher->name.' is on leave on '.$startDate.' due to '.$endDate.', '.$reason.'. ';
+                    $body = $teacher->name.' is on leave on '.$startDate.' due to '.$endDate.', '.$reason.'. '.$additionalRemark.'. ';
                     $body .= "Reply Yes|No ". $replaceStatus;
 
 
