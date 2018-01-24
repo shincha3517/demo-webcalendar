@@ -143,7 +143,7 @@
                                                 <div class="form-group">
                                                     <label for="name" class="col-md-4 control-label">Select Teacher</label>
                                                     <div class="col-md-5">
-                                                        <select class="form-control" name="replaceTeacherId" id="selectedUserAvailabel">
+                                                        <select class="form-control select" name="replaceTeacherIds[]" id="selectedUserAvailabel">
                                                             @if(count($teachers) > 0)
                                                                 @foreach($teachers as $item)
                                                                     <option value="{{$item->id}}">{{$item->name}}</option>

@@ -109,357 +109,6 @@ var Home = {
                         html += '</tr>';
                     }
 
-                    // var html = '<div class="step3">';
-                    // html += '<div class="title clearfix">';
-                    // html += '<div class="number">2</div>';
-                    // html += '<div class="title_text">Select the lesson to be replace</div>';
-                    // html += '</div>';
-                    // html += '<table class="time_slot">';
-                    // html += '<thead>';
-                    // html += '<tr>';
-                    // html += '<th></th>';
-                    // for (var i = 0; i < data.time_slot.length; i++) {
-                    //     html += '<th>';
-                    //     html += '<p>' + data.time_slot[i].start + '</p>';
-                    //     html += '<p>' + data.time_slot[i].end + '</p>';
-                    //     html += '<p class="lesson">' + data.time_slot[i].slot + '</p>';
-                    //     html += '</th>';
-                    // }
-                    // html += '</tr>';
-                    // html += '</thead>';
-                    // html += '<tbody>';
-                    // for (var j = 0; j < data.time_data.length; j++) {
-                    //     html += '<tr>';
-                    //     html += '<td>';
-                    //     html += '<b>' + data.time_data[j].required.teacher + '</b>';
-                    //     html += '</td>';
-                    //     for (var k = 1; k <= data.time_slot.length; k++) {
-                    //         if (typeof data.time_data[j].required.classes != 'undefined') {
-                    //             for (var c = 0; c < data.time_data[j].required.classes.length; c++) {
-                    //                 if (k == data.time_data[j].required.classes[c].slot[0]) {
-                    //                     html += '<td colspan="' + data.time_data[j].required.classes[c].slot.length + '">';
-                    //                     html += '<b>' + data.time_data[j].required.classes[c].lesson + '</b>';
-                    //                     html += '<p>' + data.time_data[j].required.classes[c].class + '</p>';
-                    //                     html += '<table class="time_slot-child">';
-                    //                     html += '<tbody>';
-                    //                     html += '<tr>';
-                    //                     for (var l = 0; l < data.time_data[j].required.classes[c].slot.length; l++) {
-                    //                         html += '<td class="action show-step4" data-id="' + data.time_data[j].required.classes[c].slot[l] + '" data-scheduleid="'+data.time_data[j].required.classes[c].id+'">&nbsp;</td>';
-                    //                     }
-                    //                     html += '</tr>';
-                    //                     html += '</tbody>';
-                    //                     html += '</table>';
-                    //                     html += '</td>';
-                    //                     k = k + data.time_data[j].required.classes[c].slot.length;
-                    //                 }
-                    //                 if (typeof data.time_data[j].required.paired != 'undefined') {
-                    //                     for (var p = 0; p < data.time_data[j].required.paired.length; p++) {
-                    //                         if (k == data.time_data[j].required.paired[p].slot[0]) {
-                    //                             html += '<td colspan="' + data.time_data[j].required.paired[p].slot.length + '">';
-                    //                             html += '<b>' + data.time_data[j].required.paired[p].lesson + '</b>';
-                    //                             html += '<p>' + data.time_data[j].required.paired[p].class + '</p>';
-                    //                             html += '<table class="time_slot-child">';
-                    //                             html += '<tbody>';
-                    //                             html += '<tr>';
-                    //                             for (var l = 0; l < data.time_data[j].required.paired[p].slot.length; l++) {
-                    //                                 html += '<td class="paired confirm" data-id="' + data.time_data[j].required.paired[p].slot[l] + '" data-scheduleid="'+data.time_data[j].required.paired[p].id+'">&nbsp;</td>';
-                    //                             }
-                    //                             html += '</tr>';
-                    //                             html += '</tbody>';
-                    //                             html += '</table>';
-                    //                             html += '</td>';
-                    //                             k = k + data.time_data[j].required.paired[p].slot.length;
-                    //                         }
-                    //                         if (typeof data.time_data[j].required.substituted != 'undefined') {
-                    //                             for (var s = 0; s < data.time_data[j].required.substituted.length; s++) {
-                    //                                 if (k == data.time_data[j].required.substituted[s].slot[0]) {
-                    //                                     html += '<td colspan="' + data.time_data[j].required.substituted[s].slot.length + '">';
-                    //                                     html += '<b>' + data.time_data[j].required.substituted[s].lesson + '</b>';
-                    //                                     html += '<p>' + data.time_data[j].required.substituted[s].class + '</p>';
-                    //                                     html += '<table class="time_slot-child">';
-                    //                                     html += '<tbody>';
-                    //                                     html += '<tr>';
-                    //                                     for (var l = 0; l < data.time_data[j].required.substituted[s].slot.length; l++) {
-                    //                                         html += '<td class="substituted show-step4" data-id="' + data.time_data[j].required.substituted[s].slot[l] + '" data-scheduleid="'+data.time_data[j].required.substituted[s].id+'">&nbsp;</td>';
-                    //                                     }
-                    //                                     html += '</tr>';
-                    //                                     html += '</tbody>';
-                    //                                     html += '</table>';
-                    //                                     html += '</td>';
-                    //                                     k = k + data.time_data[j].required.substituted[s].slot.length;
-                    //                                 }
-                    //                                 if (typeof data.time_data[j].required.red != 'undefined') {
-                    //                                     for (var r = 0; r < data.time_data[j].required.red.length; r++) {
-                    //                                         if (k == data.time_data[j].required.red[r].slot[0]) {
-                    //                                             html += '<td colspan="' + data.time_data[j].required.red[r].slot.length + '">';
-                    //                                             html += '<b>' + data.time_data[j].required.red[r].lesson + '</b>';
-                    //                                             html += '<p>' + data.time_data[j].required.red[r].class + '</p>';
-                    //                                             html += '<table class="time_slot-child">';
-                    //                                             html += '<tbody>';
-                    //                                             html += '<tr>';
-                    //                                             for (var l = 0; l < data.time_data[j].required.red[r].slot.length; l++) {
-                    //                                                 html += '<td class="red show-step4" data-id="' + data.time_data[j].required.red[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.red[r].id+'">&nbsp;</td>';
-                    //                                             }
-                    //                                             html += '</tr>';
-                    //                                             html += '</tbody>';
-                    //                                             html += '</table>';
-                    //                                             html += '</td>';
-                    //                                             k = k + data.time_data[j].required.red[r].slot.length;
-                    //                                         }
-                    //                                     }
-                    //                                 }
-                    //                             }
-                    //                         }
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //         if (typeof data.time_data[j].required.paired != 'undefined') {
-                    //             for (var p = 0; p < data.time_data[j].required.paired.length; p++) {
-                    //                 if (k == data.time_data[j].required.paired[p].slot[0]) {
-                    //                     html += '<td colspan="' + data.time_data[j].required.paired[p].slot.length + '">';
-                    //                     html += '<b>' + data.time_data[j].required.paired[p].lesson + '</b>';
-                    //                     html += '<p>' + data.time_data[j].required.paired[p].class + '</p>';
-                    //                     html += '<table class="time_slot-child">';
-                    //                     html += '<tbody>';
-                    //                     html += '<tr>';
-                    //                     for (var l = 0; l < data.time_data[j].required.paired[p].slot.length; l++) {
-                    //                         html += '<td class="paired confirm" data-id="' + data.time_data[j].required.paired[p].slot[l] + '" data-scheduleid="'+data.time_data[j].required.paired[p].id+'">&nbsp;</td>';
-                    //                     }
-                    //                     html += '</tr>';
-                    //                     html += '</tbody>';
-                    //                     html += '</table>';
-                    //                     html += '</td>';
-                    //                     k = k + data.time_data[j].required.paired[p].slot.length;
-                    //                 }
-                    //                 if (typeof data.time_data[j].required.classes != 'undefined') {
-                    //                     for (var c = 0; c < data.time_data[j].required.classes.length; c++) {
-                    //                         if (k == data.time_data[j].required.classes[c].slot[0]) {
-                    //                             html += '<td colspan="' + data.time_data[j].required.classes[c].slot.length + '">';
-                    //                             html += '<b>' + data.time_data[j].required.classes[c].lesson + '</b>';
-                    //                             html += '<p>' + data.time_data[j].required.classes[c].class + '</p>';
-                    //                             html += '<table class="time_slot-child">';
-                    //                             html += '<tbody>';
-                    //                             html += '<tr>';
-                    //                             for (var l = 0; l < data.time_data[j].required.classes[c].slot.length; l++) {
-                    //                                 html += '<td class="action show-step4" data-id="' + data.time_data[j].required.classes[c].slot[l] + '" data-scheduleid="'+data.time_data[j].required.classes[c].id+'">&nbsp;</td>';
-                    //                             }
-                    //                             html += '</tr>';
-                    //                             html += '</tbody>';
-                    //                             html += '</table>';
-                    //                             html += '</td>';
-                    //                             k = k + data.time_data[j].required.classes[c].slot.length;
-                    //                         }
-                    //                         if (typeof data.time_data[j].required.substituted != 'undefined') {
-                    //                             for (var s = 0; s < data.time_data[j].required.substituted.length; s++) {
-                    //                                 if (k == data.time_data[j].required.substituted[s].slot[0]) {
-                    //                                     html += '<td colspan="' + data.time_data[j].required.substituted[s].slot.length + '">';
-                    //                                     html += '<b>' + data.time_data[j].required.substituted[s].lesson + '</b>';
-                    //                                     html += '<p>' + data.time_data[j].required.substituted[s].class + '</p>';
-                    //                                     html += '<table class="time_slot-child">';
-                    //                                     html += '<tbody>';
-                    //                                     html += '<tr>';
-                    //                                     for (var l = 0; l < data.time_data[j].required.substituted[s].slot.length; l++) {
-                    //                                         html += '<td class="substituted show-step4" data-id="' + data.time_data[j].required.substituted[s].slot[l] + '" data-scheduleid="'+data.time_data[j].required.substituted[s].id+'">&nbsp;</td>';
-                    //                                     }
-                    //                                     html += '</tr>';
-                    //                                     html += '</tbody>';
-                    //                                     html += '</table>';
-                    //                                     html += '</td>';
-                    //                                     k = k + data.time_data[j].required.substituted[s].slot.length;
-                    //                                 }
-                    //                                 if (typeof data.time_data[j].required.red != 'undefined') {
-                    //                                     for (var r = 0; r < data.time_data[j].required.red.length; r++) {
-                    //                                         if (k == data.time_data[j].required.red[r].slot[0]) {
-                    //                                             html += '<td colspan="' + data.time_data[j].required.red[r].slot.length + '">';
-                    //                                             html += '<b>' + data.time_data[j].required.red[r].lesson + '</b>';
-                    //                                             html += '<p>' + data.time_data[j].required.red[r].class + '</p>';
-                    //                                             html += '<table class="time_slot-child">';
-                    //                                             html += '<tbody>';
-                    //                                             html += '<tr>';
-                    //                                             for (var l = 0; l < data.time_data[j].required.red[r].slot.length; l++) {
-                    //                                                 html += '<td class="red show-step4" data-id="' + data.time_data[j].required.red[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.red[r].id+'">&nbsp;</td>';
-                    //                                             }
-                    //                                             html += '</tr>';
-                    //                                             html += '</tbody>';
-                    //                                             html += '</table>';
-                    //                                             html += '</td>';
-                    //                                             k = k + data.time_data[j].required.red[r].slot.length;
-                    //                                         }
-                    //                                     }
-                    //                                 }
-                    //                             }
-                    //                         }
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //         if (typeof data.time_data[j].required.substituted != 'undefined') {
-                    //             for (var s = 0; s < data.time_data[j].required.substituted.length; s++) {
-                    //                 if (k == data.time_data[j].required.substituted[s].slot[0]) {
-                    //                     html += '<td colspan="' + data.time_data[j].required.substituted[s].slot.length + '">';
-                    //                     html += '<b>' + data.time_data[j].required.substituted[s].lesson + '</b>';
-                    //                     html += '<p>' + data.time_data[j].required.substituted[s].class + '</p>';
-                    //                     html += '<table class="time_slot-child">';
-                    //                     html += '<tbody>';
-                    //                     html += '<tr>';
-                    //                     for (var l = 0; l < data.time_data[j].required.substituted[s].slot.length; l++) {
-                    //                         html += '<td class="substituted show-step4" data-id="' + data.time_data[j].required.substituted[s].slot[l] + '" data-scheduleid="'+data.time_data[j].required.substituted[s].id+'">&nbsp;</td>';
-                    //                     }
-                    //                     html += '</tr>';
-                    //                     html += '</tbody>';
-                    //                     html += '</table>';
-                    //                     html += '</td>';
-                    //                     k = k + data.time_data[j].required.substituted[s].slot.length;
-                    //                 }
-                    //                 if (typeof data.time_data[j].required.classes != 'undefined') {
-                    //                     for (var c = 0; c < data.time_data[j].required.classes.length; c++) {
-                    //                         if (k == data.time_data[j].required.classes[c].slot[0]) {
-                    //                             html += '<td colspan="' + data.time_data[j].required.classes[c].slot.length + '">';
-                    //                             html += '<b>' + data.time_data[j].required.classes[c].lesson + '</b>';
-                    //                             html += '<p>' + data.time_data[j].required.classes[c].class + '</p>';
-                    //                             html += '<table class="time_slot-child">';
-                    //                             html += '<tbody>';
-                    //                             html += '<tr>';
-                    //                             for (var l = 0; l < data.time_data[j].required.classes[c].slot.length; l++) {
-                    //                                 html += '<td class="action show-step4" data-id="' + data.time_data[j].required.classes[c].slot[l] + '" data-scheduleid="'+data.time_data[j].required.classes[c].id+'">&nbsp;</td>';
-                    //                             }
-                    //                             html += '</tr>';
-                    //                             html += '</tbody>';
-                    //                             html += '</table>';
-                    //                             html += '</td>';
-                    //                             k = k + data.time_data[j].required.classes[c].slot.length;
-                    //                         }
-                    //                         if (typeof data.time_data[j].required.paired != 'undefined') {
-                    //                             for (var p = 0; p < data.time_data[j].required.paired.length; p++) {
-                    //                                 if (k == data.time_data[j].required.paired[p].slot[0]) {
-                    //                                     html += '<td colspan="' + data.time_data[j].required.paired[p].slot.length + '">';
-                    //                                     html += '<b>' + data.time_data[j].required.paired[p].lesson + '</b>';
-                    //                                     html += '<p>' + data.time_data[j].required.paired[p].class + '</p>';
-                    //                                     html += '<table class="time_slot-child">';
-                    //                                     html += '<tbody>';
-                    //                                     html += '<tr>';
-                    //                                     for (var l = 0; l < data.time_data[j].required.paired[p].slot.length; l++) {
-                    //                                         html += '<td class="paired confirm" data-id="' + data.time_data[j].required.paired[p].slot[l] + '" data-scheduleid="'+data.time_data[j].required.paired[p].id+'">&nbsp;</td>';
-                    //                                     }
-                    //                                     html += '</tr>';
-                    //                                     html += '</tbody>';
-                    //                                     html += '</table>';
-                    //                                     html += '</td>';
-                    //                                     k = k + data.time_data[j].required.paired[p].slot.length;
-                    //                                 }
-                    //                                 if (typeof data.time_data[j].required.red != 'undefined') {
-                    //                                     for (var r = 0; r < data.time_data[j].required.red.length; r++) {
-                    //                                         if (k == data.time_data[j].required.red[r].slot[0]) {
-                    //                                             html += '<td colspan="' + data.time_data[j].required.red[r].slot.length + '">';
-                    //                                             html += '<b>' + data.time_data[j].required.red[r].lesson + '</b>';
-                    //                                             html += '<p>' + data.time_data[j].required.red[r].class + '</p>';
-                    //                                             html += '<table class="time_slot-child">';
-                    //                                             html += '<tbody>';
-                    //                                             html += '<tr>';
-                    //                                             for (var l = 0; l < data.time_data[j].required.red[r].slot.length; l++) {
-                    //                                                 html += '<td class="red show-step4" data-id="' + data.time_data[j].required.red[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.red[r].id+'">&nbsp;</td>';
-                    //                                             }
-                    //                                             html += '</tr>';
-                    //                                             html += '</tbody>';
-                    //                                             html += '</table>';
-                    //                                             html += '</td>';
-                    //                                             k = k + data.time_data[j].required.red[r].slot.length;
-                    //                                         }
-                    //                                     }
-                    //                                 }
-                    //                             }
-                    //                         }
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //         if (typeof data.time_data[j].required.red != 'undefined') {
-                    //             for (var r = 0; r < data.time_data[j].required.red.length; r++) {
-                    //                 if (k == data.time_data[j].required.red[r].slot[0]) {
-                    //                     html += '<td colspan="' + data.time_data[j].required.red[r].slot.length + '">';
-                    //                     html += '<b>' + data.time_data[j].required.red[r].lesson + '</b>';
-                    //                     html += '<p>' + data.time_data[j].required.red[r].class + '</p>';
-                    //                     html += '<table class="time_slot-child">';
-                    //                     html += '<tbody>';
-                    //                     html += '<tr>';
-                    //                     for (var l = 0; l < data.time_data[j].required.red[r].slot.length; l++) {
-                    //                         html += '<td class="red show-step4" data-id="' + data.time_data[j].required.red[r].slot[l] + '" data-scheduleid="'+data.time_data[j].required.red[r].id+'">&nbsp;</td>';
-                    //                     }
-                    //                     html += '</tr>';
-                    //                     html += '</tbody>';
-                    //                     html += '</table>';
-                    //                     html += '</td>';
-                    //                     k = k + data.time_data[j].required.red[r].slot.length;
-                    //                 }
-                    //                 if (typeof data.time_data[j].required.classes != 'undefined') {
-                    //                     for (var c = 0; c < data.time_data[j].required.classes.length; c++) {
-                    //                         if (k == data.time_data[j].required.classes[c].slot[0]) {
-                    //                             html += '<td colspan="' + data.time_data[j].required.classes[c].slot.length + '">';
-                    //                             html += '<b>' + data.time_data[j].required.classes[c].lesson + '</b>';
-                    //                             html += '<p>' + data.time_data[j].required.classes[c].class + '</p>';
-                    //                             html += '<table class="time_slot-child">';
-                    //                             html += '<tbody>';
-                    //                             html += '<tr>';
-                    //                             for (var l = 0; l < data.time_data[j].required.classes[c].slot.length; l++) {
-                    //                                 html += '<td class="action show-step4" data-id="' + data.time_data[j].required.classes[c].slot[l] + '" data-scheduleid="'+data.time_data[j].required.classes[c].id+'">&nbsp;</td>';
-                    //                             }
-                    //                             html += '</tr>';
-                    //                             html += '</tbody>';
-                    //                             html += '</table>';
-                    //                             html += '</td>';
-                    //                             k = k + data.time_data[j].required.classes[c].slot.length;
-                    //                         }
-                    //                         if (typeof data.time_data[j].required.paired != 'undefined') {
-                    //                             for (var p = 0; p < data.time_data[j].required.paired.length; p++) {
-                    //                                 if (k == data.time_data[j].required.paired[p].slot[0]) {
-                    //                                     html += '<td colspan="' + data.time_data[j].required.paired[p].slot.length + '">';
-                    //                                     html += '<b>' + data.time_data[j].required.paired[p].lesson + '</b>';
-                    //                                     html += '<p>' + data.time_data[j].required.paired[p].class + '</p>';
-                    //                                     html += '<table class="time_slot-child">';
-                    //                                     html += '<tbody>';
-                    //                                     html += '<tr>';
-                    //                                     for (var l = 0; l < data.time_data[j].required.paired[p].slot.length; l++) {
-                    //                                         html += '<td class="paired confirm" data-id="' + data.time_data[j].required.paired[p].slot[l] + '" data-scheduleid="'+data.time_data[j].required.paired[p].id+'">&nbsp;</td>';
-                    //                                     }
-                    //                                     html += '</tr>';
-                    //                                     html += '</tbody>';
-                    //                                     html += '</table>';
-                    //                                     html += '</td>';
-                    //                                     k = k + data.time_data[j].required.paired[p].slot.length;
-                    //                                 }
-                    //                                 if (typeof data.time_data[j].required.substituted != 'undefined') {
-                    //                                     for (var s = 0; s < data.time_data[j].required.substituted.length; s++) {
-                    //                                         if (k == data.time_data[j].required.substituted[s].slot[0]) {
-                    //                                             html += '<td colspan="' + data.time_data[j].required.substituted[s].slot.length + '">';
-                    //                                             html += '<b>' + data.time_data[j].required.substituted[s].lesson + '</b>';
-                    //                                             html += '<p>' + data.time_data[j].required.substituted[s].class + '</p>';
-                    //                                             html += '<table class="time_slot-child">';
-                    //                                             html += '<tbody>';
-                    //                                             html += '<tr>';
-                    //                                             for (var l = 0; l < data.time_data[j].required.substituted[s].slot.length; l++) {
-                    //                                                 html += '<td class="substituted show-step4" data-id="' + data.time_data[j].required.substituted[s].slot[l] + '" data-scheduleid="'+data.time_data[j].required.substituted[s].id+'">&nbsp;</td>';
-                    //                                             }
-                    //                                             html += '</tr>';
-                    //                                             html += '</tbody>';
-                    //                                             html += '</table>';
-                    //                                             html += '</td>';
-                    //                                             k = k + data.time_data[j].required.substituted[s].slot.length;
-                    //                                         }
-                    //                                     }
-                    //                                 }
-                    //                             }
-                    //                         }
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //         if (k <= data.time_slot.length) {
-                    //             html += '<td></td>';
-                    //         }
-                    //     }
-                    //     html += '</tr>';
-                    // }
                     html += '</tbody>';
                     html += '</table>';
 
@@ -511,85 +160,13 @@ var Home = {
         //     }
         // });
     },
-    onShowAvailableUser: function(users,timelines,min,max){
-        if(this.availableUserTimeline){
-            this.availableUserTimeline.destroy();
-            $('#availableUserTimeline').html();
-        }
-        // DOM element where the Timeline will be attached
-        var container = document.getElementById('availableUserTimeline');
-        // var groups = new vis.DataSet([
-        //     {id: 0, content: 'Username 1', value: 1},
-        //     {id: 1, content: 'Username 2', value: 3}
-        // ]);
-        var groups = new vis.DataSet(users);
 
-        // Create a DataSet (allows two way data-binding)
-        // var items = new vis.DataSet([
-        //     {"id": 1,"group":0,"content": "item 1","start": "2017-08-22T04:00:00","end": "2017-08-22T04:30:00"},
-        //     {"id": 2,"group":0,"content": "item 1","start": "2017-08-22T06:00:00","end": "2017-08-22T10:30:00"},
-        //     {"id": 3,"group":1,"content": "item 1","start": "2017-08-22T04:00:00","end": "2017-08-22T04:30:00"},
-        //     {"id": 4,"group":1,"content": "item 1","start": "2017-08-22T15:00:00","end": "2017-08-22T15:30:00"},
-        // ]);
-        var items = new vis.DataSet(timelines);
-
-        // Configuration for the Timeline
-        var options = {
-            // height: '200px',
-            moment: function(date) {
-                return vis.moment(date).utcOffset('+07:00');
-            },
-            min: min,                // lower limit of visible range
-            max: max,                // upper limit of visible range
-            zoomMin: 5,
-            groupOrder: function (a, b) {
-                return a.value - b.value;
-            }
-        };
-
-        // Create a Timeline
-        this.availableUserTimeline = new vis.Timeline(container, items,groups ,options);
-
-        this.onAvailableUserSelectTimeline();
-    },
-    onAvailableUserSelectTimeline: function(){
-
-        this.availableUserTimeline.on('select', function (properties) {
-            var eventId = parseInt(properties.items,10);
-            if(eventId > 0){
-                $.ajax({
-                    type: "GET",
-                    url: "/backend/schedule/getUserByEvent?eventId=" + eventId,
-                    success: function (data) {
-                        if(data.status == 1){
-
-                            $('#selectedUserAvailabel').html(' <option>--Please select date first</option>');
-                            $('#selectedUserAvailabel').select2({
-                                data: data.result,
-                                allowClear: true
-                            });
-
-                            $('#step4').fadeIn('slow');
-
-                            $('html, body').animate({
-                                scrollTop: ($('#step4').offset().top)
-                            },500);
-                        }
-                        else{
-                            $('#step4').fadeOut('slow');
-                        }
-                    }
-                });
-
-            }
-        });
-    },
 
     init: function(){
         $('#step2').hide();
         $('#step3').hide();
         $('#step4').hide();
-        // $('#selectedUserAvailabel').select2();
+        $('.select').select2({ width: '100%' });
         // $('select').select2();
         $('#datepicker').datepicker({
             todayBtn: "linked",
@@ -620,18 +197,32 @@ var Home = {
             }
         });
 
-        this.onSelectUser();
+
         this.onSelectCalendar();
-        // this.onShowTimeLine();
         this.onSelectTimeline();
 
         $(document).on('click', '#addMoreTeacher', function(e) {
             var element = $('.teacherForm div').first();
-            console.log(element);
-            $('.teacherForm').append(element.clone());
 
-            var last = $('.teacherForm div').last();
-            $(last).find('#addMoreTeacher').attr('id','removeTeacher').html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Remove teacher')
+            var optionValues = [];
+            $('#selectedUserAvailabel option').each(function() {
+                var value = $(this).val();
+                var text = $(this).text();
+                optionValues.push({key : value,text: text});
+            });
+
+            var teacherDropdownList = $("<select></select>").attr("name", 'replaceTeacherIds[]').attr('class','form-control select');
+            $.each(optionValues, function (i, el) {
+                teacherDropdownList.append("<option value='"+el.key+"'>" + el.text + "</option>");
+            });
+
+            var element = '<div class="form-group"><label for="name" class="col-md-4 control-label">Select Teacher</label><div class="col-md-5">'+teacherDropdownList.get(0).outerHTML+'</div><div class="col-md-3"><a id="removeTeacher" href="javascript:void(0)"><span class="glyphicon glyphicon-minus"></span>Remove Teacher</a></div></div>';
+            $('.teacherForm').append(element);
+
+            $('.select').select2();
+
+            // var last = $('.teacherForm div').last();
+            // $(last).find('#addMoreTeacher').attr('id','removeTeacher').html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Remove teacher')
         });
 
         $(document).on('click', '#removeTeacher', function(e) {

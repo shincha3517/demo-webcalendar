@@ -547,7 +547,7 @@ class ScheduleController extends AdminBaseController
 //        dd($request->all());
         $selectedDate = $request->get('selectedDate');
         $teacherId = $request->get('teacherId');
-        $replaceTeacherId = $request->get('replaceTeacherId');
+        $replaceTeacherIds = $request->get('replaceTeacherIds');
         $reason = $request->get('reason');
         $additionalRemark = $request->get('remark');
         $scheduleId = $request->get('input_scheduleId');
@@ -577,40 +577,48 @@ class ScheduleController extends AdminBaseController
         $scheduleTable = $this->_getScheduleTable($selectedDate);
         $this->_getRepository($scheduleTable);
 
-        $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId);
-        if($replaceStatus){
-            $teacher = Teacher::find($teacherId);
-            $replaceTeacher = Teacher::find($replaceTeacherId);
+        if(is_array($replaceTeacherIds)){
+            foreach($replaceTeacherIds as $replaceTeacherId){
+                $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId);
+                if($replaceStatus){
+                    $teacher = Teacher::find($teacherId);
+                    $replaceTeacher = Teacher::find($replaceTeacherId);
 
 //            $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name." From: $startDate To: $endDate Reason: $reason";
 //            $body .= "reply Yes|No ". $replaceStatus;
 
-            $body = $teacher->name.' is on leave on '.$startDate.' due to '.$endDate.', '.$reason.'. ';
-            $body .= "Reply Yes|No ". $replaceStatus;
+                    $body = $teacher->name.' is on leave on '.$startDate.' due to '.$endDate.', '.$reason.'. ';
+                    $body .= "Reply Yes|No ". $replaceStatus;
 
 
-            if($replaceTeacher){
-                $phoneNumber = $replaceTeacher->phone_number;
-                $smsStatus = SendSMS::send($phoneNumber,$body);
+                    if($replaceTeacher){
+                        $phoneNumber = $replaceTeacher->phone_number;
+                        $smsStatus = SendSMS::send($phoneNumber,$body);
 
-                //hardcode
-                $smsStatus = SendSMS::send('96162726',$body);
+                        //hardcode
+                        //Germain
+                        $smsStatus = SendSMS::send('91882625',$body);
 
-                if($smsStatus){
-                    $request->session()->flash('success','Send absent request successfully');
+                        //Janice
+                        $smsStatus = SendSMS::send('96162726',$body);
+
+                        if($smsStatus){
+                            $request->session()->flash('success','Send absent request successfully');
+                        }
+                        else{
+                            $request->session()->flash('error','Can not send SMS to teacher');
+                        }
+                    }else{
+                        $request->session()->flash('error','Can not send SMS to teacher');
+                    }
+
+                    dispatch(new SendNotificationMail($replaceTeacher,$body));
                 }
                 else{
-                    $request->session()->flash('error','Can not send SMS to teacher');
-                }
-            }else{
-                $request->session()->flash('error','Can not send SMS to teacher');
+                    $request->session()->flash('error','Send SMS error');
+                };
             }
-
-            dispatch(new SendNotificationMail($replaceTeacher,$body));
         }
-        else{
-            $request->session()->flash('error','Send SMS error');
-        };
         return redirect()->to('backend/schedule/worker');;
     }
 
