@@ -211,7 +211,7 @@ var Home = {
                 optionValues.push({key : value,text: text});
             });
 
-            var teacherDropdownList = $("<select></select>").attr("name", 'replaceTeacherId').attr('class','form-control select');
+            var teacherDropdownList = $("<select></select>").attr("name", 'replaceTeacherIds[]').attr('class','form-control select');
             $.each(optionValues, function (i, el) {
                 teacherDropdownList.append("<option value='"+el.key+"'>" + el.text + "</option>");
             });

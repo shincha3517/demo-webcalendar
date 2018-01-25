@@ -846,10 +846,10 @@ var Home = {
                                     jobStatus = '(Rejected)';
                                 }
 
-                                if(value.schedule_type !='absent'){
+                                if(value.slot_id != null){
                                     $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' for lesson '+value.lesson+' from '+value.start_time+'-'+value.end_time+' '+jobStatus+'</li>');
                                 }else{
-                                    $('.assignment-box ul').append('<li>'+value.replaced_teacher_name+' be assigned to replace '+value.teacher_name+' from '+value.start_date+' to '+value.end_date+' '+jobStatus+'</li>');
+                                    $('.assignment-box ul').append('<li>'+value.teacher_name+' applied for leave on '+value.start_date+' to '+value.end_date+' '+jobStatus+'</li>');
                                 }
 
                                 // $('.assignment-box').fadeIn();
