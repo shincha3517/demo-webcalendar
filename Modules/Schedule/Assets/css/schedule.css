@@ -287,3 +287,11 @@ table.time_slot-hasclass>tbody>tr>td {
 .activeDate{
 	color: #F00 !important;
 }
+
+@media (max-width: 767px) {
+	/* CSS goes here */
+	table.time_slot>tbody>tr>td,
+	table.time_slot-selected>tbody>tr>td {
+		font-size: 8px;
+	}
+}
