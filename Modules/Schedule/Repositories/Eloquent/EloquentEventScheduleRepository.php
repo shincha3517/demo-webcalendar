@@ -372,7 +372,7 @@ WHERE t.id != ?',$whereData);
 
                     $totalLessons = $lessons + $assignLessons;
 
-                    $onLeave = Assignment::where('teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->whereNull('slot')->where('status',1)->count();
+                    $onLeave = Assignment::where('teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->whereNull('slot_id')->where('status',1)->count();
                     if($onLeave > 0){
                         $absentText = ' (On Leave)';
                     }
