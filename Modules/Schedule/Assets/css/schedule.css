@@ -294,4 +294,8 @@ table.time_slot-hasclass>tbody>tr>td {
 	table.time_slot-selected>tbody>tr>td {
 		font-size: 8px;
 	}
+	table.time_slot>thead>tr>th p,
+	table.time_slot-selected>tbody>tr>td>p {
+		font-size: 8px;
+	}
 }
