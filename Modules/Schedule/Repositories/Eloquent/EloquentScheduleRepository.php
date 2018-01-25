@@ -358,7 +358,6 @@ WHERE t.id != ?',$whereData);
                                 'lesson'=>str_replace('/',',',trim(preg_replace('/\r\n|\r|\n/', ',', $item->subject_code)))
                             ];
                         }
-                        $absentText = ' (On Leave)';
                     }
                     else{
                         $result['data']['time_data'][$i]['required']['classes'] =[];
@@ -372,6 +371,7 @@ WHERE t.id != ?',$whereData);
                                 'lesson'=>str_replace('/',',',trim(preg_replace('/\r\n|\r|\n/', ',', $item->subject)))
                             ]);
                         }
+                        $absentText = ' (On Leave)';
                     }
 
                     $lessons = Schedule::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->count();

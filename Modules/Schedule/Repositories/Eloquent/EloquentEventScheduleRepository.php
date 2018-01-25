@@ -335,6 +335,7 @@ WHERE t.id != ?',$whereData);
                 foreach($userTimelines as $key => $items) {
                     $teacherName = $items->name;
                     $teacherId = $items->teacher_id;
+                    $absentText = '';
 
                     if(in_array($teacherId, $collectionSchedule)){
                         unset($userTimelines[$key]);
@@ -363,6 +364,7 @@ WHERE t.id != ?',$whereData);
                                 'lesson'=>str_replace('/',',',trim(preg_replace('/\r\n|\r|\n/', ',', $item->subject)))
                             ]);
                         }
+                        $absentText = ' (On Leave)';
                     }
 
 
