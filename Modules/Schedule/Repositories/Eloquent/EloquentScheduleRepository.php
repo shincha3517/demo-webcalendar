@@ -371,13 +371,17 @@ WHERE t.id != ?',$whereData);
                                 'lesson'=>str_replace('/',',',trim(preg_replace('/\r\n|\r|\n/', ',', $item->subject)))
                             ]);
                         }
-                        $absentText = ' (On Leave)';
                     }
 
                     $lessons = Schedule::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->count();
                     $assignLessons = Assignment::where('replaced_teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->count();
 
                     $totalLessons = $lessons + $assignLessons;
+
+                    $onLeave = Assignment::where('teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->whereNull('slot')->where('status',1)->count();
+                    if($onLeave > 0){
+                        $absentText = ' (On Leave)';
+                    }
 
 
                     $result['data']['time_data'][$i]['required']['teacher'] = $teacherName . $absentText;
