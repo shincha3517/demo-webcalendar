@@ -67,9 +67,22 @@ class ReportController extends AdminBaseController
     public function index()
     {
         $currentUser = $this->auth->user();
-        $reports = Assignment::orderBy('id','DESC')->get();
+        $reports = Assignment::whereNotNull('slot_id')->orderBy('id','DESC')->get();
 
         return view('schedule::admin.schedule.report.index',compact('reports'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function leave()
+    {
+        $currentUser = $this->auth->user();
+        $reports = Assignment::whereNull('slot_id')->orderBy('id','DESC')->get();
+
+        return view('schedule::admin.schedule.report.leave',compact('reports'));
     }
 
 

@@ -82,6 +82,14 @@ class RegisterScheduleSidebar implements \Maatwebsite\Sidebar\SidebarExtender
                         $this->auth->hasAccess('schedule.report.index')
                     );
                 });
+                $item->item('Leave report', function (Item $item) {
+                    $item->weight(15);
+                    $item->icon('fa fa-clock-o');
+                    $item->route('admin.leave.schedule.report');
+                    $item->authorize(
+                        $this->auth->hasAccess('schedule.report.index')
+                    );
+                });
             });
 
         });

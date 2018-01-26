@@ -22,7 +22,7 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
     ]);
     $router->get('worker', [
         'as' => 'admin.schedule.worker',
-        'uses' => 'ScheduleController@actionWorker',
+        'uses' => 'LeaveScheduleController@index',
         'middleware' => 'can:schedule.schedules.worker',
     ]);
 
@@ -98,6 +98,12 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'middleware' => 'can:schedule.report.index',
     ]);
 
+    $router->get('leave/report', [
+        'as' => 'admin.leave.schedule.report',
+        'uses' => 'ReportController@leave',
+        'middleware' => 'can:schedule.report.index',
+    ]);
+
     $router->get('meeting', [
         'as' => 'admin.schedule.meeting.index',
         'uses' => 'ReportController@index',
@@ -142,4 +148,15 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         echo $notifyDate->diffInMinutes(\Carbon\Carbon::now()) .'<br/>';
         echo \Carbon\Carbon::now()->toDateTimeString();
     });
+
+    $router->get('leave/getLeavesByDate', [
+        'as' => 'admin.schedule.leave.getLeavesByDate',
+        'uses' => 'LeaveScheduleController@getLeavesByDate',
+//        'middleware' => 'can:schedule.schedules.index',
+    ]);
+    $router->post('leave/deleteLeaveItem', [
+        'as' => 'admin.leave.schedule.cancel',
+        'uses' => 'LeaveScheduleController@cancelLeaveItem',
+        'middleware' => 'can:schedule.schedules.worker',
+    ]);
 });

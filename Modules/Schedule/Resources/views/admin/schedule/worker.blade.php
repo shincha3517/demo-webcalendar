@@ -36,8 +36,13 @@
                             <div class="panel-body">
                                 <div class="well">
                                     <div class="row">
-                                        <div class="col-xs-12">
+                                        <div class="col-xs-6">
                                             <div id="datepicker"></div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <div class="leaves-box">
+                                                <ul></ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -202,6 +207,27 @@
         <!-- /.box -->
     </div>
 <!-- /.col (MAIN) -->
+        <!-- Modal -->
+        <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="Cancel Leave Item">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="cancelForm" method="post" action="{{ URL::route('admin.leave.schedule.cancel') }}">
+                        {{csrf_field()}}
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Cancel leave date</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="leave_id" class="leave_id" value="" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" id="submitCancelLeave" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 </div>
 </div>
 
@@ -222,4 +248,8 @@
 <script src="{{ Module::asset('schedule:js/lib/loadingoverlay_progress.min.js') }}"></script>
 
 <script src="{{ Module::asset('schedule:js/worker.js?v='.\Carbon\Carbon::now()->timestamp) }}" type="text/javascript"></script>
+<script>
+    Home.leaveItems = <?php echo json_encode($leaves) ?>;
+    Home.init();
+</script>
 @endpush

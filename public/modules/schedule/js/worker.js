@@ -8,22 +8,24 @@ var Home = {
     data: '',
     list_id: [],
     schedule_ids: [],
+    leaveItems:[],
 
     onSelectCalendar: function(){
         $('#datepicker').datepicker();
-        $('#datepicker').on('changeDate', function() {
+        $('#datepicker').on('changeDate', function(e) {
 
             $('#my_hidden_input').val(
                 $('#datepicker').datepicker('getFormattedDate')
             );
-
             var teacher_id = $('#teacherId').val();
-
             if(teacher_id > 0){
-
                 var selectedDate = $('#my_hidden_input').val();
                 //show timeline
                 Home.onShowTimeLine(teacher_id,selectedDate);
+                //get leaves items
+                Home.onShowLeaveItems(e);
+
+                Home.onSubmitCancelLeave();
 
                 $('#step3').show();
                 $('#step4').show();
@@ -35,6 +37,78 @@ var Home = {
         $('#ddUser').on('change',function(e){
 
         });
+    },
+    onShowLeaveItems: function(e) {
+        // `e` here contains the extra attributes
+        var data = e.format();
+        $.ajax({
+            type: "GET",
+            url: "/backend/schedule/leave/getLeavesByDate?date="+data,
+            beforeSend: function( xhr ) {
+                // Show full page LoadingOverlay
+                $.LoadingOverlay("show");
+            },
+            success: function(data)
+            {
+                if(data.status == 1){
+                    if(data.result.length > 0){
+                        $('.leaves-box ul').html('');
+                        $.each(data.result, function( index, value ) {
+                            // console.log( value);
+                            var jobStatus = '(Not verify)';
+                            if(value.status == 1){
+                                jobStatus = '(Accepted)';
+                            }else if(value.status == 2){
+                                jobStatus = '(Rejected)';
+                            }
+
+                            var cancelElement = '<a href="#" data-id="' + value.id+ '" class="btn btn-primary" data-toggle="modal" data-target="#cancelModal">Cancel</a>';
+
+                            $('.leaves-box ul').append('<li id="leave_'+value.id+'">'+value.teacher_name+' applied for leave on '+value.start_date+' to '+value.end_date+' '+jobStatus+', '+cancelElement+'</li>');
+                        });
+                    }
+                    else{
+                        $('.leaves-box ul').html('');
+                        $('.leaves-box ul').append('<li>There is no relief assigned today</li>');
+                        // $('.assignment-box').fadeOut();
+                    }
+                }
+                else{
+                    console.log('empty leave item');
+                }
+                $.LoadingOverlay("hide");
+            }
+        });
+    },
+    onSubmitCancelLeave: function(){
+        $("#cancelForm").on("submit", function(){
+            //Code: Action (like ajax...)
+            var data = $(this).serialize();
+
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: data,
+                beforeSend: function( xhr ) {
+                    // Show full page LoadingOverlay
+                    $.LoadingOverlay("show");
+                    $('#cancelModal').modal('hide');
+                },
+                success: function(result)
+                {
+                    console.log(result);
+
+                    if(result.status == 1){
+                        $('.leaves-box').html('');
+                    }
+                    else{
+                        console.log('empty leave item');
+                    }
+                    $.LoadingOverlay("hide");
+                }
+            });
+            return false;
+        })
     },
     onShowTimeLine: function(teacherId,dateSelected){
         this.schedule_ids = [];
@@ -116,17 +190,13 @@ var Home = {
 
                     $('#step2').show();
 
-                    $('html, body').animate({
-                        scrollTop: ($('#step2').offset().top)
-                    },500);
+                    // $('html, body').animate({
+                    //     scrollTop: ($('#step2').offset().top)
+                    // },500);
 
                 }
             }
         });
-
-
-
-
     },
     onSelectTimeline: function(){
 
@@ -167,7 +237,17 @@ var Home = {
         $('#step3').hide();
         $('#step4').hide();
         $('.select').select2({ width: '100%' });
-        // $('select').select2();
+
+        $('#cancelModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var leaveId = button.data('id') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this);
+
+            modal.find('.leave_id').val(leaveId);
+        })
+
         $('#datepicker').datepicker({
             todayBtn: "linked",
             calendarWeeks: true,
@@ -188,7 +268,7 @@ var Home = {
                     return false;
                 }
 
-                if ($.inArray(formattedDate, Home.active_assignment_dates) != -1){
+                if ($.inArray(formattedDate, Home.leaveItems) != -1){
                     return {
                         classes: 'activeDate'
                     };
@@ -268,4 +348,3 @@ var Home = {
         });
     }
 }
-Home.init();
