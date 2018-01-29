@@ -112,10 +112,13 @@ class LeaveScheduleController extends AdminBaseController
         $date = Carbon::createFromFormat('m/d/Y',$date)->toDateString();
         $dayName = Carbon::parse($date);
 
+        $currentUser = $this->auth->user();
+        $teacher = $this->teacherRepository->findByAttributes(['email'=>$currentUser->email]);
+
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
-        $leaves = $this->assignmentRepository->getByAttributes(['selected_date'=> $date,'is_past'=>0]);
+        $leaves = $this->assignmentRepository->getByAttributes(['selected_date'=> $date,'teacher_id'=>$teacher->id,'is_past'=>0]);
         if(count($leaves) > 0){
             $collection = collect($leaves);
             $leavesArray = $collection->map(function ($item, $key) {
