@@ -99,7 +99,7 @@ var Home = {
                     console.log(result);
 
                     if(result.status == 1){
-                        $('.leaves-box').html('');
+                        $('#leave_'+result.leave_id).remove();
                     }
                     else{
                         console.log('empty leave item');
