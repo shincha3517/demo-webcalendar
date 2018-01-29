@@ -261,7 +261,8 @@ var Home = {
                 var formattedDate = curr_date + "/" + curr_month + "/" + curr_year;
                 var curr_week = moment(d, "MM-DD-YYYY").week();
 
-                // console.log(formattedDate);
+                console.log(formattedDate);
+                console.log(Home.leaveItems);
 
                 var holidaysWeekNumber = [11,22,23,24,25,36,47,48,49,50,51,52];
                 if(holidaysWeekNumber.indexOf(curr_week) >= 0 ){
