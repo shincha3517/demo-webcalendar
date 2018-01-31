@@ -45,7 +45,7 @@ class SMSController extends Controller
                     }
 
                     //update confirm SMS
-                    Assignment::where('code',$jobCode)->update(['status'=>$status]);
+                    Assignment::where('code',$jobCode)->update(['status'=>$status,'notify_status'=>2]);
 
                     $job = Assignment::where('code',$jobCode)->get()->first();
                     if($job){
