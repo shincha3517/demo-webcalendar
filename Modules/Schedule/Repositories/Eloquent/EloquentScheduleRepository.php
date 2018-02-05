@@ -363,7 +363,7 @@ WHERE t.id != ?',$whereData);
                         $result['data']['time_data'][$i]['required']['classes'] =[];
                     }
 
-                    $reliefSchedule = Assignment::where('replaced_teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->where('status',1)->get();
+                    $reliefSchedule = Assignment::where('replaced_teacher_id', $teacherId)->whereNotNull('slot_id')->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->where('status',1)->get();
                     if(count($reliefSchedule)){
                         foreach($reliefSchedule as $item){
                             array_push($result['data']['time_data'][$i]['required']['classes'],[
@@ -374,11 +374,11 @@ WHERE t.id != ?',$whereData);
                     }
 
                     $lessons = Schedule::where('teacher_id',$teacherId)->where('day_name',$dayName->format('l'))->count();
-                    $assignLessons = Assignment::where('replaced_teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->count();
+                    $assignLessons = Assignment::where('replaced_teacher_id', $teacherId)->whereNotNull('slot_id')->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->count();
 
                     $totalLessons = $lessons + $assignLessons;
 
-                    $onLeave = Assignment::where('teacher_id', $teacherId)->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->whereNull('slot_id')->where('status',1)->count();
+                    $onLeave = Assignment::where('teacher_id', $teacherId)->whereNotNull('slot_id')->where('is_past',0)->whereDate('selected_date',$dayName->toDateString())->whereNull('slot_id')->where('status',1)->count();
                     if($onLeave > 0){
                         $absentText = ' (On Leave)';
                     }

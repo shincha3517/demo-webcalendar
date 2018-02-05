@@ -578,29 +578,18 @@ class ScheduleController extends AdminBaseController
         $this->_getRepository($scheduleTable);
 
         if(is_array($replaceTeacherIds)){
+            $teacher = Teacher::find($teacherId);
+            $body = $teacher->name.' is on leave on '.$startDate.' to '.$endDate.', due to '.$reason.'. '.$additionalRemark.'. ';
+
             foreach($replaceTeacherIds as $replaceTeacherId){
+                $replaceTeacher = Teacher::find($replaceTeacherId);
                 $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId);
                 if($replaceStatus){
-                    $teacher = Teacher::find($teacherId);
-                    $replaceTeacher = Teacher::find($replaceTeacherId);
 
-//            $body = $teacher->name." just sent the absent request to ".$replaceTeacher->name." From: $startDate To: $endDate Reason: $reason";
-//            $body .= "reply Yes|No ". $replaceStatus;
-
-                    $body = $teacher->name.' is on leave on '.$startDate.' to '.$endDate.', due to '.$reason.'. '.$additionalRemark.'. ';
-                    $body .= "To acknowledge, Reply Yes ".$replaceStatus;
-
-
+//                    $body .= "To acknowledge, Reply Yes ".$replaceStatus;
                     if($replaceTeacher){
                         $phoneNumber = $replaceTeacher->phone_number;
                         $smsStatus = SendSMS::send($phoneNumber,$body);
-
-                        //hardcode
-                        //Germain
-                        $smsStatus = SendSMS::send('91882625',$body);
-
-                        //Janice
-                        $smsStatus = SendSMS::send('96162726',$body);
 
                         if($smsStatus){
                             $request->session()->flash('success','Send absent request successfully');
@@ -618,8 +607,15 @@ class ScheduleController extends AdminBaseController
                     $request->session()->flash('error','Send SMS error');
                 };
             }
+
+            //hardcode
+            //Germain
+            $smsStatus = SendSMS::send('91882625',$body);
+
+            //Janice
+            $smsStatus = SendSMS::send('96162726',$body);
         }
-        return redirect()->to('backend/schedule/worker');;
+        return redirect()->to('backend/schedule/worker');
     }
 
     public function getUserByEvent(Request $request){
