@@ -63,7 +63,12 @@ class LeaveScheduleController extends AdminBaseController
         $teachers = $this->teacherRepository->all();
 
         $leaves = [];
-        $assignmentList = $this->assignmentRepository->getByAttributes(['is_past'=>0,'teacher_id'=>$teacher->id,'slot_id'=> null]);
+        if($teacher){
+            $assignmentList = $this->assignmentRepository->getByAttributes(['is_past'=>0,'teacher_id'=>$teacher->id,'slot_id'=> null]);
+        }else{
+            $assignmentList = $this->assignmentRepository->getByAttributes(['is_past'=>0,'slot_id'=> null]);
+        }
+
         if($assignmentList){
             $collection = collect($assignmentList);
             $assignmentArray = $collection->map(function ($item, $key) {
@@ -71,6 +76,7 @@ class LeaveScheduleController extends AdminBaseController
             });
             $leaves = $assignmentArray->all();
         }
+
 
         $date = '10/18/2017';
         $timeSlot = $this->scheduleRepository->getOldTimeSlot($date);
