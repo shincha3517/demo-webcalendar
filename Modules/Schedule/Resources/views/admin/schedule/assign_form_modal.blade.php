@@ -54,7 +54,7 @@ Thank you.</textarea>
                             Send SMS
                         </label>
                         <label>
-                            <input type="checkbox" name="send_email" value="1">
+                            <input type="checkbox" name="send_email" checked value="1">
                             Send email
                         </label>
                     </div>
