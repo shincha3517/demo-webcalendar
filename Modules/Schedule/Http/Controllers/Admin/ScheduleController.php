@@ -554,15 +554,15 @@ class ScheduleController extends AdminBaseController
 
         $absentType = $request->get('absentType');
         if($absentType == 'fullDay'){
-            $startDate = Carbon::today()->setTime(00,00,00)->toDateTimeString();
-            $endDate = Carbon::today()->setTime(23,59,59)->toDateTimeString();
+            $startDate = Carbon::parse($selectedDate)->setTime(00,00,00)->toDateTimeString();
+            $endDate = Carbon::parse($selectedDate)->setTime(23,59,59)->toDateTimeString();
         }
         if($absentType == 'partialDay'){
             $startTime = explode(':',$request->get('input_startTime'));
             $endTime = explode(':',$request->get('input_endTime'));
 
-            $startDate = Carbon::today()->setTime($startTime[0],$startTime[1],00)->toDateTimeString();
-            $endDate = Carbon::today()->setTime($endTime[0],$endTime[1],59)->toDateTimeString();
+            $startDate = Carbon::parse($selectedDate)->setTime($startTime[0],$startTime[1],00)->toDateTimeString();
+            $endDate = Carbon::parse($selectedDate)->setTime($endTime[0],$endTime[1],59)->toDateTimeString();
         }
         if($absentType == 'prolonged'){
             $inputStartDate = $request->get('input_startDate');
