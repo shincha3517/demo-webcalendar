@@ -22,5 +22,5 @@ interface EventScheduleRepository extends BaseRepository
 
     public function userCancelAssignSchedule($scheduleId,$date);
 
-    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId);
+    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId,$jobsCode);
 }

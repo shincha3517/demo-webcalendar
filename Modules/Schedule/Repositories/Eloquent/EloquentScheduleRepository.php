@@ -297,7 +297,7 @@ class EloquentScheduleRepository extends EloquentBaseRepository implements Sched
 //            DB::enableQueryLog();
             $userTimelines = DB::select('SELECT t.name,t.id as teacher_id, t.subject  FROM 
 	 ( SELECT * FROM makeit__teachers t WHERE NOT EXISTS( SELECT * FROM makeit__schedules s WHERE t.id = s.teacher_id AND ( '.$subQuery.') AND s.day_name=? ) ) t	
-WHERE t.id != ?',$whereData);
+WHERE t.id != ? AND t.is_leave_notify=0',$whereData);
 //            dd(DB::getQueryLog());
 
 //            $userTimelines = $query->groupBy('teacher_id')->get();
@@ -500,14 +500,16 @@ WHERE t.id != ?',$whereData);
         $assignment = Assignment::where('schedule_id',$scheduleId)->where('selected_date',$selectedDate)->where('is_past',0)->delete();
     }
 
-    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId){
+    public function createAbsentRequest($teacherId,$replaceTeacherId,$replaceDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId,$jobsCode){
         $selectedDate = Carbon::parse($replaceDate)->toDateString();
-        $jobsCode = DB::table('makeit__assignment')->max('code');
-        $jobsCode = $jobsCode+1;
+        if(!$jobsCode){
+            $jobsCode = DB::table('makeit__assignment')->max('code');
+            $jobsCode = $jobsCode+1;
 
-        $pad_length = 4;
-        $pad_char = 0;
-        $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
+            $pad_length = 4;
+            $pad_char = 0;
+            $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
+        }
 
         $teacher = Teacher::find($teacherId);
         $replaceTeacher = Teacher::find($replaceTeacherId);

@@ -9,7 +9,7 @@ class Teacher extends Model
 {
 
     protected $table = 'makeit__teachers';
-    protected $fillable = ['id','name','phone_number','subject','email','user_id','teacher_type'];
+    protected $fillable = ['id','name','phone_number','subject','email','user_id','teacher_type','is_leave_notify'];
 
     public function schedule(){
         return $this->belongsTo(Schedule::class,'id','teacher_id');

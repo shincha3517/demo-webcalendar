@@ -582,27 +582,35 @@ class ScheduleController extends AdminBaseController
             $teacher = Teacher::find($teacherId);
             $body = $teacher->name.' is on leave on '.$startDate.' to '.$endDate.', due to '.$reason.'. '.$additionalRemark.'. ';
 
+            $jobsCode = DB::table('makeit__assignment')->max('code');
+            $jobsCode = $jobsCode+1;
+
+            $pad_length = 4;
+            $pad_char = 0;
+            $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
+
             foreach($replaceTeacherIds as $replaceTeacherId){
                 $replaceTeacher = Teacher::find($replaceTeacherId);
-                $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId);
+
+                $replaceStatus = $this->repository->createAbsentRequest($teacherId,$replaceTeacherId,$selectedDate,$reason,$additionalRemark,$startDate,$endDate,$absentType,$scheduleId,$jobsCode);
                 if($replaceStatus){
 
 //                    $body .= "To acknowledge, Reply Yes ".$replaceStatus;
                     if($replaceTeacher){
                         $phoneNumber = $replaceTeacher->phone_number;
-                        $smsStatus = SendSMS::send($phoneNumber,$body);
-
-                        if($smsStatus){
-                            $request->session()->flash('success','Send absent request successfully');
-                        }
-                        else{
-                            $request->session()->flash('error','Can not send SMS to teacher');
-                        }
+//                        $smsStatus = SendSMS::send($phoneNumber,$body);
+//
+//                        if($smsStatus){
+//                            $request->session()->flash('success','Send absent request successfully');
+//                        }
+//                        else{
+//                            $request->session()->flash('error','Can not send SMS to teacher');
+//                        }
                     }else{
                         $request->session()->flash('error','Can not send SMS to teacher');
                     }
 
-                    dispatch(new SendNotificationMail($replaceTeacher,$body));
+//                    dispatch(new SendNotificationMail($replaceTeacher,$body));
                 }
                 else{
                     $request->session()->flash('error','Send SMS error');
@@ -611,10 +619,10 @@ class ScheduleController extends AdminBaseController
 
             //hardcode
             //Germain
-            $smsStatus = SendSMS::send('91882625',$body);
+//            $smsStatus = SendSMS::send('91882625',$body);
 
             //Janice
-            $smsStatus = SendSMS::send('96162726',$body);
+//            $smsStatus = SendSMS::send('96162726',$body);
         }
         return redirect()->to('backend/schedule/worker');
     }

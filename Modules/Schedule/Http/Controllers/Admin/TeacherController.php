@@ -7,6 +7,7 @@ use Modules\Schedule\Entities\Teacher;
 use Modules\Schedule\Http\Requests\Teacher\CreateTeacherRequest;
 use Modules\Schedule\Http\Requests\Teacher\UpdateTeacherRequest;
 use Modules\Schedule\Repositories\TeacherRepository;
+use Modules\User\Entities\Sentinel\User;
 use Modules\User\Repositories\RoleRepository;
 use Modules\User\Repositories\UserRepository;
 
@@ -74,6 +75,7 @@ class TeacherController extends AdminBaseController
             'subject'=> $request->get('subject'),
             'user_id'=> $user->id,
             'teacher_type' => $request->get('teacher_type') ? 1:0,
+            'is_leave_notify'=> in_array(4,$request->get('roles')) ? 1 : 0
         ];
 
         $this->teacher->create($teacherData);
@@ -111,6 +113,13 @@ class TeacherController extends AdminBaseController
     public function update($id, UpdateTeacherRequest $request)
     {
         $teacher = $this->teacher->find($id);
+
+        if(in_array(4,$request->get('roles'))){
+            $request->request->add(['is_leave_notify' => 1]);
+        }else{
+            $request->request->add(['is_leave_notify' => 0]);
+        }
+
         $this->teacher->update($teacher, $request->all());
 
         $user = $teacher->user;
@@ -143,11 +152,16 @@ class TeacherController extends AdminBaseController
      * @param Page $page
      * @return Response
      */
-    public function destroy(Page $page)
+    public function destroy(Teacher $teacher)
     {
-        $this->page->destroy($page);
+        if($teacher->user_id){
+            //destroy user
+            $user = $this->user->find($teacher->user_id);
+        }
+        //destroy teacher
+        $this->teacher->destroy($teacher);
 
-        return redirect()->route('admin.page.page.index')
+        return redirect()->route('admin.schedule.teacher.index')
             ->withSuccess(trans('page::messages.page deleted'));
     }
 }

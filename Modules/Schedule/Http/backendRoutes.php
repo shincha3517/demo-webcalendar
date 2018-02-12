@@ -143,6 +143,12 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'middleware' => 'can:schedule.teacher.edit',
     ]);
 
+    $router->delete('teacher/{teacher}', [
+        'as' => 'admin.schedule.teacher.destroy',
+        'uses' => 'TeacherController@destroy',
+        'middleware' => 'can:schedule.teacher.delete',
+    ]);
+
     $router->get('test', function(){
         $notifyDate = \Carbon\Carbon::parse('2018-01-19 15:16:00');
         echo $notifyDate->diffInMinutes(\Carbon\Carbon::now()) .'<br/>';
@@ -159,4 +165,5 @@ $router->group(['prefix' =>'/schedule'], function (Router $router) {
         'uses' => 'LeaveScheduleController@cancelLeaveItem',
         'middleware' => 'can:schedule.schedules.worker',
     ]);
+
 });

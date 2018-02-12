@@ -11,6 +11,7 @@ namespace Modules\Schedule\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
+use Modules\Schedule\Entities\Assignment;
 use Modules\Schedule\Repositories\AssignmentRepository;
 use Modules\Schedule\Repositories\EventScheduleRepository;
 use Modules\Schedule\Repositories\ScheduleRepository;
@@ -124,7 +125,7 @@ class LeaveScheduleController extends AdminBaseController
         $scheduleTable = $this->_getScheduleTable($date);
         $this->_getRepository($scheduleTable);
 
-        $leaves = $this->assignmentRepository->getByAttributes(['selected_date'=> $date,'teacher_id'=>$teacher->id,'is_past'=>0]);
+        $leaves = Assignment::where(['selected_date'=> $date,'teacher_id'=>$teacher->id,'is_past'=>0])->groupBy('code')->get();
         if(count($leaves) > 0){
             $collection = collect($leaves);
             $leavesArray = $collection->map(function ($item, $key) {
@@ -155,6 +156,8 @@ class LeaveScheduleController extends AdminBaseController
             $item = $this->assignmentRepository->find($leaveId);
             if($item){
                 $this->assignmentRepository->destroy($item);
+
+                Assignment::where('code',$item->code)->delete();
 
 
                 return response()->json([

@@ -74,6 +74,8 @@ var Home = {
                     }
                 }
                 else{
+                    $('.leaves-box ul').html('');
+                    $('.leaves-box ul').append('<li>There is no relief assigned today</li>');
                     console.log('empty leave item');
                 }
                 $.LoadingOverlay("hide");

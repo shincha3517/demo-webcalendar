@@ -2,7 +2,7 @@
 
 @section('content-header')
     <h1>
-        {{ trans('schedule::teacher.title.edit teacher') }}
+        {{ trans('schedule::teacher.title.create teacher') }}
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ URL::route('dashboard.index') }}"><i class="fa fa-dashboard"></i> {{ trans('core::core.breadcrumb.home') }}</a></li>
@@ -42,7 +42,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary btn-flat" name="button" value="index" >
                             <i class="fa fa-angle-left"></i>
-                            {{ trans('core::core.button.create and back') }}
+                            Create and back
                         </button>
                         <button type="submit" class="btn btn-primary btn-flat">
                             {{ trans('core::core.button.create') }}

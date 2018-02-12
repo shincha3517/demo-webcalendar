@@ -80,7 +80,7 @@
                             <td>
                                 <div class="btn-group">
                                     <a href="{{ URL::route('admin.schedule.teacher.edit', [$teacher->id]) }}" class="btn btn-default btn-flat"><i class="fa fa-pencil"></i></a>
-                                    <button data-toggle="modal" data-target="#modal-delete-confirmation" data-action-target="{{ route('admin.page.page.destroy', [$teacher->id]) }}" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                                    <button data-toggle="modal" data-target="#modal-delete-confirmation" data-action-target="{{ route('admin.schedule.teacher.destroy', [$teacher->id]) }}" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
