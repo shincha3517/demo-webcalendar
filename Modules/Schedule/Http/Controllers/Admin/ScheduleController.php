@@ -598,14 +598,14 @@ class ScheduleController extends AdminBaseController
 //                    $body .= "To acknowledge, Reply Yes ".$replaceStatus;
                     if($replaceTeacher){
                         $phoneNumber = $replaceTeacher->phone_number;
-//                        $smsStatus = SendSMS::send($phoneNumber,$body);
-//
-//                        if($smsStatus){
-//                            $request->session()->flash('success','Send absent request successfully');
-//                        }
-//                        else{
-//                            $request->session()->flash('error','Can not send SMS to teacher');
-//                        }
+                        $smsStatus = SendSMS::send($phoneNumber,$body);
+
+                        if($smsStatus){
+                            $request->session()->flash('success','Send absent request successfully');
+                        }
+                        else{
+                            $request->session()->flash('error','Can not send SMS to teacher');
+                        }
                     }else{
                         $request->session()->flash('error','Can not send SMS to teacher');
                     }
@@ -619,10 +619,10 @@ class ScheduleController extends AdminBaseController
 
             //hardcode
             //Germain
-//            $smsStatus = SendSMS::send('91882625',$body);
+            $smsStatus = SendSMS::send('91882625',$body);
 
             //Janice
-//            $smsStatus = SendSMS::send('96162726',$body);
+            $smsStatus = SendSMS::send('96162726',$body);
         }
         return redirect()->to('backend/schedule/worker');
     }
