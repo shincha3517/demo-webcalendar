@@ -619,10 +619,10 @@ class ScheduleController extends AdminBaseController
 
             //hardcode
             //Germain
-            $smsStatus = SendSMS::send('91882625',$body);
+            $smsStatus = SendSMS::send(env('GERMAIN_NUMBER','91882625'),$body);
 
             //Janice
-            $smsStatus = SendSMS::send('96162726',$body);
+            $smsStatus = SendSMS::send(env('JANICE_NUMBER','96162726'),$body);
         }
         return redirect()->to('backend/schedule/worker');
     }
