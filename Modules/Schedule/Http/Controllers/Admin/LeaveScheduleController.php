@@ -60,6 +60,9 @@ class LeaveScheduleController extends AdminBaseController
 
     public function index(Request $request){
         $currentUser = $this->auth->user();
+        if($currentUser->id == 1){
+            return view('schedule::admin.schedule.non_available');
+        }
         $teacher = $this->teacherRepository->findByAttributes(['email'=>$currentUser->email]);
         $teachers = $this->teacherRepository->all();
 
