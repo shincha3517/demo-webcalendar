@@ -601,6 +601,8 @@ WHERE t.id != ? AND t.is_leave_notify=0',$whereData);
             ->whereDate('selected_date',$dayName->toDateString())
             ->where('is_past',0)
             ->where('schedule_type','event')
+            ->where('subject','!=','fullDay')
+            ->where('subject','!=','partialDay')
             ->orderBy('slot_id', 'asc')
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){

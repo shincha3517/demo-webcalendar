@@ -608,6 +608,8 @@ WHERE t.id != ? AND t.is_leave_notify=0',$whereData);
             ->where('selected_date',$dayName->toDateString())
             ->where('is_past',0)
             ->where('schedule_type','old')
+            ->where('subject','!=','fullDay')
+            ->where('subject','!=','partialDay')
             ->orderBy('slot_id', 'asc')
             ->get();
         $collectionBeAssignedSchedule = collect($assignedSchedules)->map(function($schedule){
@@ -646,6 +648,7 @@ WHERE t.id != ? AND t.is_leave_notify=0',$whereData);
             }
             if(count($beAssignedSchedules) > 0){
                 foreach($beAssignedSchedules as $beAssignedSchedule){
+                    dd($beAssignedSchedule);
                     $data = [
                         'id'=>$beAssignedSchedule->schedule->id,
                         'class' => $beAssignedSchedule->schedule->class_name,
