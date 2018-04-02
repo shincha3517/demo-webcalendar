@@ -589,6 +589,8 @@ class ScheduleController extends AdminBaseController
             $pad_char = 0;
             $jobsCode = str_pad($jobsCode, $pad_length, $pad_char, STR_PAD_LEFT);
 
+            $isSendSMS = false;
+
             foreach($replaceTeacherIds as $replaceTeacherId){
                 $replaceTeacher = Teacher::find($replaceTeacherId);
 
@@ -596,11 +598,12 @@ class ScheduleController extends AdminBaseController
                 if($replaceStatus){
 
 //                    $body .= "To acknowledge, Reply Yes ".$replaceStatus;
-                    if($replaceTeacher){
+                    if($replaceTeacher && $isSendSMS == false){
                         $phoneNumber = $replaceTeacher->phone_number;
                         $smsStatus = SendSMS::send($phoneNumber,$body);
 
                         if($smsStatus){
+                            $isSendSMS = true;
                             $request->session()->flash('success','Send absent request successfully');
                         }
                         else{
